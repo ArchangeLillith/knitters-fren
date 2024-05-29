@@ -1,9 +1,16 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
+		"outDir": "./public/js",
+		"module": "ES6",
+		"target": "ES5",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		//Showing that this is a front end code that's a tsx React based project so Typescript doesn't throw a fit about tsx not being valid javascript
 		"jsx": "react",
-		"outDir": "../../public/static",
-		"rootDir": "."
+		//Draw upon the knowledge of these libraries to help us with typing and auto complete
+		"lib": ["ES2015", "DOM"]
 	},
-	"include": ["./**/*"]
+	"include": ["."]
 }
