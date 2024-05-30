@@ -3,14 +3,17 @@
 	"compilerOptions": {
 		"outDir": "./public/js",
 		"module": "ES6",
+		"allowJs": true,
 		"target": "ES5",
 		"moduleResolution": "node",
 		"esModuleInterop": true,
+		"noFallthroughCasesInSwitch": true,
 		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
 		//Showing that this is a front end code that's a tsx React based project so Typescript doesn't throw a fit about tsx not being valid javascript
 		"jsx": "react",
 		//Draw upon the knowledge of these libraries to help us with typing and auto complete
 		"lib": ["ES2015", "DOM"]
 	},
-	"include": ["."]
+	"include": ["import-img.d.ts"]
 }
