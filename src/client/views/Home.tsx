@@ -10,7 +10,7 @@ const Home = (props: HomeProps) => {
 					<h1>Knitters Fren</h1>
 					<img
 						alt="site-logo-sleeping-nanachi"
-						src={require("../images/Nanachi-logo.jpg")}
+						src={require("../assets/Nanachi-logo.jpg")}
 					/>
 				</div>
 			</Container>
