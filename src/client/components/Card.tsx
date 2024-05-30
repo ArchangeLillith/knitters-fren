@@ -1,13 +1,15 @@
 import React from "react";
 
-interface CardProps {}
+interface CardProps {
+	text: string;
+}
 
-const Card = (props: CardProps) => {
-  return (
-    <div>
-      <h1>Card component rendered</h1>
-    </div>
-  )
+const Card = ({ text }: CardProps) => {
+	return (
+		<div>
+			<h2>{text}</h2>
+		</div>
+	);
 };
 
 export default Card;
