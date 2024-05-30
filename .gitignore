@@ -28,3 +28,6 @@ pids
 
 # Directory used by npm for cache
 .npm
+
+# XCF files for editing the images, kept in directory locally for ease of access
+/XCF
