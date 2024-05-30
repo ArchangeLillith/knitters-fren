@@ -1,15 +1,4 @@
+//This is the top level tsconfig that the server and the frontend both extend off of
 {
-	"compilerOptions": {
-		"sourceMap": true,
-		"target": "es2022",
-		"module": "commonjs",
-		"strict": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"rootDir": "./src",
-		"moduleResolution": "node",
-		"resolveJsonModule": true
-	},
 	"exclude": ["node_modules"]
 }
