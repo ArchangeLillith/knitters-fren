@@ -23,6 +23,7 @@ router.get("/:id", async (req, res, next) => {
 //GET /api/patterns
 router.get("/", async (req, res, next) => {
 	try {
+		console.log(`Try catch in routes`);
 		const result = await db.patterns.all();
 		res.json(result);
 	} catch (error) {
@@ -56,8 +57,7 @@ router.delete("/:id", async (req, res, next) => {
 	try {
 		const id = req.params.id;
 		const author_id = req.body.author_id;
-		await db.pattern_tags.deleteTagsByPatternId(id);
-		//Refactor if here there's an error it shouldn't continue
+		await db.tags.deleteTagsByPatternId(id);
 		const result = await db.patterns.destroy(id, author_id);
 		if (!result.affectedRows) {
 			throw new Error("Pattern does not exist");

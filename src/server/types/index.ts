@@ -1,10 +1,23 @@
-import type { UsersTable } from "../db/queries/authors";
-
 declare global {
 	namespace Express {
 		export interface Request {
-			currentUser?: UsersTable;
+			currentUser?: IAuthorsTable;
 			payload?: { id: string };
 		}
 	}
+}
+
+export interface IPatternTable {
+	id?: string;
+	author_id?: string;
+	title?: string;
+	content?: string;
+	created_at?: string;
+}
+export interface IAuthorsTable {
+	id?: string;
+	email?: string;
+	name?: string;
+	created_at?: string;
+	password?: string;
 }

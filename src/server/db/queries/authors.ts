@@ -1,26 +1,18 @@
 import { Query } from "../pool";
+import { IAuthorsTable } from "../../types";
 
-//All optional for using with custom select statements
-export interface UsersTable {
-	id?: string;
-	email?: string;
-	password?: string;
-	created_at?: string;
-	first_name?: string;
-	last_name?: string;
-}
+//API calls
+const all = () => Query<IAuthorsTable[]>(`SELECT * FROM authors;`);
 
+const one = (id: string) =>
+	Query<IAuthorsTable[]>(`SELECT * FROM authors WHERE id = ?;`, [id]);
+
+//Authorization calls
 const find = (col: string, val: string) =>
-	Query<UsersTable[]>(`SELECT * FROM users WHERE ?? = ?;`, [col, val]);
+	Query<IAuthorsTable[]>(`SELECT * FROM authors WHERE ?? = ?;`, [col, val]);
 
-const insert = (values: {
-	id: string;
-	email: string;
-	passowrd: string;
-	first_name: string;
-	last_name: string;
-}) => {
-	Query("INSERT INTO users SET ?", values);
+const insert = (values: { name: string; email: string; handle: string }) => {
+	Query("INSERT INTO authors SET ?", values);
 };
 
-export default { find, insert };
+export default { all, one, find, insert };

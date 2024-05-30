@@ -1,62 +1,48 @@
 import { Query } from "../pool";
+import { IAuthorsTable, IPatternTable } from "../../types";
 
-export interface PatternTable {
-	id?: string;
-	created_at?: string;
-	userid?: string;
-	body?: string;
-}
-export interface UsersTable {
-	id?: string;
-	email?: string;
-	password?: string;
-	created_at?: string;
-	first_name?: string;
-	last_name?: string;
-}
-
-//GET all patterns, joined to show the name of the author not their id
+//GET all patterns, joined to show the name of the author
 const all = () =>
-	Query<(PatternTable & UsersTable)[]>(`
+	Query<(IPatternTable & IAuthorsTable)[]>(`
+	SELECT 
+		patterns.*,
+		authors.name 
+	FROM 
+		patterns 
+				JOIN 
+		authors ON authors.id = patterns.author_id;`);
+
+//GET one pattern, joined to show the authors name
+const one = (id: string) =>
+	Query<(IPatternTable & IAuthorsTable)[]>(
+		`
 SELECT 
   patterns.*,
   authors.name 
 FROM 
   patterns 
       JOIN 
-  authors ON author.id = patterns.author_id;`);
-
-//GET one pattern, joined to show the authors name not their id
-const one = (id: string) =>
-	Query<(PatternTable & UsersTable)[]>(
-		`
-SELECT 
-  notes.*,
-  users.first_name 
-FROM 
-  notes 
-      JOIN 
-  users ON users.id = notes.userid
-  WHERE notes.id = ?;`,
+			authors ON authors.id = patterns.author_id
+  WHERE patterns.id = ?;`,
 		[id]
 	);
 
 //TODO GET all patterns by _____ (tag, author, name)(do this by a checkbox on the front end so we don't have to join like three tables.... Or maybe that's okay?)
 
 //POST a pattern
-const insert = (values: PatternTable) =>
-	Query("INSERT INTO notes SET ?", [values]);
+const insert = (values: IPatternTable) =>
+	Query("INSERT INTO patterns SET ?", [values]);
 
 //DELETE a pattern
-const destroy = (id: string, userid: string) =>
-	Query("DELETE FROM notes WHERE id = ? AND userid = ?", [id, userid]);
+const destroy = (id: string, author_id: string) =>
+	Query("DELETE FROM patterns WHERE id = ? AND author_id = ?", [id, author_id]);
 
 //PATCH a pattern
-const update = (editedPattern: PatternTable, id: string, userid: string) =>
-	Query("UPDATE notes SET ? WHERE id = ? AND userid = ?", [
-		editedPattern,
+const update = (patternDTO: IPatternTable, id: string, author_id: string) =>
+	Query("UPDATE patterns SET ? WHERE id = ? AND author_id = ?", [
+		patternDTO,
 		id,
-		userid,
+		author_id,
 	]);
 
 export default { all, one, insert, destroy, update };
