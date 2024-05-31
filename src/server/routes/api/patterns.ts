@@ -43,9 +43,11 @@ router.get("/private", checkToken, async (req, res, next) => {
 router.post("/", async (req, res, next) => {
 	try {
 		const patternDTO = { ...req.body };
+		//The insert
 		await db.patterns.insert(patternDTO);
-		//The return here helps front end to reroute to the new id or the message can be picked up by a toaster or modal
-		res.json({ id: patternDTO.id, message: "New pattern created" });
+		//The get request to get what was just put in, in the form the navigation and frontend expects it back
+		const [pattern] = await db.patterns.oneByTitle(patternDTO.title);
+		res.json({ pattern, message: "New pattern created" });
 	} catch (error) {
 		next(error);
 	}
@@ -55,10 +57,11 @@ router.post("/", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
 	try {
 		const id = req.params.id;
+		console.log(`ID`, id);
 		const author_id = req.body.author_id;
 		await db.pattern_tags.deleteTagsByPatternId(id);
 		//Refactor if here there's an error it shouldn't continue
-		const result = await db.patterns.destroy(id, author_id);
+		const result = await db.patterns.destroy(id);
 		if (!result.affectedRows) {
 			throw new Error("Pattern does not exist");
 		}

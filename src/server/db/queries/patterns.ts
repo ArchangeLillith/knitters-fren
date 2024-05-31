@@ -27,6 +27,20 @@ FROM
 		[id]
 	);
 
+const oneByTitle = (title: string) =>
+	Query<(IPatternTable & IAuthorsTable)[]>(
+		`
+SELECT 
+  patterns.*,
+  authors.name 
+FROM 
+  patterns 
+      JOIN 
+			authors ON authors.id = patterns.author_id
+  WHERE patterns.title = ?;`,
+		[title]
+	);
+
 //TODO GET all patterns by _____ (tag, author, name)(do this by a checkbox on the front end so we don't have to join like three tables.... Or maybe that's okay?)
 
 //POST a pattern
@@ -34,8 +48,8 @@ const insert = (values: IPatternTable) =>
 	Query("INSERT INTO patterns SET ?", [values]);
 
 //DELETE a pattern
-const destroy = (id: string, author_id: string) =>
-	Query("DELETE FROM patterns WHERE id = ? AND author_id = ?", [id, author_id]);
+const destroy = (id: string) =>
+	Query("DELETE FROM patterns WHERE id = ?", [id]);
 
 //PATCH a pattern
 const update = (patternDTO: IPatternTable, id: string, author_id: string) =>
@@ -45,4 +59,4 @@ const update = (patternDTO: IPatternTable, id: string, author_id: string) =>
 		author_id,
 	]);
 
-export default { all, one, insert, destroy, update };
+export default { all, one, insert, destroy, update, oneByTitle };

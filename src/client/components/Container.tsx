@@ -6,7 +6,7 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Container = ({ children, ...rest }: ContainerProps) => {
-	return <section className="container-fluid pl-4">{children}</section>;
+	return <section className="container">{children}</section>;
 };
 
 export default Container;
