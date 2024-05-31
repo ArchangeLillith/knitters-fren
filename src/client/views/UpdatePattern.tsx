@@ -25,14 +25,14 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 	};
 
 	useEffect(() => {
-		if (!state) {
-			if (!id) return;
-			patternService.getOnePattern(id).then((pattern: IPattern) => {
-				setPattern(pattern);
-				setContent(pattern.content);
-			});
-			// .catch(e => Toast.error(e.message));
-		}
+		if (state) return;
+		if (!id) return;
+		patternService.getOnePattern(id).then((pattern: IPattern) => {
+			setPattern(pattern);
+			setContent(pattern.content);
+		});
+		// .catch(e => Toast.error(e.message));
+	}
 	}, [id]);
 
 	const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
