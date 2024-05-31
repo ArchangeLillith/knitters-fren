@@ -35,7 +35,7 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 	}
 	}, [id]);
 
-	const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleUpdate: () => void = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		if (!id || !pattern) return;
 		const patternDTO = {
