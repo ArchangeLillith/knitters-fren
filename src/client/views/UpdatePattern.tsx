@@ -34,7 +34,9 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 		// .catch(e => Toast.error(e.message));
 	}, [id]);
 
-	const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleUpdate: (e: React.MouseEvent<HTMLButtonElement>) => void = (
+		e: React.MouseEvent<HTMLButtonElement>
+	) => {
 		e.preventDefault();
 		if (!id || !pattern) return;
 		const patternDTO: { content: string; author_id: string; id: string } = {
