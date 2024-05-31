@@ -8,6 +8,7 @@ import PatternDetails from "../views/PatternDetails";
 import AddPattern from "../views/AddPattern";
 import UpdatePattern from "../views/UpdatePattern";
 import NotFound from "../views/NotFound";
+import AdminPanel from "../views/AdminPanel";
 
 interface AppProps {}
 
@@ -18,6 +19,7 @@ const App = (props: AppProps) => {
 			<Route path="/patterns" element={<Patterns />}></Route>
 			<Route path="/patterns/:id" element={<PatternDetails />}></Route>
 			<Route path="/patterns/new" element={<AddPattern />}></Route>
+			<Route path="/patterns/admin" element={<AdminPanel />}></Route>
 			<Route path="/patterns/:id/update" element={<UpdatePattern />}></Route>
 			<Route path="/*" element={<NotFound />}></Route>
 		</Routes>
