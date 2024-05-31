@@ -75,7 +75,7 @@ router.delete("/:id", async (req, res, next) => {
 
 //PUT /api/patterns/:id
 router.put("/:id", async (req, res, next) => {
-	const id = req.params.id;
+	const id: string = req.params.id;
 	try {
 		const patternDTO = {
 			id: req.body.id,
