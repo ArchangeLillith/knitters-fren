@@ -25,6 +25,14 @@ id INT NOT NULL AUTO_INCREMENT,
 PRIMARY KEY(id)
 );
 
+SELECT
+  patterns.*,
+  authors.name
+FROM
+  patterns
+      JOIN
+  authors ON authors.id = patterns.author_id;
+
 CREATE TABLE pattern_tags (
 pattern_id INT,
 tag_id INT,
@@ -46,8 +54,8 @@ INSERT INTO authors (`name`, email) VALUE (
         
     SELECT * FROM patterns;
     
-     INSERT INTO tags (`name`) VALUES 
-		("Beginner"),
+INSERT INTO tags (`name`) VALUES 
+	("Beginner"),
         ("Intermediate"),
         ("Advanced"),
         ("Circular"),
@@ -64,3 +72,7 @@ INSERT INTO pattern_tags VALUES
     (1, 9);
 
 SELECT * FROM pattern_tags;
+
+UPDATE patterns SET content = "This si a new thingy" WHERE id = 3 AND author_id = 2;
+
+SELECT * from patterns;

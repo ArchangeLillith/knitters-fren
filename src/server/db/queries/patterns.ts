@@ -52,11 +52,15 @@ const destroy = (id: string) =>
 	Query("DELETE FROM patterns WHERE id = ?", [id]);
 
 //PATCH a pattern
-const update = (patternDTO: IPatternTable, id: string, author_id: string) =>
-	Query("UPDATE patterns SET ? WHERE id = ? AND author_id = ?", [
-		patternDTO,
-		id,
-		author_id,
+const update = (patternDTO: {
+	author_id: string;
+	content: string;
+	id: string;
+}) =>
+	Query("UPDATE patterns SET content = ? WHERE id = ? AND author_id = ?", [
+		patternDTO.content,
+		patternDTO.id,
+		patternDTO.author_id,
 	]);
 
 export default { all, one, insert, destroy, update, oneByTitle };

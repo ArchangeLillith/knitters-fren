@@ -5,10 +5,11 @@ import dayjs from "dayjs";
 
 interface PatternCardProps {
 	pattern: IPattern;
+	tags?: boolean;
 }
 
-const PatternCard = ({ pattern }: PatternCardProps) => {
-	const tags: string[] = ["DPNS", "Circular", "US 7", "Fingering Weight"];
+const PatternCard = ({ pattern, tags = true }: PatternCardProps) => {
+	const tagsArray: string[] = ["DPNS", "Circular", "US 7", "Fingering Weight"];
 	return (
 		<>
 			{pattern && (
@@ -31,11 +32,15 @@ const PatternCard = ({ pattern }: PatternCardProps) => {
 							{dayjs(pattern.created_at).format("MMMM D, YYYY")}
 						</small>
 						<br />
-						{tags.map((tag) => (
-							<div className="btn btn-primary m-2" key={tag}>
-								{tag}
+						{tags && (
+							<div>
+								{tagsArray.map((tag) => (
+									<div className="btn btn-primary m-2" key={tag}>
+										{tag}
+									</div>
+								))}
 							</div>
-						))}
+						)}
 					</div>
 				</div>
 			)}

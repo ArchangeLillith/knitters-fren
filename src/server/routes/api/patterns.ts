@@ -2,6 +2,7 @@ import { Router, query } from "express";
 import { checkToken } from "../../middlewares/auth.mw";
 import { v4 as uuidv4 } from "uuid";
 import db from "../../db";
+import { useParams } from "react-router-dom";
 
 const router = Router();
 //Run all these routes prepended with the method through this middle ware
@@ -74,12 +75,15 @@ router.delete("/:id", async (req, res, next) => {
 
 //PUT /api/patterns/:id
 router.put("/:id", async (req, res, next) => {
+	const id: string = req.params.id;
 	try {
-		const author_id = req.body.author_id;
-		const id = req.params.id;
-		const patternDTO = { title: req.body.title, content: req.body.content };
+		const patternDTO: { id: string; author_id: string; content: string } = {
+			id: req.body.id,
+			author_id: req.body.author_id,
+			content: req.body.content,
+		};
 		console.log(`patternDTO`, patternDTO);
-		await db.patterns.update(patternDTO, id, author_id);
+		await db.patterns.update(patternDTO);
 		res.json({ id, message: "Pattern updated~!" });
 	} catch (error) {
 		next(error);

@@ -10,7 +10,7 @@ const getAllPatterns = async () => {
 };
 
 //Fix this type
-const getOnePattern = async (id: any) => {
+const getOnePattern = async (id: string) => {
 	try {
 		const Pattern = await baseService.get(`/api/patterns/${id}`);
 		return Pattern;
@@ -43,7 +43,7 @@ const destroyPattern = async (id: any) => {
 
 const updatePattern = async (
 	id: string,
-	payload: { [key: string]: string }
+	payload: { content: string; author_id: string }
 ) => {
 	try {
 		await baseService.put(`/api/patterns/${id}`, payload);

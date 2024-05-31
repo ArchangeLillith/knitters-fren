@@ -56,12 +56,20 @@ const PatternDetails = (props: PatternDetailsProps) => {
 									{tag}
 								</div>
 							))}
-							<button
-								onClick={handleDelete}
-								className="btn btn-bright btn-border ms-auto p-2"
-							>
-								Delete
-							</button>
+							<div className="ms-auto">
+								<button
+									onClick={handleDelete}
+									className="btn btn-outline-primary btn-border mx-3 p-2"
+								>
+									Delete
+								</button>
+								<Link
+									to={`/patterns/${id}/update`}
+									className="btn btn-outline-primary btn-border p-2"
+								>
+									Update~
+								</Link>
+							</div>
 						</div>
 					</div>
 				</div>
