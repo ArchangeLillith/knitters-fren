@@ -38,7 +38,7 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 	const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		if (!id || !pattern) return;
-		const patternDTO = {
+		const patternDTO: { content: string; author_id: string; id: string } = {
 			content: pattern.content,
 			author_id: pattern.author_id,
 			id,

@@ -77,7 +77,7 @@ router.delete("/:id", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
 	const id = req.params.id;
 	try {
-		const patternDTO = {
+		const patternDTO: { id: string; author_id: string; content: string } = {
 			id: req.body.id,
 			author_id: req.body.author_id,
 			content: req.body.content,
