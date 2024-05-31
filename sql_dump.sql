@@ -55,7 +55,7 @@ INSERT INTO authors (`name`, email) VALUE (
     SELECT * FROM patterns;
     
 INSERT INTO tags (`name`) VALUES 
-		("Beginner"),
+	("Beginner"),
         ("Intermediate"),
         ("Advanced"),
         ("Circular"),
