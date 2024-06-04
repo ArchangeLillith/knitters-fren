@@ -17,4 +17,9 @@ export default {
 		secret: process.env.JWT_SECRET,
 		expires: process.env.JWT_EXPIRES,
 	},
+	mailgun: {
+		apiKey: process.env.MAILGUN_KEY as string,
+		domain: process.env.MAILGUN_DOMAIN as string,
+		toEmail: process.env.MAILGUN_TO_EMAIL,
+	},
 };

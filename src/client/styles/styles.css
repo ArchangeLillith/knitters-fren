@@ -1,2 +1,10 @@
 /* This is linked in case we want to test or do some cutstom styling */
+.select-none {
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+}
 
+a:hover {
+	color: #965050;
+}

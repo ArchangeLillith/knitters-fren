@@ -5,10 +5,17 @@ interface NavBarProps {}
 
 const NavBar = (props: NavBarProps) => {
 	return (
-		<nav className="navbar sticky-top navbar-expand-lg navbar-light bg-bright ">
+		<nav
+			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
+			className="navbar sticky-top navbar-expand-lg navbar-light bg-navbar "
+		>
 			<div className="container-fluid">
-				<Link className="navbar-brand" to="/">
-					Knitting Fren
+				<Link
+					className="navbar-brand "
+					to="/"
+					style={{ fontFamily: "'Brush Script MT', cursive", fontSize: "30px" }}
+				>
+					Knitters Fren
 				</Link>
 				<button
 					className="navbar-toggler"
