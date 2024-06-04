@@ -8,6 +8,7 @@ import AuthProvider from "../components/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import NavBar from "../components/NavBar";
 import AppRoutes from "./AppRoutes";
+import Footer from "../components/Footer";
 
 interface AppProps {}
 
@@ -33,6 +34,7 @@ const App = (props: AppProps) => {
 				<NavBar />
 				<AppRoutes />
 			</AuthProvider>
+				<Footer />
 			{/* Refactor add footer */}
 		</BrowserRouter>
 	);

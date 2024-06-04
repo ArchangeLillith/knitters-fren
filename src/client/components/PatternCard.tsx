@@ -5,10 +5,15 @@ import dayjs from "dayjs";
 
 interface PatternCardProps {
 	pattern: IPattern;
+	featured?: boolean;
 	tags?: boolean;
 }
 
-const PatternCard = ({ pattern, tags = true }: PatternCardProps) => {
+const PatternCard = ({
+	pattern,
+	featured = false,
+	tags = true,
+}: PatternCardProps) => {
 	const tagsArray: string[] = ["DPNS", "Circular", "US 7", "Fingering Weight"];
 	return (
 		<>
@@ -18,13 +23,28 @@ const PatternCard = ({ pattern, tags = true }: PatternCardProps) => {
 					key={`pattern-card-outer-wrapper-${pattern.id}`}
 				>
 					<div className="m-2" key={`pattern-card-inner-wrapper-${pattern.id}`}>
-						<Link
-							className="lead text-decoration-none"
-							to={`/patterns/${pattern.id}`}
-							key={`pattern-card-h3-${pattern.id}`}
-						>
-							{pattern.title}
-						</Link>
+						{featured && (
+							// Changing the text color here to white for the featured section
+							<Link
+								className="text-color-white text-decoration-none"
+								style={{ fontSize: "30px" }}
+								to={`/patterns/${pattern.id}`}
+								key={`pattern-card-h3-${pattern.id}`}
+							>
+								{pattern.title}
+							</Link>
+						)}
+						{!featured && (
+							//Changing the text to the primary color which is default
+							<Link
+								className="font-color-primary text-decoration-none"
+								style={{ fontSize: "25px" }}
+								to={`/patterns/${pattern.id}`}
+								key={`pattern-card-h3-${pattern.id}`}
+							>
+								{pattern.title}
+							</Link>
+						)}
 						<p key={`pattern-card-para-${pattern.id}`}>
 							{pattern.content.slice(0, 200)}...
 						</p>

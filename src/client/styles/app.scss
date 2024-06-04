@@ -1,10 +1,10 @@
 // Colors
 $body-bg: #F0C9C9;   
-$bright: #FAA2A2;
+$bright: #f09b9b;
 $soft: #FBE2E2;
 $primary: #e78686;      
-$secondary: #ffdb58;      
-$success: #00f764;        
+$muted: #d5a7a7;     
+$navbar: #cb8585;         
 $info: #01cdfe;          
 $warning: #ff61a6;        
 $danger: #ff2965;         
@@ -21,6 +21,24 @@ $link-hover-color: darken($link-color, 20%);
 .bg-bright{
   background-color: $bright;
 }
+.font-color-primary{
+  color: $primary;
+}
+.font-color-white{
+  color: #ffffff;
+}
+
 .bg-soft{
   background-color: $soft;
+}
+.text-soft{
+  color: $soft;
+}
+
+.bg-muted{
+  background-color: $muted;
+}
+
+.bg-navbar{
+  background-color: $navbar;
 }

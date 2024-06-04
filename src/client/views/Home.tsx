@@ -1,42 +1,56 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Container from "../components/Container";
-import Card from "../components/Card";
 import PatternCard from "../components/PatternCard";
 import { IPattern, dummyPattern } from "../utils/types";
 import patternService from "../services/pattern";
+import { sortPatterns } from "../utils/patterns.utils";
 
 interface HomeProps {}
 
 const Home = (props: HomeProps) => {
 	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
+	const [featured, setFeatured] = React.useState<IPattern>();
+	const [mostRecent, setMostRecent] = React.useState<IPattern[]>([]);
 
 	useEffect(() => {
-		patternService.getAllPatterns().then((data) => setPatterns(data));
+		patternService.getAllPatterns().then((data) => {
+			const sortedPatterns: IPattern[] = sortPatterns(data, "date");
+			setPatterns(data);
+			setFeatured(patterns[Math.floor(Math.random() * (patterns.length - 1))]);
+			setMostRecent(sortedPatterns.splice(0, 3));
+		});
+
 		// .catch((e) => Toast.error(e.message));
 	}, []);
-
-	const featuredPattern: IPattern = patterns[1];
-	const latestPatterns: IPattern[] = patterns.slice(0, 2);
 
 	const tags: string[] = ["DPNS", "Circular", "US 7", "Fingering Weight"];
 	return (
 		<Container>
-			<div className="row justify-content-around my-5">
-				<div className="col-md-6 col-lg-6">
+			<div className="d-flex flex-row justify-content-around my-4">
+				<div
+					id="featured-patterns"
+					className="mt-5 bg-bright rounded justify-content-center d-flex flex-column align-items-center "
+					style={{ maxWidth: "50%" }}
+				>
+					<div
+						style={{
+							fontFamily: "'Brush Script MT', cursive",
+							fontSize: "35px",
+							paddingTop: "3%",
+						}}
+					>
+						Featured Pattern:
+					</div>
+					{featured && <PatternCard pattern={featured} featured={true} />}
+				</div>
+				<div className="mb-5">
 					<img
 						alt="site-logo-sleeping-nanachi"
 						src="/images/Nanachi-logo.png"
-						className="w-50 py-4"
+						className="py-4"
+						style={{ height: "130%" }}
 					/>
-				</div>
-
-				<div
-					id="featured-patterns"
-					className="col-md-6 col-lg-6 mt-5 bg-bright rounded justify-content-center align-items-center d-flex flex-column align-items-center"
-				>
-					<h2 className="my-3">Featured Pattern:</h2>
-					{patterns && <PatternCard pattern={featuredPattern} />}
 				</div>
 			</div>
 			<div className="container-fluid container" key="lower-section-container">
@@ -45,9 +59,9 @@ const Home = (props: HomeProps) => {
 					className="bg-bright text-white w-120 p-4 rounded flex flex-column"
 				>
 					<div>
-						<h4>Most Recent Patterns</h4>
+						<h4 className="text-soft">Most Recent Patterns</h4>
 					</div>
-					{latestPatterns.map((pattern, index) => (
+					{mostRecent.map((pattern, index) => (
 						<>
 							<div
 								className="d-flex flex-row justify-content-around"

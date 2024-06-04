@@ -24,6 +24,7 @@ app.head("status", (req, res) => {
 
 configurePassport(app);
 app.use(express.static("public"));
+//Telling the backend to expect json, and telling it to use express to parse the json
 app.use(express.json());
 //Logging on the top level for any of our routes
 app.use(morgan("dev"));
