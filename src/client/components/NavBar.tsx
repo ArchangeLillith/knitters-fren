@@ -50,6 +50,11 @@ const NavBar = (props: NavBarProps) => {
 								Gallery
 							</Link>
 						</li>
+						<li className="nav-item">
+							<Link to="/donate" className="nav-link">
+								Donate
+							</Link>
+						</li>
 					</ul>
 					<form className="d-flex">
 						<input
