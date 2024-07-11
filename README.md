@@ -1,165 +1,165 @@
-# TypeScript React Express ESBuild Boilerplate
+<a name="readme-top"></a>
 
-Welcome to the TypeScript React Express ESBuild boilerplate, tailored for budding developers learning to craft MERN CRUD applications. However, this boilerplate is also ideal for anyone aiming to switch gears and utilize ESBuild over the conventional webpack.
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/ArchangeLillith/knitters-fren">
+    <img src="/public/images/Nanachi-logo.png" alt="Logo" width="160" height="160">
+  </a>
 
-# Table Of Contents
+  <h3 align="center">Knitters Fren</h3>
 
--   [Overview](#overview)
--   [Features](#features)
--   [Getting Started](#getting-started)
-    -   [1. Clone the Repository](#1-clone-the-repository)
-    -   [2. Install Dependencies](#2-install-dependencies)
-    -   [3. Running in Development](#3-running-in-development)
--   [Directory Structure](#directory-structure)
-    -   [Top-Level Overview](#top-level-overview)
--   [Building for Production](#building-for-production)
-    -   [1. Building for Production](#1-building-for-production)
-    -   [2. Running in Production](#2-running-in-production)
--   [YouTube Companion Videos](#youtube-companion-videos)
--   [Why ESBuild over Webpack?](#why-esbuild-over-webpack)
--   [Contributions](#contributions)
+  <p align="center">
+    A place for knitters to share their creations and patterns~!
+    <br />
+    <a href="https://github.com/ArchangeLillith/knitters-fren"><strong>Explore the docs »</strong></a>
+    <br />
+  </p>
+</div>
 
-## Overview
 
-This boilerplate is designed with simplicity and efficiency in mind. It leverages ESBuild, known for its speed and ease of configuration, to bundle your JavaScript and styles. It provides a structured starting point for both client and server development using popular technologies like React, Express, and TypeScript.
 
-## Features
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
--   **React**: For crafting intuitive UIs.
--   **Express**: A minimalist web framework for building the server-side.
--   **TypeScript**: Bringing strong typing to JavaScript, enhancing maintainability and developer experience.
--   **ESBuild**: A revolutionary fast JavaScript bundler and minifier.
--   **Bootstrap SASS**: Empower your projects with the world's most popular CSS framework, now in its SASS variant. Tailor designs seamlessly with variables and mixins.
 
-    _Note_: While this boilerplate uses Bootstrap SASS, the flexibility of ESBuild means it's straightforward to switch plugins. For instance, you can easily incorporate PostCSS with TailwindCSS or any other preferred styling solution.
 
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+<img src="/public/images/screenshots/home-page.png" alt="home page screenshot" width="1000" height="500">
+
+This project was originally a blog post, but I felt that was less fun than making a functional website to host all my favorite knitting patterns! Under the hood it's very similar to a blog website having users, posts, tags but also incorporates those in other, more advanced ways - like the search function. The search function allows users to click a tag tile and be transported to the search with that tag already selected. The user can also select more tags and also search with plain text! 
+
+
+I'm hoping that the more organized my patterns are, the more I and other knitters want to knit fun things.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+### Built With
+
+* [![React][React.js]][React-url]
+* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
+* [![SASS][SASS]][SASS-url]
+
+I challenged myself to only use Bootstrap and a touch of SASS for styling in this project as I want to understand more what Bootstrap has to offer. I deviated a bit for minor things such as font styling or small color changes that aren't Bootstrap native. 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
 ## Getting Started
 
-1. **Clone the Repository**
+While this project isn't deployed, you can download the files into a folder called "Knitters Fren" and run ``npm install`` on the root to get your node modules good to go. 
 
+### Installation
+
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/ArchangeLillith/knitters-fren
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Boot the project (backend lives on localhost:3000, frontend lives on localhost:8000)
     ```sh
-    git clone https://github.com/covalence-io/ts-react-express-esbuild.git
-    cd ts-react-express-esbuild
-    ```
+   npm run dev
+   ```
 
-2. **Install Dependencies**
 
-    ```sh
-    npm install
-    ```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-3. **Running in Development**
-   Start both client and server in development mode:
-    ```sh
-    npm run dev
-    ```
 
-## Directory Structure
 
-Understanding the project's structure is crucial for efficiently navigating and utilizing this boilerplate. Here's a detailed breakdown of the directory tree:
+<!-- USAGE EXAMPLES -->
+## Usage
 
-```
-dist/
-├─ server.js
-esbuild/
-├─ client.dev.mjs
-├─ server.dev.mjs
-├─ client.prod.mjs
-├─ server.prod.mjs
-node_modules/
-public/
-├─ static/
-│  ├─ bundle.js
-├─ index.html
-├─ favicon.ico
-src/
-├─ client/
-│  ├─ styles/
-│  │  ├─ app.scss
-│  ├─ App.tsx
-│  ├─ index.tsx
-│  ├─ tsconfig.json
-├─ server/
-│  ├─ server.ts
-│  ├─ tsconfig.json
-.gitignore
-nodemon.json
-package-lock.json
-package.json
-README.md
-tsconfig.json
-```
+<img src="/public/images/screenshots/detail-view.png" alt="details page screenshot" width="1000" height="500">
 
-### Top-Level Overview
+I've found it challenging to know which of my patterns I'm looking for based on file name alone, and sometimes I forget I have a really pretty pattern I haven't used in a while. I'm hoping with the addition of pictures that I can more easily find what I'm looking for, and with the featured section rotating on every load I'll be exposed to more patterns!
 
--   **`dist/`**: The output directory where your server-side TypeScript files get compiled to JavaScript.
+As this website gets deployed and there are more users, I'm also hoping we can make a positive enviornment that people can share wonderful patterns they've used and it becomes a place that knitters can find wonderful new patterns to try.
 
-    -   `server.js`: The compiled server-side entry point. **Note**: This file and the entire `dist/` directory are not tracked on GitHub as they represent compiled production code.
 
--   **`esbuild/`**: Houses configuration files for the ESBuild bundler.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-    -   `client.dev.mjs`: ESBuild configuration for client-side development.
-    -   `server.dev.mjs`: ESBuild configuration for server-side development.
-    -   `client.prod.mjs`: ESBuild configuration for client-side production.
-    -   `server.prod.mjs`: ESBuild configuration for server-side production.
 
--   **`node_modules/`**: Standard directory for all installed npm packages.
 
--   **`public/`**: Serves static files and the main `index.html` for your React application.
+<!-- ROADMAP -->
+## Roadmap
+- [x] Create the base of the site with CRUD functionality
+- [x] Add styling
+- [ ] Add search functionality
+- [ ] Allow the addition of images
+    - [ ] Add the gallery and allow submissions of finished works
 
-    -   `static/`: Contains bundled output files for the client side.
-        -   `bundle.js`: Bundled JavaScript for the client. **Note**: The bundled `bundle.js` is not tracked on GitHub as it is a dynamically generated file based on the source code.
-    -   `index.html`: The main HTML file that serves as a shell for your React app.
-    -   `favicon.ico`: The little website icon that appears in your tab/bookmarks.
 
--   **`src/`**: The core of your application's source code, both client-side and server-side.
+See the [project board](https://github.com/users/ArchangeLillith/projects/1) for a full list of intended features (and known issues).
 
-    -   `client/`: Contains all client-side React components and styles.
-        -   `styles/`: Directory for all your SCSS files.
-            -   `app.scss`: Main style file for your application.
-        -   `App.tsx`: The main React component for your application.
-        -   `index.tsx`: Client-side entry point.
-        -   `tsconfig.json`: TypeScript configuration specific to the client side.
-    -   `server/`: Houses server-side logic using Express.
-        -   `server.ts`: Entry point for the server.
-        -   `tsconfig.json`: TypeScript configuration specific to the server side.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
--   **`.gitignore`**: Lists files and directories that should not be tracked by Git. This includes the compiled outputs like those in the `dist/` directory and dynamically generated bundles like `app.js`.
 
--   **`nodemon.json`**: Configuration for Nodemon, a utility that monitors changes in your server code and automatically restarts the server.
 
--   **`package-lock.json`**: Automatically generated file that describes the exact tree that was generated in `node_modules` as a result of running `npm install`.
 
--   **`package.json`**: Lists package dependencies and contains various metadata about the project, like scripts.
 
--   **`README.md`**: This very file, offering a guide to the project.
+<!-- LICENSE -->
+## License
 
--   **`tsconfig.json`**: The root TypeScript configuration file.
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-## Building for Production
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-The scripts for production builds ensure optimized performance for deployment.
 
-1. **Building for Production**
 
-    ```sh
-    npm run build
-    ```
+<!-- CONTACT -->
+## Contact
 
-2. **Running in Production**
-    ```sh
-    npm start
-    ```
+Project Link: [https://github.com/ArchangeLillith/knitters-fren](https://github.com/ArchangeLillith/knitters-fren)
 
-## YouTube Companion Videos
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-I coded this boilerplate out across a few YouTube videos if you want the from-scratch-to-end-product building of this repo. Watch and subscribe!
-[https://youtu.be/3tEUVpyRYTg](https://youtu.be/3tEUVpyRYTg)
 
-## Why ESBuild over Webpack?
 
-Webpack has been the go-to bundler for many projects over the years. However, ESBuild brings in significant speed improvements due to its Go-based architecture. This makes the build and development processes much faster, enhancing developer experience, especially in larger projects. This boilerplate is meant to introduce developers to this efficient tool and encourage exploration beyond traditional tools.
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
 
-## Contributions
+Thank you to Elivaras who's been helping me learn version control and keeping my code clean by reviewing most of my commits! And thank you to [Covalence](https://covalence.io/) for their incredible support and amazing lectures (looking at you Luke and Andrew!)
 
-Feel free to raise issues, send pull requests, or provide feedback to improve this boilerplate. We welcome collaboration and suggestions to make this a more effective learning tool for our students and the community.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[SASS]: https://img.shields.io/badge/SASS-ff94c6?style=for-the-badge&logo=SASS&logoColor=white
+[SASS-url]: https://sass-lang.com/
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
