@@ -17,7 +17,8 @@ const Home = (props: HomeProps) => {
 		patternService.getAllPatterns().then((data) => {
 			const sortedPatterns: IPattern[] = sortPatterns(data, "date");
 			setPatterns(data);
-			setFeatured(patterns[Math.floor(Math.random() * (patterns.length - 1))]);
+			const randomNumber = getRandomInt(data.length - 1);
+			setFeatured(data[randomNumber]);
 			setMostRecent(sortedPatterns.splice(0, 3));
 		});
 
@@ -111,5 +112,9 @@ const Home = (props: HomeProps) => {
 		</Container>
 	);
 };
+
+function getRandomInt(max) {
+	return Math.floor(Math.random() * max);
+}
 
 export default Home;
