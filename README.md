@@ -40,6 +40,7 @@
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#gallery">Gallery</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -142,6 +143,17 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 ## Contact
 
 Project Link: [https://github.com/ArchangeLillith/knitters-fren](https://github.com/ArchangeLillith/knitters-fren)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- GALLERY -->
+## Gallery
+
+<img src="/public/images/screenshots/detail-view.png" alt="details page screenshot" width="1000" height="500">
+<img src="/public/images/screenshots/home-page.png" alt="details page screenshot" width="1000" height="500">
+<img src="/public/images/screenshots/404-page.png" alt="details page screenshot" width="1000" height="500">
+<img src="/public/images/screenshots/create-pattern.png" alt="details page screenshot" width="1000" height="500">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
