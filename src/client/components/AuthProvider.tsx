@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
 import authService from "../services/auth";
-import LoaderCard from "./LoaderCard";
 
 //Bro what an ugly type lol
 export const AuthContext = createContext<
@@ -36,8 +35,6 @@ const AuthProvider = (props: AuthProviderProps) => {
 			})
 			.catch(() => setAuthState({ authenticated: false, checking: false }));
 	}, []);
-
-	if (authState.checking) return <LoaderCard length={3} />;
 
 	//If your app isn't rendering, this is why. This will intercept the render and only give you what this is spitting out, so we need to tell it that it should render all it's children instead of itself. This allows us to wrap the whole app in a context and dodge having to prop drill
 	return (

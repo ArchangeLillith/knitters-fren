@@ -1,9 +1,11 @@
 import React from "react";
-import { FaFacebook } from "react-icons/fa";
-import { FaTwitter } from "react-icons/fa";
-import { FaGooglePlus } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa";
-import { FaYoutube } from "react-icons/fa";
+import {
+	FaTwitter,
+	FaFacebook,
+	FaGooglePlus,
+	FaInstagram,
+	FaYoutube,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 interface FooterProps {}
@@ -40,31 +42,36 @@ const Footer = (props: FooterProps) => {
 				<div>
 					<ul
 						className="mb-2 mb-lg-0 justify-content-center align-items-center bg-muted d-flex list-unstyled"
-						style={{ fontFamily: "-moz-initial" }}
+						style={{ fontFamily: "Garamond, serif", fontSize: "18px" }}
 					>
 						<li className="nav-item mx-2" style={{ color: "#e78686" }}>
-							<Link to="/" className="primary-link" aria-current="page">
+							<Link
+								to="/"
+								className="primary-link  text-decoration-none"
+								aria-current="page"
+							>
 								Home
 							</Link>
 						</li>
 						<li className="nav-item mx-2" style={{ color: "#e78686" }}>
-							<Link to="/patterns" className="primary-link">
+							<Link
+								to="/patterns"
+								className="primary-link text-decoration-none"
+							>
 								Patterns
 							</Link>
 						</li>
 						<li className="nav-item mx-2" style={{ color: "#e78686" }}>
-							<Link to="/patterns/new" className="primary-link">
+							<Link
+								to="/patterns/new"
+								className="primary-link text-decoration-none"
+							>
 								Create a Pattern
 							</Link>
 						</li>
 						<li className="nav-item mx-2" style={{ color: "#e78686" }}>
-							<Link to="/gallery" className="primary-link">
+							<Link to="/gallery" className="primary-link text-decoration-none">
 								Gallery
-							</Link>
-						</li>
-						<li className="nav-item mx-2" style={{ color: "#e78686" }}>
-							<Link to="/donate" className="primary-link">
-								Donate
 							</Link>
 						</li>
 					</ul>
