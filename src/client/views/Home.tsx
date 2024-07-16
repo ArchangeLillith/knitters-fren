@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Container from "../components/Container";
 import PatternCard from "../components/PatternCard";
-import { IPattern, dummyPattern } from "../utils/types";
+import { IPattern } from "../utils/types";
 import patternService from "../services/pattern";
 import { sortPatterns } from "../utils/patterns.utils";
+import MostRecentRow from "../components/MostRecent";
 
 interface HomeProps {}
 
@@ -25,7 +26,6 @@ const Home = (props: HomeProps) => {
 		// .catch((e) => Toast.error(e.message));
 	}, []);
 
-	const tags: string[] = ["DPNS", "Circular", "US 7", "Fingering Weight"];
 	return (
 		<Container>
 			<div className="d-flex flex-row justify-content-around my-4">
@@ -62,32 +62,11 @@ const Home = (props: HomeProps) => {
 					<div>
 						<h4 className="text-soft">Most Recent Patterns</h4>
 					</div>
-					{mostRecent.map((pattern, index) => (
-						<>
-							<div
-								className="d-flex flex-row justify-content-around"
-								key={`feature-wrapper-${index}`}
-							>
-								<Link
-									to={`/patterns/${pattern.id}`}
-									key={`feature-title-${index}`}
-									className="lead w-50"
-								>
-									{pattern.title}
-								</Link>
-								<p className="small w-75" key={`feature-para-${index}`}>
-									{pattern.content.slice(0, 150)}...
-								</p>
-								{tags.map((tag) => (
-									<div key={`${tag}-${index}`} className="pl-1">
-										<div key={`${tag}`} className="btn btn-sm btn-primary m-1">
-											{tag}
-										</div>
-									</div>
-								))}
-							</div>
-							<hr />
-						</>
+					{mostRecent.map((pattern) => (
+						<MostRecentRow
+							pattern={pattern}
+							key={`${pattern.id}-most-recent-row`}
+						/>
 					))}
 				</div>
 			</div>
@@ -113,7 +92,7 @@ const Home = (props: HomeProps) => {
 	);
 };
 
-function getRandomInt(max) {
+function getRandomInt(max: number) {
 	return Math.floor(Math.random() * max);
 }
 

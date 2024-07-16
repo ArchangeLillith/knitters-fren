@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { IPattern } from "../utils/types";
+import { IPattern, Tags, Tag } from "../utils/types";
 import patternService from "../services/pattern";
+import patternTags from "../services/pattern-tags";
 
 interface PatternDetailsProps {}
 
@@ -12,16 +13,19 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const [pattern, setPattern] = React.useState<IPattern>();
-	const tags: string[] = ["DPNS", "Circular", "US 7", "Fingering Weight"];
+	const [tags, setTags] = React.useState<Tags>();
 
 	useEffect(() => {
-		//ZACH how do I get around this typing issue
+		//This error here is my linter throwing a fit, it shouldn't be undefined cause you can't get here without a param in your url
 		patternService.getOnePattern(id).then((data) => setPattern(data));
+		patternTags
+			.allByPatternId(parseInt(id))
+			.then((tagsReturned) => setTags(tagsReturned));
 		// .catch((e) => Toast.error(e.message));
 	}, []);
 
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
+		//This is a one stop shop for deletion of a pattern. It calls the delete function for the joint table as well, because you can't delete the pattern without first cleaing the joint table anyways
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns"))
@@ -48,14 +52,19 @@ const PatternDetails = (props: PatternDetailsProps) => {
 						</small>
 						<br />
 						<div className="d-flex mb-3">
-							{tags.map((tag) => (
-								<div
-									className="btn btn-primary m-2"
-									key={`tag-${tag}-${pattern.author_id}-${pattern.title}`}
-								>
-									{tag}
+							{tags && (
+								<div>
+									{tags.map((tag) => (
+										<div
+											className="btn btn-primary m-2"
+											key={`tag-${tag}-${pattern.author_id}-${pattern.title}`}
+										>
+											{tag.name}
+										</div>
+									))}
 								</div>
-							))}
+							)}
+
 							<div className="ms-auto">
 								<button
 									onClick={handleDelete}

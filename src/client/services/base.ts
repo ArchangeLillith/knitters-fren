@@ -50,10 +50,11 @@ const json = async (url: string, method: string, body: objectType = {}) => {
 const get = (url: string) => {
 	return json(url, "GET");
 };
-const post = (url: string, payload: { [key: string]: string }) => {
+const post = (url: string, payload: objectType) => {
+	console.log(`PAYLOAD`, payload);
 	return json(url, "POST", payload);
 };
-const put = (url: string, payload: { [key: string]: string }) => {
+const put = (url: string, payload: objectType) => {
 	return json(url, "PUT", payload);
 };
 const destroy = (url: string) => {
