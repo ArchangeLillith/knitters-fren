@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import patternService from "../services/pattern";
@@ -26,7 +26,7 @@ const AddPattern = (props: AddPatternProps) => {
 	};
 
 	useEffect(() => {
-		fetch("http://localhost:3000/api/tags")
+		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setTags(data))
 			.catch((e) => console.log("[fetch erorr]", e));
