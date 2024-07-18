@@ -9,7 +9,7 @@ const allByPatternId = async (id: number) => {
 	}
 };
 
-//Fix this type
+
 const getOneTag = async (id: string) => {
 	try {
 		const Pattern = await baseService.get(`/api/patterns/${id}`);
@@ -46,7 +46,7 @@ const updateTag = async (
 	payload: { content: string; author_id: string }
 ) => {
 	try {
-		await baseService.put(`/api/patterns/${id}`, payload);
+		await baseService.put(`/api/pattern_tags/${id}`, payload);
 	} catch (error) {}
 };
 

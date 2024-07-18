@@ -34,3 +34,22 @@ router.post("/:id", async (req, res, next) => {
 		next(error);
 	}
 });
+
+//PUT /api/pattern_tags/id
+router.post("/:id", async (req, res, next) => {
+	//Input to insert: values: { pattern_id: number; tag_id: number }[]
+	const pattern_id = parseInt(req.params.id);
+	const idArray = JSON.parse(req.body.tagList).tag_id;
+	const values: [number, number][] = [];
+	for (let i = 0; i < idArray.length; i++) {
+		const tag_id: number = parseInt(idArray[i]);
+		values.push([pattern_id, tag_id]);
+	}
+	console.log(`VALUES`, values);
+	try {
+		const result = await db.pattern_tags.insert(values);
+		res.json(result);
+	} catch (error) {
+		next(error);
+	}
+});

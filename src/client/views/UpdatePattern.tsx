@@ -16,9 +16,9 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 	const [pattern, setPattern] = useState<IPattern | undefined>();
 	const [title, setTitle] = useState<string>();
 	const [content, setContent] = useState<string>();
-	const [prevTags, setPrevTags] = useState<Tags>();
 	const [allTags, setAllTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 	const [selectedTags, setSelectedTags] = useState<Tags>([]);
+	const [prevTags, setPrevTags] = useState<Tags>([]);
 
 	//Yeah this errors but I think it's the linter throwing a fit, it does work
 	const handleChanges = (
@@ -38,16 +38,19 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 			setPattern(pattern);
 			setContent(pattern.content);
 		});
+
 		//Get all the tags
-		fetch("http://localhost:3000/api/tags")
+		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setAllTags(data))
 			.catch((e) => console.log("[fetch erorr]", e));
+
 		//Get the tags that are already selected for this pattern
 		patternTags
 			.allByPatternId(parseInt(id))
 			.then((data) => {
 				setSelectedTags(data);
+				setPrevTags(data);
 			})
 			.catch((e) => console.log("[fetch error]", e));
 	}, [id, state]);
@@ -69,10 +72,23 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 			tags: selectedTags,
 		};
 		console.log(`DTO`, patternDTO);
-		// noteService
-		// 	.updatePattern(id, patternDTO)
-		// 	.then(() => navigate(`/patterns/${id}`));
-		// .catch(e => Toast.error(e.message));
+		noteService.updatePattern(id, patternDTO);
+
+		let patternId = parseInt(pattern.id);
+		let finalArray: any = [];
+		for (let i = 0; i < selectedTags.length; i++) {
+			if (!prevTags.includes(selectedTags[i])) {
+				finalArray.push(selectedTags[i].id);
+			}
+		}
+
+		const selectedTagsDTO: { pattern_id: number; tag_id: number[] } = {
+			pattern_id: patternId,
+			tag_id: finalArray,
+		};
+		patternTags
+			.addNewTag(selectedTagsDTO)
+			.then(() => navigate(`/patterns/${id}`));
 	};
 
 	const tagToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
