@@ -35,6 +35,7 @@ if (isProduction) {
 	app.use(express.static("public"));
 }
 
+//Tells our backeng that these are frontend routes and to instead throw the request to the frontend
 app.get(
 	[
 		"/login",
@@ -47,10 +48,6 @@ app.get(
 	],
 	(req, res) => res.sendFile(path.join(__dirname, "../public/index.html"))
 );
-// all our api routes
-app.get("/api/hello", (req, res) => {
-	res.json({ message: "World" });
-});
 
 // 404 fallback for client side routing
 if (isProduction) {

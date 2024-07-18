@@ -25,6 +25,7 @@ const addNewPattern = async (payload: {
 	author_id: string;
 }) => {
 	try {
+		console.log(`Adding pattern....`);
 		const response = await baseService.post("/api/patterns", payload);
 		return response.pattern;
 	} catch (error) {
@@ -51,9 +52,9 @@ const updatePattern = async (
 };
 
 export default {
-	getAllPatterns: getAllPatterns,
-	getOnePattern: getOnePattern,
-	addNewPattern: addNewPattern,
-	destroyPattern: destroyPattern,
-	updatePattern: updatePattern,
+	getAllPatterns,
+	getOnePattern,
+	addNewPattern,
+	destroyPattern,
+	updatePattern,
 };

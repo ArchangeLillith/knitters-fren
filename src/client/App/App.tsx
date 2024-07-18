@@ -2,7 +2,7 @@
 //server on 3000
 //frontend on 8000
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "../components/AuthProvider";
 import { ToastContainer } from "react-toastify";
@@ -13,14 +13,7 @@ import Footer from "../components/Footer";
 interface AppProps {}
 
 const App = (props: AppProps) => {
-	// const [data, setData] = useState("");
 
-	// useEffect(() => {
-	// 	fetch("http://localhost:3000/api/hello")
-	// 		.then((res) => res.json())
-	// 		.then((data) => setData(data.message))
-	// 		.catch((e) => console.log("[fetch erorr]", e));
-	// }, []);
 
 	return (
 		<BrowserRouter>
@@ -34,8 +27,7 @@ const App = (props: AppProps) => {
 				<NavBar />
 				<AppRoutes />
 			</AuthProvider>
-				<Footer />
-			{/* Refactor add footer */}
+			<Footer />
 		</BrowserRouter>
 	);
 };

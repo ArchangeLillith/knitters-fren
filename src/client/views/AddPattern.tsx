@@ -1,8 +1,10 @@
-import React from "react";
+import React, { ChangeEventHandler, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import patternService from "../services/pattern";
 import Container from "../components/Container";
+import { Tag, Tags } from "../utils/types";
+import patternTags from "../services/pattern-tags";
 
 interface AddPatternProps {}
 
@@ -10,20 +12,63 @@ const AddPattern = (props: AddPatternProps) => {
 	const navigate = useNavigate();
 	const [title, setTitle] = React.useState<string>("");
 	const [content, setContent] = React.useState<string>("");
+	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
+	let chosenTags: { id: number; name?: string }[] = [];
 
-	const newPatternDTO: { title: string; content: string; author_id: string } = {
+	const newPatternDTO: {
+		title: string;
+		content: string;
+		author_id: string;
+	} = {
 		title,
 		content,
 		author_id: "1",
 	};
 
-	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+	useEffect(() => {
+		fetch("http://localhost:3000/api/tags")
+			.then((res) => res.json())
+			.then((data) => setTags(data))
+			.catch((e) => console.log("[fetch erorr]", e));
+	}, []);
+
+	const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
+		const newArr: number[] = [];
+		let patternId: number;
 		console.log(`DTO`, newPatternDTO);
-		patternService
-			.addNewPattern(newPatternDTO)
-			.then((pattern) => navigate(`/patterns/${pattern.id}`));
-		// .catch(e => Toast.error(e.message));
+		for (let i = 0; i < chosenTags.length; i++) {
+			newArr.push(chosenTags[i].id);
+		}
+		try {
+			const pattern = await patternService.addNewPattern(newPatternDTO);
+			patternId = pattern.id;
+			if (patternId) {
+				patternTags
+					.addNewTag({ pattern_id: patternId, tag_id: newArr })
+					.then(() => navigate(`/patterns/${patternId}`));
+			}
+		} catch (error) {
+			// .catch(e => Toast.error(e.message));
+		}
+	};
+
+	const tagToggle = (e: any) => {
+		//Make the dat the correct format
+		const tagToToggle = { id: e.target.id, name: e.target.name };
+		//Find the index, -1 if it doesn't exist
+		const tagIndex = chosenTags.findIndex(
+			(tag) => tag.name === tagToToggle.name
+		);
+
+		//If the searched for tag doesn't exist...
+		if (tagIndex === -1) {
+			//Splice it, because we have the index
+			chosenTags.splice(tagIndex, 1);
+		} else {
+			//Otherwise add it to the chosenTags array
+			chosenTags.push(tagToToggle);
+		}
 	};
 
 	return (
@@ -54,7 +99,7 @@ const AddPattern = (props: AddPatternProps) => {
 				<div className="form-group flex-grow-1 d-flex flex-column pt-4">
 					<label htmlFor="pattern-details">Pattern Details</label>
 					<textarea
-						rows={15}
+						rows={10}
 						name="body"
 						value={content}
 						onChange={(e) => setContent(e.target.value)}
@@ -62,6 +107,38 @@ const AddPattern = (props: AddPatternProps) => {
 						className="form-control-lg form-control flex-grow-1 bg-soft"
 						id="pattern-details"
 					></textarea>
+				</div>
+				<div>
+					<label htmlFor="tags">Choose your tags:</label>
+					<div
+						id="tags-div"
+						className="form-control-lg form-control flex-grow-1 bg-soft"
+					>
+						{tags.map((tag: Tag) => (
+							<div
+								className="m-1 d-inline-flex btn-group"
+								role="group"
+								aria-label="Basic checkbox toggle button group"
+								key={`${tag.id}-container`}
+							>
+								<input
+									type="checkbox"
+									className="btn-check"
+									id={`${tag.id}`}
+									autoComplete="off"
+									onChange={tagToggle}
+									name={tag.name}
+									key={tag.name}
+								/>
+								<label
+									className="btn btn-outline-primary"
+									htmlFor={`${tag.id}`}
+								>
+									{tag.name}
+								</label>
+							</div>
+						))}
+					</div>
 				</div>
 				<div className="d-flex justify-content-center align-items-center">
 					<button

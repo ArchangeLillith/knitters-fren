@@ -60,13 +60,13 @@ router.delete("/:id", async (req, res, next) => {
 		const id = req.params.id;
 		console.log(`ID`, id);
 		const author_id = req.body.author_id;
-		await db.pattern_tags.deleteTagsByPatternId(id);
-		//Refactor if here there's an error it shouldn't continue
+		await db.pattern_tags.destroyAllBasedOnPatternId(id);
 		const result = await db.patterns.destroy(id);
+		console.log(`RESUKT`, result);
+		//Refactor if here there's an error it shouldn't continue
 		if (!result.affectedRows) {
-			throw new Error("Pattern does not exist");
+			throw new Error("No affected rows");
 		}
-
 		res.json({ id, message: "Pattern deleted succesfully" });
 	} catch (error) {
 		next(error);

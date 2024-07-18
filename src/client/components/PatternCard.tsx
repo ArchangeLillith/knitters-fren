@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { IPattern } from "../utils/types";
+import { IPattern, Tag, Tags } from "../utils/types";
 import dayjs from "dayjs";
+import patternTags from "../services/pattern-tags";
 
 interface PatternCardProps {
 	pattern: IPattern;
@@ -9,12 +10,15 @@ interface PatternCardProps {
 	tags?: boolean;
 }
 
-const PatternCard = ({
-	pattern,
-	featured = false,
-	tags = true,
-}: PatternCardProps) => {
-	const tagsArray: string[] = ["DPNS", "Circular", "US 7", "Fingering Weight"];
+const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
+	const [tags, setTags] = React.useState<Tags>();
+
+	useEffect(() => {
+		patternTags
+			.allByPatternId(parseInt(pattern.id))
+			.then((tagsReturned) => setTags(tagsReturned));
+		// .catch(() => setAuthState({ authenticated: false, checking: false }));
+	}, []);
 	return (
 		<>
 			{pattern && (
@@ -54,9 +58,9 @@ const PatternCard = ({
 						<br />
 						{tags && (
 							<div>
-								{tagsArray.map((tag) => (
-									<div className="btn btn-primary m-2" key={tag}>
-										{tag}
+								{tags.map((tag: Tag) => (
+									<div className="btn btn-primary m-2" key={tag.name}>
+										{tag.name}
 									</div>
 								))}
 							</div>
