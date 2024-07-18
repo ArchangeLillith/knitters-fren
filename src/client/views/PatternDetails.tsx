@@ -57,7 +57,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 									{tags.map((tag) => (
 										<div
 											className="btn btn-primary m-2"
-											key={`tag-${tag}-${pattern.author_id}-${pattern.title}`}
+											key={`tag-${tag.name}-${pattern.author_id}-${pattern.title}`}
 										>
 											{tag.name}
 										</div>

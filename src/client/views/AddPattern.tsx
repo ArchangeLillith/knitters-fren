@@ -54,18 +54,20 @@ const AddPattern = (props: AddPatternProps) => {
 	};
 
 	const tagToggle = (e: any) => {
+		//Make the dat the correct format
 		const tagToToggle = { id: e.target.id, name: e.target.name };
-		if (chosenTags.length === 0) {
-			chosenTags.push(tagToToggle);
+		//Find the index, -1 if it doesn't exist
+		const tagIndex = chosenTags.findIndex(
+			(tag) => tag.name === tagToToggle.name
+		);
+
+		//If the searched for tag doesn't exist...
+		if (tagIndex === -1) {
+			//Splice it, because we have the index
+			chosenTags.splice(tagIndex, 1);
 		} else {
-			const found = chosenTags.find(
-				(chosenTags) => chosenTags.name === tagToToggle.name
-			);
-			if (found) {
-				chosenTags = chosenTags.filter((tag) => tag.name !== tagToToggle.name);
-			} else {
-				chosenTags.push(tagToToggle);
-			}
+			//Otherwise add it to the chosenTags array
+			chosenTags.push(tagToToggle);
 		}
 	};
 
