@@ -13,8 +13,6 @@ import Footer from "../components/Footer";
 interface AppProps {}
 
 const App = (props: AppProps) => {
-
-
 	return (
 		<BrowserRouter>
 			<AuthProvider>
