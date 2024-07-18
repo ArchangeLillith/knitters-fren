@@ -9,7 +9,6 @@ const allByPatternId = async (id: number) => {
 	}
 };
 
-
 const getOneTag = async (id: string) => {
 	try {
 		const Pattern = await baseService.get(`/api/patterns/${id}`);
@@ -19,7 +18,10 @@ const getOneTag = async (id: string) => {
 	}
 };
 
-const addNewTag = async (payload: { pattern_id: number; tag_id: number[] }) => {
+const addNewTag = async (payload: {
+	pattern_id: number;
+	tag_ids: number[];
+}) => {
 	try {
 		console.log(`Adding tags to joint table....`);
 		const response = await baseService.post(

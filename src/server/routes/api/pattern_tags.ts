@@ -18,9 +18,9 @@ router.get("/:id", async (req, res, next) => {
 
 //POST /api/pattern_tags/id
 router.post("/:id", async (req, res, next) => {
-	//Input to insert: values: { pattern_id: number; tag_id: number }[]
+	//Input to insert: values: { pattern_id: number; tag_ids: number[] }
 	const pattern_id = parseInt(req.params.id);
-	const idArray = JSON.parse(req.body.tagList).tag_id;
+	const idArray = JSON.parse(req.body.tagList).tag_ids;
 	const values: [number, number][] = [];
 	for (let i = 0; i < idArray.length; i++) {
 		const tag_id: number = parseInt(idArray[i]);
@@ -28,10 +28,15 @@ router.post("/:id", async (req, res, next) => {
 	}
 	console.log(`VALUES`, values);
 	try {
-		const result = await db.pattern_tags.insert(values);
-		res.json(result);
-	} catch (error) {
-		next(error);
+		await db.pattern_tags.destroyAllBasedOnPatternId(pattern_id);
+		try {
+			const result = await db.pattern_tags.insert(values);
+			res.json(result);
+		} catch (insertError) {
+			next(insertError);
+		}
+	} catch (destroyError) {
+		next(destroyError);
 	}
 });
 

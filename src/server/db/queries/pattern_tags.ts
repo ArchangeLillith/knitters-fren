@@ -42,7 +42,7 @@ const insert = (values: [number, number][]) =>
 	);
 
 //DELETE all tags from one pattern
-const destroyAllBasedOnPatternId = (id: string) =>
+const destroyAllBasedOnPatternId = (id: number) =>
 	Query("DELETE FROM pattern_tags WHERE pattern_id = ?", [id]);
 
 //PATCH a tag

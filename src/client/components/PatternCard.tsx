@@ -59,7 +59,10 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 						{tags && (
 							<div>
 								{tags.map((tag: Tag) => (
-									<div className="btn btn-primary m-2" key={tag.name}>
+									<div
+										className="btn btn-primary m-2"
+										key={`${tag.name}-inner-div-${pattern.author_id}-${pattern.id}`}
+									>
 										{tag.name}
 									</div>
 								))}

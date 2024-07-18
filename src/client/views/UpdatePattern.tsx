@@ -4,15 +4,14 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import patternService from "../services/pattern";
 import { IPattern, Tag, Tags } from "../utils/types";
 import patternTags from "../services/pattern-tags";
+import { parse } from "path";
 
 interface UpdatePatternProps {}
 
 const UpdatePattern = (props: UpdatePatternProps) => {
-	let firstTime = true;
 	const { id } = useParams();
 	const { state } = useLocation();
 	const navigate = useNavigate();
-	let finalTags: Tags = [];
 	const [pattern, setPattern] = useState<IPattern | undefined>();
 	const [title, setTitle] = useState<string>();
 	const [content, setContent] = useState<string>();
@@ -50,7 +49,6 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 			.allByPatternId(parseInt(id))
 			.then((data) => {
 				setSelectedTags(data);
-				setPrevTags(data);
 			})
 			.catch((e) => console.log("[fetch error]", e));
 	}, [id, state]);
@@ -64,30 +62,21 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 			content: string;
 			author_id: string;
 			id: string;
-			tags: Tags;
 		} = {
 			content: pattern.content,
 			author_id: pattern.author_id,
 			id,
-			tags: selectedTags,
 		};
 		console.log(`DTO`, patternDTO);
 		noteService.updatePattern(id, patternDTO);
 
-		let patternId = parseInt(pattern.id);
-		let finalArray: any = [];
-		for (let i = 0; i < selectedTags.length; i++) {
-			if (!prevTags.includes(selectedTags[i])) {
-				finalArray.push(selectedTags[i].id);
-			}
+		const pattern_id: number = parseInt(pattern.id);
+		const tag_ids: number[] = [];
+		for (let tag of selectedTags) {
+			tag_ids.push(tag.id);
 		}
-
-		const selectedTagsDTO: { pattern_id: number; tag_id: number[] } = {
-			pattern_id: patternId,
-			tag_id: finalArray,
-		};
 		patternTags
-			.addNewTag(selectedTagsDTO)
+			.addNewTag({ pattern_id, tag_ids })
 			.then(() => navigate(`/patterns/${id}`));
 	};
 
@@ -109,6 +98,8 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 				<div className="display-6">Edit your Pattern:</div>
 				<div className="form-group flex-grow-1 d-flex flex-column">
 					<textarea
+						required={true}
+						maxLength={100}
 						value={pattern?.title}
 						onChange={(e) => setTitle(e.target.value)}
 						className="w-100 rounded my-2 py-1 text-large"
@@ -120,6 +111,8 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 					className="w-100 rounded my-4"
 					rows={15}
 					name="content"
+					required={true}
+					maxLength={10000}
 					value={pattern?.content}
 					onChange={handleChanges}
 				></textarea>
