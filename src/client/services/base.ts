@@ -1,8 +1,9 @@
 import storage from "../utils/storage";
 import { objectType } from "../utils/types";
 
+//This screws your prod, make sure you have the prod info here lol
 const makeFetch = (url: string, info: any) => {
-	return fetch("http://localhost:3000" + url, info);
+	return fetch(process.env.ROOT_URL + url, info);
 };
 
 //Method here is PUT, POST, GET not like a class method
