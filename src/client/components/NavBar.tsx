@@ -1,9 +1,23 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-interface NavBarProps {}
+interface NavBarProps {
+	searchText: string;
+	//Zach what is the right typing?
+	setSearchText;
+	searchType: string;
+	setSearchType;
+}
 
 const NavBar = (props: NavBarProps) => {
+	const navigate = useNavigate();
+	const updateSearchText = (e: React.ChangeEvent<HTMLInputElement>) => {
+		navigate("./search");
+		props.setSearchText(e.target.value);
+	};
+	const updateSearchType = (e: any) => {
+		props.setSearchType(e.target.value);
+	};
 	return (
 		<nav
 			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
@@ -13,7 +27,10 @@ const NavBar = (props: NavBarProps) => {
 				<Link
 					className="navbar-brand "
 					to="/"
-					style={{ fontFamily: "'Brush Script MT', cursive", fontSize: "30px" }}
+					style={{
+						fontFamily: "'Brush Script MT', cursive",
+						fontSize: "30px",
+					}}
 				>
 					Knitters Fren
 				</Link>
@@ -57,7 +74,21 @@ const NavBar = (props: NavBarProps) => {
 							type="search"
 							placeholder="Search"
 							aria-label="Search"
+							value={props.searchText}
+							onChange={updateSearchText}
 						/>
+						<select
+							className="form-select mx-2 w-50"
+							aria-label="Default select example"
+							onChange={updateSearchType}
+						>
+							<option defaultValue="title" value="title">
+								Title
+							</option>
+							<option value="tag">Tag</option>
+							<option value="author">Author</option>
+							<option value="content">Content</option>
+						</select>
 						<button className="btn btn-primary text-white" type="submit">
 							Search
 						</button>

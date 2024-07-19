@@ -14,6 +14,7 @@ export interface IPatternTable {
 	content?: string;
 	created_at?: string;
 }
+
 export interface IAuthorsTable {
 	id?: string;
 	email?: string;
