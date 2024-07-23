@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import patternService from "../services/pattern";
 import { IPattern, Tag, Tags } from "../utils/types";
 import patternTags from "../services/pattern-tags";
-import { parse } from "path";
 
 interface UpdatePatternProps {}
 

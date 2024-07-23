@@ -1,7 +1,6 @@
 //This file governs how the routes work. We can wrap different routes in private tags here if we want to ensure they're kept safe
-
 import React, { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from "../views/Home";
 import Patterns from "../views/Patterns";
 import PatternDetails from "../views/PatternDetails";
@@ -16,18 +15,36 @@ import NavBar from "../components/NavBar";
 interface AppProps {}
 
 const App = (props: AppProps) => {
+	const navigate = useNavigate();
 	const [searchResults, setSearchResults] = useState([]);
 	const [searchText, setSearchText] = useState<string>("");
-	const [searchType, setSearchType] = useState<string>("title");
+	const [searchType, setSearchType] = useState<string>("tag");
 
 	useEffect(() => {
-		if (searchText) {
-			search
-				.getByTitle(searchText)
-				.then((response) => response.json())
-				.then((data) => {
-					setSearchResults(data.results);
-				});
+		if (searchText !== "") {
+			switch (searchType) {
+				case "title": {
+					search
+						.findByTitle(searchText)
+						.then((response) => response.json())
+						.then((data) => {
+							setSearchResults(data.results);
+						});
+					break;
+				}
+				case "tag": {
+					navigate(`/search/`);
+					break;
+				}
+				case "author": {
+					console.log(`tag search`);
+					break;
+				}
+				case "content": {
+					console.log(`tag search`);
+					break;
+				}
+			}
 		}
 	}, [searchText, searchType]);
 

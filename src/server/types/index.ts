@@ -6,6 +6,8 @@ declare global {
 		}
 	}
 }
+export type Tags = Tag[];
+export type Tag = { id: number; name: string };
 
 export interface IPatternTable {
 	id?: string;

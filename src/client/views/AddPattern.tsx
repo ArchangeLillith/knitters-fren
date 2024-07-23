@@ -45,7 +45,7 @@ const AddPattern = (props: AddPatternProps) => {
 			patternId = pattern.id;
 			if (patternId) {
 				patternTags
-					.addNewTag({ pattern_id: patternId, tag_id: newArr })
+					.addNewTag({ pattern_id: patternId, tag_ids: newArr })
 					.then(() => navigate(`/patterns/${patternId}`));
 			}
 		} catch (error) {

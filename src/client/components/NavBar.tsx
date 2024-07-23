@@ -4,9 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 interface NavBarProps {
 	searchText: string;
 	//Zach what is the right typing?
-	setSearchText;
+	setSearchText: React.Dispatch<React.SetStateAction<string>>;
 	searchType: string;
-	setSearchType;
+	setSearchType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const NavBar = (props: NavBarProps) => {
@@ -17,6 +17,9 @@ const NavBar = (props: NavBarProps) => {
 	};
 	const updateSearchType = (e: any) => {
 		props.setSearchType(e.target.value);
+		if (props.searchType === "tag") {
+			navigate("./search/");
+		}
 	};
 	return (
 		<nav

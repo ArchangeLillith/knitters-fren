@@ -1,19 +1,21 @@
+import { objectType } from "../utils/types";
 import baseService from "./base";
 
-const getByTitle = async (searchString: string) => {
+const findByTitle = async (searchString: string) => {
 	try {
-		const patterns = await baseService.get(`/api/search/title${searchString}`);
+		const patterns = await baseService.get(`/api/search/title/${searchString}`);
 		return patterns;
 	} catch (error) {
 		throw error;
 	}
 };
 
-//Fix this type
-const getOnePattern = async (id: string) => {
+const findByTags = async (payload: objectType[]) => {
 	try {
-		const Pattern = await baseService.get(`/api/patterns/${id}`);
-		return Pattern;
+		const response = await baseService.post(`/api/search/tag`, {
+			tagList: JSON.stringify(payload),
+		});
+		return response;
 	} catch (error) {
 		throw error;
 	}
@@ -51,8 +53,8 @@ const updatePattern = async (
 };
 
 export default {
-	getByTitle,
-	getOnePattern,
+	findByTitle,
+	findByTags,
 	addNewPattern,
 	destroyPattern,
 	updatePattern,
