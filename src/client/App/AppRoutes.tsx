@@ -16,59 +16,14 @@ interface AppProps {}
 
 const App = (props: AppProps) => {
 	const navigate = useNavigate();
-	const [searchResults, setSearchResults] = useState([]);
-	const [searchText, setSearchText] = useState<string>("");
-	const [searchType, setSearchType] = useState<string>("tag");
-
-	useEffect(() => {
-		if (searchText !== "") {
-			switch (searchType) {
-				case "title": {
-					search
-						.findByTitle(searchText)
-						.then((response) => response.json())
-						.then((data) => {
-							setSearchResults(data.results);
-						});
-					break;
-				}
-				case "tag": {
-					navigate(`/search/`);
-					break;
-				}
-				case "author": {
-					console.log(`tag search`);
-					break;
-				}
-				case "content": {
-					console.log(`tag search`);
-					break;
-				}
-			}
-		}
-	}, [searchText, searchType]);
 
 	return (
 		<div>
-			<NavBar
-				searchText={searchText}
-				setSearchText={setSearchText}
-				searchType={searchType}
-				setSearchType={setSearchType}
-			/>
+			<NavBar />
 			<Routes>
 				<Route path="/" element={<Home />}></Route>
 				<Route path="/patterns" element={<Patterns />}></Route>
-				<Route
-					path="/search"
-					element={
-						<SearchView
-							patterns={searchResults}
-							keyword={searchText}
-							searchType={searchType}
-						/>
-					}
-				></Route>
+				<Route path="/search" element={<SearchView />}></Route>
 				<Route path="/patterns/:id" element={<PatternDetails />}></Route>
 				<Route path="/patterns/new" element={<AddPattern />}></Route>
 				<Route path="/patterns/admin" element={<AdminPanel />}></Route>

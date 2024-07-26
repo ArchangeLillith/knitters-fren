@@ -9,14 +9,14 @@ const findByTitle = (title: string) =>
 	);
 
 //Tags query
-const findByTags = (tags: number) =>
+const findByTags = (tag: number) =>
 	Query<IPatternTable[]>(
 		`SELECT p.id, p.author_id, p.title, p.content, p.created_at
 		FROM patterns p
 			JOIN pattern_tags pt ON p.id = pt.pattern_id
 			JOIN tags t ON pt.tag_id = t.id
 	WHERE t.id = ?;`,
-		[tags]
+		[tag]
 	);
 
 // const one = (id: string) =>

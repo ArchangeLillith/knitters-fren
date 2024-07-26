@@ -2,10 +2,16 @@ import { objectType } from "../utils/types";
 import baseService from "./base";
 
 const findByTitle = async (searchString: string) => {
+	console.log(`Search string`, searchString);
 	try {
-		const patterns = await baseService.get(`/api/search/title/${searchString}`);
-		return patterns;
+		const response = await baseService.get(`/api/search/title/${searchString}`);
+		console.log(`response`, response);
+		if (response.result.length === 0) {
+			return response.status(204).json({ message: "No patterns found" });
+		}
+		return response.result;
 	} catch (error) {
+		console.error("Error fetching patterns:", error);
 		throw error;
 	}
 };
@@ -15,6 +21,10 @@ const findByTags = async (payload: objectType[]) => {
 		const response = await baseService.post(`/api/search/tag`, {
 			tagList: JSON.stringify(payload),
 		});
+		console.log(`response`, response);
+		if (response.finalPatterns.length === 0) {
+			return response.status(204).json({ message: "No patterns found" });
+		}
 		return response;
 	} catch (error) {
 		throw error;

@@ -1,26 +1,11 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface NavBarProps {
-	searchText: string;
-	//Zach what is the right typing?
-	setSearchText: React.Dispatch<React.SetStateAction<string>>;
-	searchType: string;
-	setSearchType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const NavBar = (props: NavBarProps) => {
-	const navigate = useNavigate();
-	const updateSearchText = (e: React.ChangeEvent<HTMLInputElement>) => {
-		navigate("./search");
-		props.setSearchText(e.target.value);
-	};
-	const updateSearchType = (e: any) => {
-		props.setSearchType(e.target.value);
-		if (props.searchType === "tag") {
-			navigate("./search/");
-		}
-	};
+
 	return (
 		<nav
 			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
@@ -70,32 +55,12 @@ const NavBar = (props: NavBarProps) => {
 								Gallery
 							</Link>
 						</li>
+						<li className="nav-item">
+							<Link to="/search" className="nav-link">
+								Search
+							</Link>
+						</li>
 					</ul>
-					<form className="d-flex">
-						<input
-							className="form-control me-2"
-							type="search"
-							placeholder="Search"
-							aria-label="Search"
-							value={props.searchText}
-							onChange={updateSearchText}
-						/>
-						<select
-							className="form-select mx-2 w-50"
-							aria-label="Default select example"
-							onChange={updateSearchType}
-						>
-							<option defaultValue="title" value="title">
-								Title
-							</option>
-							<option value="tag">Tag</option>
-							<option value="author">Author</option>
-							<option value="content">Content</option>
-						</select>
-						<button className="btn btn-primary text-white" type="submit">
-							Search
-						</button>
-					</form>
 				</div>
 			</div>
 		</nav>
