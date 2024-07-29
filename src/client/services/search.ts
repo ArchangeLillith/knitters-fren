@@ -6,8 +6,8 @@ const findByTitle = async (searchString: string) => {
 	try {
 		const response = await baseService.get(`/api/search/title/${searchString}`);
 		console.log(`response`, response);
-		if (response.result.length === 0) {
-			return response.status(204).json({ message: "No patterns found" });
+		if (response === undefined) {
+			return undefined;
 		}
 		return response.result;
 	} catch (error) {

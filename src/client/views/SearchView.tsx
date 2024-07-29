@@ -60,19 +60,32 @@ function SearchView(props: SearchViewProps) {
 	};
 
 	/**
-	 * Takes the found patterns from any search and formats the results into React friendly card components
-	 * @returns an array of PatternCards, a React component
+	 * Takes the found patterns from any search and formats the results into React friendly card components / a no patterns found message
+	 * @returns an array of PatternCards, a React component or a message saying there are no patterns with those params
 	 */
-	const resultsHtml = foundPatterns.map((pattern, i) => {
-		return (
-			<div
-				className="border rounded w-100 bg-soft m-2 border-primary"
-				key={`${pattern.id}-container`}
-			>
+	const resultsHtml = foundPatterns ? (
+		foundPatterns.map((pattern, i) => (
+			<div className="border rounded w-100 bg-soft m-2 border-primary">
 				<PatternCard pattern={pattern} key={`patternCard-${i}`} />
 			</div>
-		);
-	});
+		))
+	) : (
+		<div className="d-flex flex-column m-auto align-items-center">
+			<p className="lead">
+				Sorry, Nanachi looked through the archives and no patterns exist within
+				those parameters. Please search for something else, she'd be happy to
+				assist!
+			</p>
+			<img
+				src="/images/book-nanachi.png"
+				alt="book-nanachi"
+				style={{
+					width: "300px",
+				}}
+				className=""
+			/>
+		</div>
+	);
 
 	/**
 	 * @param e - The tag button that is clicked
@@ -98,18 +111,18 @@ function SearchView(props: SearchViewProps) {
 
 	return (
 		<div>
-			<div>
-				<h3>You are searching by</h3>
+			<div className="p-4 m-3 d-flex">
+				<h3 className="text-soft">You are searching by:</h3>
 				<form className="d-flex">
 					<select
-						className="form-select mx-2 w-50"
+						className="form-select mx-2 w-auto"
 						aria-label="Default select example"
 						onChange={updateSearchType}
 					>
-						<option defaultValue="title" value="title">
-							Title
+						<option defaultValue="tag" value="tag">
+							Tag
 						</option>
-						<option value="tag">Tag</option>
+						<option value="title">Title</option>
 						<option value="author">Author</option>
 						<option value="content">Content</option>
 					</select>
@@ -117,9 +130,9 @@ function SearchView(props: SearchViewProps) {
 			</div>
 			{searchType === "tag" ? (
 				<>
-					<h1 className="text-center mt-5 text-primary">
+					<h2 className="text-center mt-5 text-primary">
 						Select tags to search by!
-					</h1>
+					</h2>
 					<div className="w-75 mx-auto mt-5">
 						{tags.map((tag: Tag) => (
 							<div
@@ -151,30 +164,28 @@ function SearchView(props: SearchViewProps) {
 							Search!
 						</button>
 					</div>
-					{noResults && (
-						<div className="d-flex flex-column">
-							<p>Sorry, no patterns exist with those tags</p>
-							<img
-								src="/images/teacup-nanachi.png"
-								alt="teacup-nanachi"
-								style={{
-									width: "250px",
-								}}
-							/>
-						</div>
-					)}
+
 					<div className="w-75 d-flex flex-column mx-auto mt-5">
 						{resultsHtml}
 					</div>
 				</>
 			) : (
 				<>
-					<h1>What do you want to find?</h1>
-					<input
-						onChange={(e) => setQueryString(e.target.value)}
-						value={queryString}
-						placeholder="Start typing!"
-					></input>
+					<form>
+						<div className="d-flex flex-column justify-content-center align-items-center form-group">
+							<h1 className="text-center mt-5 text-primary">
+								What do you want to find?
+							</h1>
+							<input
+								className="w-25 form-control"
+								//We need to prevent default here too
+								onChange={(e) => setQueryString(e.target.value)}
+								value={queryString}
+								placeholder="Start typing!"
+							></input>
+						</div>
+					</form>
+
 					<div className="w-75 d-flex flex-column mx-auto mt-5">
 						{resultsHtml}
 					</div>
