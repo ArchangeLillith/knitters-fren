@@ -6,8 +6,6 @@ declare global {
 		}
 	}
 }
-export type Tags = Tag[];
-export type Tag = { id: number; name: string };
 
 export interface IPatternTable {
 	id?: string;
@@ -16,7 +14,6 @@ export interface IPatternTable {
 	content?: string;
 	created_at?: string;
 }
-
 export interface IAuthorsTable {
 	id?: string;
 	email?: string;

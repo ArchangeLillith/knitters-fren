@@ -6,6 +6,7 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "../components/AuthProvider";
 import { ToastContainer } from "react-toastify";
+import NavBar from "../components/NavBar";
 import AppRoutes from "./AppRoutes";
 import Footer from "../components/Footer";
 
@@ -21,6 +22,7 @@ const App = (props: AppProps) => {
 					draggable={false}
 					pauseOnHover={true}
 				/>
+				<NavBar />
 				<AppRoutes />
 			</AuthProvider>
 			<Footer />

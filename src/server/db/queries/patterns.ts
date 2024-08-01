@@ -48,7 +48,7 @@ const insert = (values: IPatternTable) =>
 	Query("INSERT INTO patterns SET ?", [values]);
 
 //DELETE a pattern
-const destroy = (id: number) =>
+const destroy = (id: string) =>
 	Query("DELETE FROM patterns WHERE id = ?", [id]);
 
 //PATCH a pattern
