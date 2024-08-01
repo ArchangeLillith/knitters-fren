@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-interface NavBarProps {}
+interface NavBarProps {
+}
 
 const NavBar = (props: NavBarProps) => {
+
 	return (
 		<nav
 			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
@@ -13,7 +15,10 @@ const NavBar = (props: NavBarProps) => {
 				<Link
 					className="navbar-brand "
 					to="/"
-					style={{ fontFamily: "'Brush Script MT', cursive", fontSize: "30px" }}
+					style={{
+						fontFamily: "'Brush Script MT', cursive",
+						fontSize: "30px",
+					}}
 				>
 					Knitters Fren
 				</Link>
@@ -50,32 +55,16 @@ const NavBar = (props: NavBarProps) => {
 								Gallery
 							</Link>
 						</li>
+						<li className="nav-item">
+							<Link to="/search" className="nav-link">
+								Search
+							</Link>
+						</li>
 					</ul>
-					<form className="d-flex">
-						<input
-							className="form-control me-2"
-							type="search"
-							placeholder="Search"
-							aria-label="Search"
-						/>
-						<button className="btn btn-primary text-white" type="submit">
-							Search
-						</button>
-					</form>
 				</div>
 			</div>
 		</nav>
 	);
 };
 
-{
-	/*
-			<Link className="px-7 py-3" to="/patterns/new">
-				Add Pattern
-			</Link>
-			<Link className="px-7 py-3" to="/admin">
-				Admin Panel(?)
-			</Link>
-		</div> */
-}
 export default NavBar;
