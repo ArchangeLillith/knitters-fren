@@ -52,8 +52,7 @@ router.post("/tag", async (req, res, next) => {
 			return db.search.findByTags(id);
 		});
 
-		//Zach what type is this??
-		let result;
+		let result: IPatternTable[][];
 		try {
 			result = await Promise.all(patternPromises);
 		} catch (err) {

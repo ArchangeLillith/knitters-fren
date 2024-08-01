@@ -42,3 +42,10 @@ $link-hover-color: darken($link-color, 20%);
 .bg-navbar{
   background-color: $navbar;
 }
+
+.btn-muted{
+  background-color: $muted;
+}
+.btn-soft{
+  background-color: $soft;
+}

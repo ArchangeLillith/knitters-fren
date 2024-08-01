@@ -11,8 +11,8 @@ const AddPattern = (props: AddPatternProps) => {
 	const navigate = useNavigate();
 	const [title, setTitle] = React.useState<string>("");
 	const [content, setContent] = React.useState<string>("");
+	const [selectedTags, setSelectedTags] = useState<Tags>([]);
 	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
-	let chosenTags: { id: number; name?: string }[] = [];
 
 	const newPatternDTO: {
 		title: string;
@@ -23,7 +23,9 @@ const AddPattern = (props: AddPatternProps) => {
 		content,
 		author_id: "1",
 	};
-
+	/**
+	 * Grabs all the tags on load to display to the user when creating their pattern so they can choose which ones they'd like to add
+	 */
 	useEffect(() => {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
@@ -31,13 +33,18 @@ const AddPattern = (props: AddPatternProps) => {
 			.catch((e) => console.log("[fetch erorr]", e));
 	}, []);
 
-	const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
+	/**
+	 * @param submitButton - The submit button clicked to fire the submission of the pattern
+	 * Formats the data of the tags into what the backend expects and throws a request to the server to add the pattern to the patterns table. If this succeeds, then the tags are added associated with the newly created patternId into the pattern_tags table. Then the page nevigates to the pattern that was just created.
+	 */
+	const handleSubmit = async (
+		submitButton: React.MouseEvent<HTMLButtonElement>
+	) => {
+		submitButton.preventDefault();
 		const newArr: number[] = [];
 		let patternId: number;
-		console.log(`DTO`, newPatternDTO);
-		for (let i = 0; i < chosenTags.length; i++) {
-			newArr.push(chosenTags[i].id);
+		for (let i = 0; i < selectedTags.length; i++) {
+			newArr.push(selectedTags[i].id);
 		}
 		try {
 			const pattern = await patternService.addNewPattern(newPatternDTO);
@@ -48,26 +55,25 @@ const AddPattern = (props: AddPatternProps) => {
 					.then(() => navigate(`/patterns/${patternId}`));
 			}
 		} catch (error) {
+			//Refactor this should show errors that impact the user, like the title being a dupe
 			// .catch(e => Toast.error(e.message));
 		}
 	};
 
-	const tagToggle = (e: any) => {
-		//Make the dat the correct format
-		const tagToToggle = { id: e.target.id, name: e.target.name };
-		//Find the index, -1 if it doesn't exist
-		const tagIndex = chosenTags.findIndex(
-			(tag) => tag.name === tagToToggle.name
-		);
-
-		//If the searched for tag doesn't exist...
-		if (tagIndex === -1) {
-			//Splice it, because we have the index
-			chosenTags.splice(tagIndex, 1);
-		} else {
-			//Otherwise add it to the chosenTags array
-			chosenTags.push(tagToToggle);
-		}
+	/**
+	 * @param tagButton - the specific button clicked with all the context such as the value of the tag desired
+	 * Takes in the tag and either adds it to the state of checked tags or filters it out if it exists within that array already
+	 */
+	const tagToggle = (tagButton: React.ChangeEvent<HTMLInputElement>) => {
+		const { id, name } = tagButton.target;
+		setSelectedTags((prevTags) => {
+			const tagIndex = prevTags.findIndex((tag) => tag.name === name);
+			if (tagIndex === -1) {
+				return [...prevTags, { id: parseInt(id), name }];
+			} else {
+				return prevTags.filter((tag) => tag.name !== name);
+			}
+		});
 	};
 
 	return (

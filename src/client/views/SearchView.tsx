@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react";
 import PatternCard from "../components/PatternCard";
 import { IPattern, Tag, Tags, objectType } from "../utils/types";
 import search from "../services/search";
+import SearchCard from "../components/SearchCard";
 
 interface SearchViewProps {}
 
 function SearchView(props: SearchViewProps) {
-	let chosenTags: objectType[] = [];
+	const [chosenTags, setChosenTags] = useState<objectType[]>([]);
 	const [foundPatterns, setFoundPatterns] = React.useState<IPattern[]>([]);
 	const [searchType, setSearchType] = useState<string>("tag");
+	const [tagsActive, setTagsActive] = useState<boolean>(false);
 	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 	const [queryString, setQueryString] = useState<string>("");
+	const [handleChecks, setHandleChecks] = useState<boolean>(false);
 
 	const updateSearchType = (e: any) => {
 		setFoundPatterns([]);
@@ -64,12 +67,10 @@ function SearchView(props: SearchViewProps) {
 			.then((res) => res.json())
 			.then((data) => setTags(data))
 			.catch((e) => console.log("[fetch erorr]", e));
-	}, []);
+	}, [handleChecks]);
 
 	/**
-	 * @param e - The submit button rendered with the tags on the tag view of the search
-	 * Currently only handles the search after the submit button is clicked on the tags, lking to perhaps refactor this so the trigger is debounced and acts similar to the text search trigger. Doesn't make sense to have two different triggers imo
-	 *
+	 * Currently only handles the search after the submit button is clicked on the tags, looking to perhaps refactor this so the trigger is debounced and acts similar to the text search trigger. Doesn't make sense to have two different triggers imo
 	 */
 	const searchTrigger = () => {
 		search
@@ -84,7 +85,7 @@ function SearchView(props: SearchViewProps) {
 	const resultsHtml = foundPatterns ? (
 		foundPatterns.map((pattern, i) => (
 			<div className="border rounded w-100 bg-soft m-2 border-primary">
-				<PatternCard pattern={pattern} key={`patternCard-${i}`} />
+				<SearchCard pattern={pattern} key={`patternCard-${i}`} />
 			</div>
 		))
 	) : (
@@ -105,29 +106,36 @@ function SearchView(props: SearchViewProps) {
 		</div>
 	);
 
+	const clearSelection = () => {
+		setChosenTags([]);
+		setHandleChecks((prev) => !prev);
+		setTagsActive(false);
+	};
 	/**
 	 * @param tagButton - The tag button that is clicked
 	 * Toggles the selected tags as the user clicks them 'on' and 'off', modifying the chosenTags state
 	 */
+	//Refactor what type is this???
 	const tagToggle = (tagButton: any) => {
-		//Make the dat the correct format
 		const tagToToggle = {
 			id: tagButton.target.id,
 			name: tagButton.target.name,
 		};
-		//Find the index, -1 if it doesn't exist
-		const tagIndex = chosenTags.findIndex(
+
+		const updatedChosenTags = [...chosenTags];
+		const tagIndex = updatedChosenTags.findIndex(
 			(tag) => tag.name === tagToToggle.name
 		);
 
-		//If the searched for tag doesn't exist...
 		if (tagIndex !== -1) {
-			//Splice it, because we have the index
-			chosenTags.splice(tagIndex, 1);
+			console.log(`Removed`);
+			updatedChosenTags.splice(tagIndex, 1);
 		} else {
-			//Otherwise add it to the chosenTags array
-			chosenTags.push(tagToToggle);
+			console.log(`Added`);
+			updatedChosenTags.push(tagToToggle);
 		}
+		setChosenTags(updatedChosenTags);
+		setTagsActive(updatedChosenTags.length > 0);
 	};
 
 	return (
@@ -181,8 +189,28 @@ function SearchView(props: SearchViewProps) {
 						))}
 					</div>
 					<div className="d-flex center">
-						<button className="btn btn-primary mx-auto" onClick={searchTrigger}>
+						<button
+							className={`${
+								tagsActive ? "visible" : "invisible"
+							}  btn btn-soft small p-2 m-2 text-muted border border-primary btn btn-primary mx-auto`}
+						>
+							Strict Comparison
+						</button>
+						<button
+							className={`${
+								tagsActive ? "visible" : "invisible"
+							}  btn btn-soft small p-2 m-2 text-muted border border-primary btn btn-primary mx-auto`}
+							onClick={searchTrigger}
+						>
 							Search!
+						</button>
+						<button
+							onClick={clearSelection}
+							className={`${
+								tagsActive ? "visible" : "invisible"
+							}  btn btn-soft small p-2 m-2 text-muted border border-primary btn btn-primary mx-auto`}
+						>
+							Clear Tags
 						</button>
 					</div>
 					<div className="w-75 d-flex flex-column mx-auto mt-5">
