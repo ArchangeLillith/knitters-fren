@@ -1,6 +1,11 @@
 import React from "react";
-import { FaHeart } from "react-icons/fa";
-import { PiYarnLight } from "react-icons/pi";
+import {
+	FaTwitter,
+	FaFacebook,
+	FaGooglePlus,
+	FaInstagram,
+	FaYoutube,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 interface FooterProps {}
@@ -14,6 +19,26 @@ const Footer = (props: FooterProps) => {
 				alt="Footer Image"
 			/>
 			<div className="text-center mx-5 w-100">
+				<div className="justify-content-center align-items-center d-flex px-0">
+					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
+						<FaYoutube />
+					</div>
+					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
+						<FaInstagram />
+					</div>
+					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
+						<FaFacebook />
+					</div>
+					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
+						<FaGooglePlus />
+					</div>
+					<div
+						className="rounded-circle px-1 my-1"
+						style={{ color: "#b45b5b" }}
+					>
+						<FaTwitter />
+					</div>
+				</div>
 				<div>
 					<ul
 						className="mb-2 mb-lg-0 justify-content-center align-items-center bg-muted d-flex list-unstyled"
@@ -52,29 +77,8 @@ const Footer = (props: FooterProps) => {
 					</ul>
 				</div>
 				<span className="muted text-white small fw-lighter fst-italic">
-					Developed by Aria Walford for Covalence labs and personal use, images
-					from{" "}
-					<a href="https://www.pixiv.net/en/users/13981606/illustrations">
-						this creator
-					</a>
+					Developed by Aria Walford for Covalence labs and personal use
 				</span>
-				<div className="justify-content-center align-items-center d-flex px-0">
-					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
-						<FaHeart />
-					</div>
-					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
-						<PiYarnLight />
-					</div>
-					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
-						<FaHeart />
-					</div>
-					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
-						<PiYarnLight />
-					</div>
-					<div className="rounded-circle px-1" style={{ color: "#b45b5b" }}>
-						<FaHeart />
-					</div>
-				</div>
 			</div>
 			<div style={{ color: "transparent" }} className="select-none">
 				styling div and sentance

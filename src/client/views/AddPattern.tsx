@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Container from "../components/Container";
+
 import patternService from "../services/pattern";
-import patternTags from "../services/pattern-tags";
+import Container from "../components/Container";
 import { Tag, Tags } from "../utils/types";
+import patternTags from "../services/pattern-tags";
 
 interface AddPatternProps {}
 
@@ -44,7 +45,7 @@ const AddPattern = (props: AddPatternProps) => {
 			patternId = pattern.id;
 			if (patternId) {
 				patternTags
-					.addNewTags({ pattern_id: patternId, tag_ids: newArr })
+					.addNewTag({ pattern_id: patternId, tag_id: newArr })
 					.then(() => navigate(`/patterns/${patternId}`));
 			}
 		} catch (error) {
@@ -88,8 +89,6 @@ const AddPattern = (props: AddPatternProps) => {
 					<label htmlFor="pattern-title">Pattern Title</label>
 					<input
 						type="text"
-						required={true}
-						maxLength={100}
 						onChange={(e) => setTitle(e.target.value)}
 						value={title}
 						className="form-control bg-soft"
@@ -100,15 +99,13 @@ const AddPattern = (props: AddPatternProps) => {
 				<div className="form-group flex-grow-1 d-flex flex-column pt-4">
 					<label htmlFor="pattern-details">Pattern Details</label>
 					<textarea
-						required={true}
-						maxLength={10000}
-						onChange={(e) => setContent(e.target.value)}
+						rows={10}
+						name="body"
 						value={content}
+						onChange={(e) => setContent(e.target.value)}
+						placeholder="Start writing..."
 						className="form-control-lg form-control flex-grow-1 bg-soft"
 						id="pattern-details"
-						placeholder="Start writing..."
-						name="body"
-						rows={10}
 					></textarea>
 				</div>
 				<div>

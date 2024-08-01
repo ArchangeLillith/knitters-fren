@@ -9,6 +9,7 @@ const allByPatternId = async (id: number) => {
 	}
 };
 
+//Fix this type
 const getOneTag = async (id: string) => {
 	try {
 		const Pattern = await baseService.get(`/api/patterns/${id}`);
@@ -18,10 +19,7 @@ const getOneTag = async (id: string) => {
 	}
 };
 
-const addNewTags = async (payload: {
-	pattern_id: number;
-	tag_ids: number[];
-}) => {
+const addNewTag = async (payload: { pattern_id: number; tag_id: number[] }) => {
 	try {
 		console.log(`Adding tags to joint table....`);
 		const response = await baseService.post(
@@ -48,14 +46,14 @@ const updateTag = async (
 	payload: { content: string; author_id: string }
 ) => {
 	try {
-		await baseService.put(`/api/pattern_tags/${id}`, payload);
+		await baseService.put(`/api/patterns/${id}`, payload);
 	} catch (error) {}
 };
 
 export default {
 	allByPatternId,
 	getOneTag,
-	addNewTags,
+	addNewTag,
 	destroyAllTagsBasedOnId,
 	updateTag,
 };

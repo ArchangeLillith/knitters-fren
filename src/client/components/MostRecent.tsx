@@ -13,7 +13,8 @@ const MostRecentRow = ({ pattern }: PatternCardProps) => {
 	useEffect(() => {
 		patternTags
 			.allByPatternId(parseInt(pattern.id))
-			.then((tagsReturned) => setTags(tagsReturned));
+			.then((tagsReturned) => console.log(tagsReturned));
+		// .catch(() => setAuthState({ authenticated: false, checking: false }));
 	}, []);
 
 	return (
@@ -39,10 +40,7 @@ const MostRecentRow = ({ pattern }: PatternCardProps) => {
 			{tags && (
 				<div>
 					{tags.map((tag: Tag) => (
-						<div
-							className="btn btn-primary m-2"
-							key={`${tag.name}-inner-div-${pattern.author_id}-${pattern.id}`}
-						>
+						<div className="btn btn-primary m-2" key={tag.name}>
 							{tag.name}
 						</div>
 					))}
