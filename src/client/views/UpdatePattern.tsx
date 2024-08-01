@@ -75,7 +75,7 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 			tag_ids.push(tag.id);
 		}
 		patternTags
-			.addNewTag({ pattern_id, tag_ids })
+			.addNewTags({ pattern_id, tag_ids })
 			.then(() => navigate(`/patterns/${id}`));
 	};
 

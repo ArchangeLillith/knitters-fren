@@ -18,7 +18,7 @@ const getOneTag = async (id: string) => {
 	}
 };
 
-const addNewTag = async (payload: {
+const addNewTags = async (payload: {
 	pattern_id: number;
 	tag_ids: number[];
 }) => {
@@ -55,7 +55,7 @@ const updateTag = async (
 export default {
 	allByPatternId,
 	getOneTag,
-	addNewTag,
+	addNewTags,
 	destroyAllTagsBasedOnId,
 	updateTag,
 };

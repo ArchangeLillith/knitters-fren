@@ -8,6 +8,12 @@ const findByTitle = (title: string) =>
 		[title]
 	);
 
+const findByContent = (content: string) =>
+	Query<IPatternTable[]>(
+		`SELECT * FROM patterns WHERE content LIKE concat('%', ?, '%')`,
+		[content]
+	);
+
 //Tags query
 const findByTags = (tag: number) =>
 	Query<IPatternTable[]>(
@@ -30,4 +36,4 @@ const findByTags = (tag: number) =>
 // 	Query("INSERT INTO authors SET ?", values);
 // };
 
-export default { findByTitle, findByTags };
+export default { findByTitle, findByTags, findByContent };

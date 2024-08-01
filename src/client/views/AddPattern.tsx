@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import patternService from "../services/pattern";
 import Container from "../components/Container";
-import { Tag, Tags } from "../utils/types";
+import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
+import { Tag, Tags } from "../utils/types";
 
 interface AddPatternProps {}
 
@@ -45,7 +44,7 @@ const AddPattern = (props: AddPatternProps) => {
 			patternId = pattern.id;
 			if (patternId) {
 				patternTags
-					.addNewTag({ pattern_id: patternId, tag_ids: newArr })
+					.addNewTags({ pattern_id: patternId, tag_ids: newArr })
 					.then(() => navigate(`/patterns/${patternId}`));
 			}
 		} catch (error) {

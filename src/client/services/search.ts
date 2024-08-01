@@ -16,6 +16,23 @@ const findByTitle = async (searchString: string) => {
 	}
 };
 
+const findByContent = async (searchString: string) => {
+	console.log(`Search string`, searchString);
+	try {
+		const response = await baseService.get(
+			`/api/search/content/${searchString}`
+		);
+		console.log(`response`, response);
+		if (response === undefined) {
+			return undefined;
+		}
+		return response.result;
+	} catch (error) {
+		console.error("Error fetching patterns:", error);
+		throw error;
+	}
+};
+
 const findByTags = async (payload: objectType[]) => {
 	try {
 		const response = await baseService.post(`/api/search/tag`, {
@@ -68,4 +85,5 @@ export default {
 	addNewPattern,
 	destroyPattern,
 	updatePattern,
+	findByContent,
 };

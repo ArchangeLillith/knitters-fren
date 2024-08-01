@@ -20,6 +20,21 @@ router.get("/title/:queryString", async (req, res, next) => {
 	}
 });
 
+//GET /api/search/content/:param
+router.get("/content/:queryString", async (req, res, next) => {
+	let contentString = req.params.queryString;
+	try {
+		const result = await db.search.findByContent(contentString);
+		if (result.length === 0) {
+			return res.status(404).json({ message: "No patterns found" });
+		}
+		res.json({ result, message: "Patterns found" });
+	} catch (error) {
+		console.error("Error fetching patterns:", error);
+		next(error);
+	}
+});
+
 //POST /api/search/tag
 router.post("/tag", async (req, res, next) => {
 	try {
@@ -49,12 +64,12 @@ router.post("/tag", async (req, res, next) => {
 			return res.json(404).json({ message: "No patterns found" });
 		}
 
-		console.log(`RESULT`, result);
-		const uniquePatterns = new Set();
+		//This Array could be a Set, however it's less performant because there's no deletion from the list. This is because the deletion of something from a set is faster than deletion from an array, but only if the data list is cresting 100k items. A small project like this website isn't effected by such a small change, however, and either could be used here with negligible affects on the user experiance, however array was chosen as it's a better use case even if the data gets very large seeing as there will be no deletion from this specific list.
+		const uniquePatterns = new Array();
 		result.forEach((patterns: IPatternTable[]) => {
 			patterns.forEach((pattern: IPatternTable) => {
-				if (!uniquePatterns.has(pattern.id)) {
-					uniquePatterns.add(pattern.id);
+				if (!uniquePatterns.includes(pattern.id)) {
+					uniquePatterns.includes(pattern.id);
 					finalPatterns.push(pattern);
 				}
 			});

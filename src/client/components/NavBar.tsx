@@ -67,14 +67,4 @@ const NavBar = (props: NavBarProps) => {
 	);
 };
 
-{
-	/*
-			<Link className="px-7 py-3" to="/patterns/new">
-				Add Pattern
-			</Link>
-			<Link className="px-7 py-3" to="/admin">
-				Admin Panel(?)
-			</Link>
-		</div> */
-}
 export default NavBar;

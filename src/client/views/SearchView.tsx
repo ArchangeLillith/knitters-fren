@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PatternCard from "../components/PatternCard";
 import { IPattern, Tag, Tags, objectType } from "../utils/types";
-import { useNavigate } from "react-router-dom";
 import search from "../services/search";
 
 interface SearchViewProps {}
@@ -11,10 +10,11 @@ function SearchView(props: SearchViewProps) {
 	const [foundPatterns, setFoundPatterns] = React.useState<IPattern[]>([]);
 	const [searchType, setSearchType] = useState<string>("tag");
 	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
-	const [noResults, setNoResults] = useState<boolean>(false);
 	const [queryString, setQueryString] = useState<string>("");
 
 	const updateSearchType = (e: any) => {
+		setFoundPatterns([]);
+		setQueryString("");
 		setSearchType(e.target.value);
 	};
 
@@ -28,10 +28,28 @@ function SearchView(props: SearchViewProps) {
 			if (queryString === "") {
 				return;
 			}
-			//Trigger the fetch here on a delay
-			search
-				.findByTitle(queryString)
-				.then((patterns) => setFoundPatterns(patterns));
+
+			switch (searchType) {
+				case "tag":
+					//Refactor we should maybe debounce the button? Does this make sense from a user standpoitn?
+					return;
+				//Isn't needed till author refactor
+				// case "author":
+				// 	search
+				// 		.findByTitle(queryString)
+				// 		.then((patterns) => setFoundPatterns(patterns));
+				// 	break;
+				case "content":
+					search
+						.findByContent(queryString)
+						.then((patterns) => setFoundPatterns(patterns));
+					break;
+				case "title":
+					search
+						.findByTitle(queryString)
+						.then((patterns) => setFoundPatterns(patterns));
+					break;
+			}
 		}, 2000);
 		//Cleanup function that runs after a re-render and removes the old setTimeout
 		return () => clearTimeout(getData);
@@ -53,7 +71,7 @@ function SearchView(props: SearchViewProps) {
 	 * Currently only handles the search after the submit button is clicked on the tags, lking to perhaps refactor this so the trigger is debounced and acts similar to the text search trigger. Doesn't make sense to have two different triggers imo
 	 *
 	 */
-	const searchTrigger = (e: any) => {
+	const searchTrigger = () => {
 		search
 			.findByTags(chosenTags)
 			.then((res) => setFoundPatterns(res.finalPatterns));
@@ -88,12 +106,15 @@ function SearchView(props: SearchViewProps) {
 	);
 
 	/**
-	 * @param e - The tag button that is clicked
+	 * @param tagButton - The tag button that is clicked
 	 * Toggles the selected tags as the user clicks them 'on' and 'off', modifying the chosenTags state
 	 */
-	const tagToggle = (e: any) => {
+	const tagToggle = (tagButton: any) => {
 		//Make the dat the correct format
-		const tagToToggle = { id: e.target.id, name: e.target.name };
+		const tagToToggle = {
+			id: tagButton.target.id,
+			name: tagButton.target.name,
+		};
 		//Find the index, -1 if it doesn't exist
 		const tagIndex = chosenTags.findIndex(
 			(tag) => tag.name === tagToToggle.name
@@ -123,7 +144,7 @@ function SearchView(props: SearchViewProps) {
 							Tag
 						</option>
 						<option value="title">Title</option>
-						<option value="author">Author</option>
+						{/* <option value="author">Author</option> */}
 						<option value="content">Content</option>
 					</select>
 				</form>
@@ -164,7 +185,6 @@ function SearchView(props: SearchViewProps) {
 							Search!
 						</button>
 					</div>
-
 					<div className="w-75 d-flex flex-column mx-auto mt-5">
 						{resultsHtml}
 					</div>
@@ -185,7 +205,6 @@ function SearchView(props: SearchViewProps) {
 							></input>
 						</div>
 					</form>
-
 					<div className="w-75 d-flex flex-column mx-auto mt-5">
 						{resultsHtml}
 					</div>
