@@ -12,7 +12,12 @@
 		"lib": ["ES2017"],
 		"types": ["node", "express"],
 		//Shows where it can find our custom typings/interfaces
-		"typeRoots": ["./src/server/types"]
+		"typeRoots": [
+			"./node_modules/@types",
+			"../node_modules/@types",
+			"../../node_modules/@types",
+			"./src/server/types"
+		]
 	},
 	"include": ["."]
 }

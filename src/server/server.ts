@@ -45,6 +45,8 @@ app.get(
 		"/patterns/:id",
 		"/patterns/new",
 		"/patterns/:id/update",
+		"/search",
+		"/search/*",
 	],
 	(req, res) => res.sendFile(path.join(__dirname, "../public/index.html"))
 );
