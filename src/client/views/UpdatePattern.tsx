@@ -8,17 +8,15 @@ import patternTags from "../services/pattern-tags";
 interface UpdatePatternProps {}
 
 const UpdatePattern = (props: UpdatePatternProps) => {
-	let firstTime = true;
 	const { id } = useParams();
 	const { state } = useLocation();
 	const navigate = useNavigate();
-	let finalTags: Tags = [];
 	const [pattern, setPattern] = useState<IPattern | undefined>();
 	const [title, setTitle] = useState<string>();
 	const [content, setContent] = useState<string>();
-	const [prevTags, setPrevTags] = useState<Tags>();
 	const [allTags, setAllTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 	const [selectedTags, setSelectedTags] = useState<Tags>([]);
+	const [prevTags, setPrevTags] = useState<Tags>([]);
 
 	//Yeah this errors but I think it's the linter throwing a fit, it does work
 	const handleChanges = (
@@ -38,11 +36,13 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 			setPattern(pattern);
 			setContent(pattern.content);
 		});
+
 		//Get all the tags
-		fetch("http://localhost:3000/api/tags")
+		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setAllTags(data))
 			.catch((e) => console.log("[fetch erorr]", e));
+
 		//Get the tags that are already selected for this pattern
 		patternTags
 			.allByPatternId(parseInt(id))
@@ -61,18 +61,22 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 			content: string;
 			author_id: string;
 			id: string;
-			tags: Tags;
 		} = {
 			content: pattern.content,
 			author_id: pattern.author_id,
 			id,
-			tags: selectedTags,
 		};
 		console.log(`DTO`, patternDTO);
-		// noteService
-		// 	.updatePattern(id, patternDTO)
-		// 	.then(() => navigate(`/patterns/${id}`));
-		// .catch(e => Toast.error(e.message));
+		noteService.updatePattern(id, patternDTO);
+
+		const pattern_id: number = parseInt(pattern.id);
+		const tag_ids: number[] = [];
+		for (let tag of selectedTags) {
+			tag_ids.push(tag.id);
+		}
+		patternTags
+			.addNewTags({ pattern_id, tag_ids })
+			.then(() => navigate(`/patterns/${id}`));
 	};
 
 	const tagToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,6 +97,8 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 				<div className="display-6">Edit your Pattern:</div>
 				<div className="form-group flex-grow-1 d-flex flex-column">
 					<textarea
+						required={true}
+						maxLength={100}
 						value={pattern?.title}
 						onChange={(e) => setTitle(e.target.value)}
 						className="w-100 rounded my-2 py-1 text-large"
@@ -104,6 +110,8 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 					className="w-100 rounded my-4"
 					rows={15}
 					name="content"
+					required={true}
+					maxLength={10000}
 					value={pattern?.content}
 					onChange={handleChanges}
 				></textarea>

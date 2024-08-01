@@ -57,8 +57,7 @@ router.post("/", async (req, res, next) => {
 //DELETE api/patterns/:id
 router.delete("/:id", async (req, res, next) => {
 	try {
-		const id = req.params.id;
-		console.log(`ID`, id);
+		const id = parseInt(req.params.id);
 		const author_id = req.body.author_id;
 		await db.pattern_tags.destroyAllBasedOnPatternId(id);
 		const result = await db.patterns.destroy(id);

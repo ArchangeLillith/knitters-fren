@@ -31,20 +31,6 @@ FROM
 		[id]
 	);
 
-const oneByTitle = (title: string) =>
-	Query<(IPatternTable & IAuthorsTable)[]>(
-		`
-SELECT 
-  patterns.*,
-  authors.name 
-FROM 
-  patterns 
-      JOIN 
-			authors ON authors.id = patterns.author_id
-  WHERE patterns.title = ?;`,
-		[title]
-	);
-
 //POST the original tags to the pattern
 const insert = (values: [number, number][]) =>
 	Query(
@@ -56,19 +42,15 @@ const insert = (values: [number, number][]) =>
 	);
 
 //DELETE all tags from one pattern
-const destroyAllBasedOnPatternId = (id: string) =>
+const destroyAllBasedOnPatternId = (id: number) =>
 	Query("DELETE FROM pattern_tags WHERE pattern_id = ?", [id]);
 
-//PATCH a pattern
-const update = (patternDTO: {
-	author_id: string;
-	content: string;
-	id: string;
-}) =>
-	Query("UPDATE patterns SET content = ? WHERE id = ? AND author_id = ?", [
-		patternDTO.content,
-		patternDTO.id,
-		patternDTO.author_id,
+//PATCH a tag
+//This will only be used by the admin side, there's no reason for people to have access to this
+const update = (values: { name: string; id: number }) =>
+	Query("UPDATE patter_tags SET content = ? WHERE id = ?", [
+		values.name,
+		values.id,
 	]);
 
 export default {
@@ -77,5 +59,4 @@ export default {
 	insert,
 	destroyAllBasedOnPatternId,
 	update,
-	oneByTitle,
 };
