@@ -80,4 +80,36 @@ router.post("/tag", async (req, res, next) => {
 	}
 });
 
+//POST /api/search/tag/strict
+router.post("/tag/strict", async (req, res, next) => {
+	try {
+		let finalPatterns: IPatternTable[] = [];
+		let tags: Tags;
+
+		try {
+			tags = JSON.parse(req.body.tagList);
+		} catch (err) {
+			return res.status(400).json({ message: "Invalid JSON format" });
+		}
+		const idArray: number[] = tags.map((tag: Tag) => tag.id);
+
+		const patternPromises = db.search.findByTagsStrict(idArray);
+
+		try {
+			finalPatterns = await patternPromises;
+		} catch (err) {
+			return res.status(500).json({ message: "Database error" });
+		}
+
+		if (finalPatterns.length === 0) {
+			return res.json(404).json({ message: "No patterns found" });
+		}
+
+		res.json({ finalPatterns, message: "Patterns found~" });
+	} catch (err) {
+		console.log(`ERROR`, err);
+		next(err);
+	}
+});
+
 export default router;

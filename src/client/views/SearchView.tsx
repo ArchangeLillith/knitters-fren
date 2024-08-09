@@ -64,24 +64,29 @@ function SearchView(props: SearchViewProps) {
 	 * Calls to get all the tags when this page is first loaded to populate the tag list for users to interact with
 	 */
 	useEffect(() => {
+		findAllTags();
+	}, []);
+
+	const findAllTags = () => {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setTags(data))
 			.catch((e) => console.log("[fetch erorr]", e));
-	}, [handleChecks]);
-
+	};
 	/**
 	 * Currently only handles the search after the submit button is clicked on the tags, looking to perhaps refactor this so the trigger is debounced and acts similar to the text search trigger. Doesn't make sense to have two different triggers imo
 	 */
 	const searchTrigger = () => {
-		if(strictComparison){
+		setFoundPatterns([]);
+		if (strictComparison) {
 			search
-			.findByTagsStrict(chosenTags)
-			.then((res) => setFoundPatterns(res.finalPatterns));
-		}else{
-		search
-			.findByTags(chosenTags)
-			.then((res) => setFoundPatterns(res.finalPatterns));}
+				.findByTagsStrict(chosenTags)
+				.then((res) => setFoundPatterns(res.finalPatterns));
+		} else {
+			search
+				.findByTags(chosenTags)
+				.then((res) => setFoundPatterns(res.finalPatterns));
+		}
 	};
 
 	/**
@@ -119,11 +124,17 @@ function SearchView(props: SearchViewProps) {
 		</div>
 	);
 
+	/**
+	 * This handles the tags being cleared by the reset button. There's a bit of  flicker because the tags are being wiped and re-fetched, which will need to be adressed. The issue that's handling is that the buttons don't uncheck when the reset button is pressed, even if the active tags array is wiped. Perhaps we can use a termary in styling to tie the checked property to the state of the active tags but that seems perhaps resource intensive.
+	 * Refactor this ^
+	 */
 	const clearSelection = () => {
 		setChosenTags([]);
-		setHandleChecks((prev) => !prev);
+		setTags([]);
+		findAllTags();
 		setTagsActive(false);
 	};
+
 	/**
 	 * @param tagButton - The tag button that is clicked
 	 * Toggles the selected tags as the user clicks them 'on' and 'off', modifying the chosenTags state

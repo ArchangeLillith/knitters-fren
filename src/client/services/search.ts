@@ -70,7 +70,7 @@ const findByTags = async (payload: objectType[]) => {
  */
 const findByTagsStrict = async (payload: objectType[]) => {
 	try {
-		const response = await baseService.post(`/api/search/tag`, {
+		const response = await baseService.post(`/api/search/tag/strict`, {
 			tagList: JSON.stringify(payload),
 		});
 		console.log(`response`, response);

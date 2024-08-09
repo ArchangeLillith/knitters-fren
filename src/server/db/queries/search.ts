@@ -20,10 +20,24 @@ const findByTags = (tag: number) =>
 		`SELECT p.id, p.author_id, p.title, p.content, p.created_at
 		FROM patterns p
 			JOIN pattern_tags pt ON p.id = pt.pattern_id
-			JOIN tags t ON pt.tag_id = t.id
+			JOIN tags t ON pt.tag_id = t.id 
 	WHERE t.id = ?;`,
 		[tag]
 	);
+
+	const findByTagsStrict = (tags: number[]) =>
+		Query<IPatternTable[]>(
+			`
+			SELECT p.id, p.author_id, p.title, p.content, p.created_at
+			FROM patterns p
+				JOIN pattern_tags pt ON p.id = pt.pattern_id
+				JOIN tags t ON pt.tag_id = t.id 
+			WHERE t.id IN (${tags.map(() => '?').join(', ')})
+			GROUP BY p.id
+			HAVING COUNT(DISTINCT t.id) = ?;
+			`,
+			[...tags, tags.length]
+		);
 
 // const one = (id: string) =>
 // 	Query<IAuthorsTable[]>(`SELECT * FROM authors WHERE id = ?;`, [id]);
@@ -36,4 +50,4 @@ const findByTags = (tag: number) =>
 // 	Query("INSERT INTO authors SET ?", values);
 // };
 
-export default { findByTitle, findByTags, findByContent };
+export default { findByTitle, findByTags, findByContent, findByTagsStrict };
