@@ -1,11 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-interface NavBarProps {
-}
+interface NavBarProps {}
 
 const NavBar = (props: NavBarProps) => {
-
 	return (
 		<nav
 			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
@@ -61,6 +59,11 @@ const NavBar = (props: NavBarProps) => {
 							</Link>
 						</li>
 					</ul>
+					<div>
+						<Link to="/login" className="nav-link">
+							Login!
+						</Link>
+					</div>
 				</div>
 			</div>
 		</nav>

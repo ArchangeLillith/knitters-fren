@@ -94,14 +94,22 @@ function SearchView(props: SearchViewProps) {
 				those parameters. Please search for something else, she'd be happy to
 				assist!
 			</p>
-			<img
-				src="/images/book-nanachi.png"
-				alt="book-nanachi"
-				style={{
-					width: "300px",
-				}}
-				className=""
-			/>
+			<a
+				href="https://x.com/vbnmat"
+				target="_blank"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Meet the artist!"
+			>
+				<img
+					src="/images/book-nanachi.png"
+					alt="book-nanachi"
+					style={{
+						width: "300px",
+					}}
+					className=""
+				/>
+			</a>
 		</div>
 	);
 
