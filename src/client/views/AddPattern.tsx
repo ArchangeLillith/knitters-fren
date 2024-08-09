@@ -23,6 +23,7 @@ const AddPattern = (props: AddPatternProps) => {
 		content,
 		author_id: "1",
 	};
+	
 	/**
 	 * Grabs all the tags on load to display to the user when creating their pattern so they can choose which ones they'd like to add
 	 */

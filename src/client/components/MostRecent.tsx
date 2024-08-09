@@ -10,6 +10,9 @@ interface PatternCardProps {
 const MostRecentRow = ({ pattern }: PatternCardProps) => {
 	const [tags, setTags] = React.useState<Tags>();
 
+	/**
+	 * Fetches all pattern tags to set to state, displaying in the map
+	 */
 	useEffect(() => {
 		patternTags
 			.allByPatternId(parseInt(pattern.id))

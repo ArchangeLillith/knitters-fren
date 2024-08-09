@@ -26,7 +26,7 @@ const AdminPanel = (props: AdminPanelProps) => {
 			{patterns.map((pattern) => (
 				<div>
 					<div className="border rounded w-100 bg-soft m-2 border-primary">
-						<PatternCard pattern={pattern} tags={false} />
+						<PatternCard pattern={pattern} />
 						<button
 							id={pattern.id}
 							onClick={(e: React.MouseEvent<HTMLButtonElement>) =>

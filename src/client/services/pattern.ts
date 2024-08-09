@@ -9,7 +9,12 @@ const getAllPatterns = async () => {
 	}
 };
 
-//Fix this type
+/**
+ *
+ * @param id - the id of the requested pattern
+ * Calls to the backend to grab the pattern based on the id passed in
+ * @returns the pattern requested
+ */
 const getOnePattern = async (id: string) => {
 	try {
 		const Pattern = await baseService.get(`/api/patterns/${id}`);
@@ -19,6 +24,12 @@ const getOnePattern = async (id: string) => {
 	}
 };
 
+/**
+ *
+ * @param payload - an object with the required parameters to write a pattern into the database
+ * Calls to the backend and writes a new pattern to the database
+ * @returns the patternId of the newly written pattern
+ */
 const addNewPattern = async (payload: {
 	title: string;
 	content: string;
@@ -33,8 +44,12 @@ const addNewPattern = async (payload: {
 	}
 };
 
-//Fix this type
-const destroyPattern = async (id: any) => {
+/**
+ *
+ * @param id - the id of the pattern that is to be deleted
+ * Calls to the backend and deletes the pattern after removing all the entries in pattern_tags
+ */
+const destroyPattern = async (id: number) => {
 	try {
 		await baseService.destroy(`/api/patterns/${id}`);
 	} catch (error) {
@@ -42,6 +57,12 @@ const destroyPattern = async (id: any) => {
 	}
 };
 
+/**
+ *
+ * @param id - the patternId of the pattern being updated
+ * @param payload - the new data to be written to the patternId passed in
+ * Writes the new data to the id passed in to update the pattern
+ */
 const updatePattern = async (
 	id: string,
 	payload: { content: string; author_id: string }

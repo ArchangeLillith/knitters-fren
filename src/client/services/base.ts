@@ -6,7 +6,13 @@ const makeFetch = (url: string, info: any) => {
 	return fetch(process.env.ROOT_URL + url, info);
 };
 
-//Method here is PUT, POST, GET not like a class method
+/**
+ * @param url - the url the fetch is going to
+ * @param method - get/post/put ect
+ * @param body - the data being transferred
+ * The base fetch function, intakes different parameters and sends off a fetch to the backend with that data.
+ * @returns
+ */
 const json = async (url: string, method: string, body: objectType = {}) => {
 	const TOKEN = storage.getToken();
 	const headers = {

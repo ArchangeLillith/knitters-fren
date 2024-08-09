@@ -14,6 +14,7 @@ function SearchView(props: SearchViewProps) {
 	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 	const [queryString, setQueryString] = useState<string>("");
 	const [handleChecks, setHandleChecks] = useState<boolean>(false);
+	const [strictComparison, setStrictComparison] = useState<boolean>(false);
 
 	const updateSearchType = (e: any) => {
 		setFoundPatterns([]);
@@ -73,9 +74,21 @@ function SearchView(props: SearchViewProps) {
 	 * Currently only handles the search after the submit button is clicked on the tags, looking to perhaps refactor this so the trigger is debounced and acts similar to the text search trigger. Doesn't make sense to have two different triggers imo
 	 */
 	const searchTrigger = () => {
+		if(strictComparison){
+			search
+			.findByTagsStrict(chosenTags)
+			.then((res) => setFoundPatterns(res.finalPatterns));
+		}else{
 		search
 			.findByTags(chosenTags)
-			.then((res) => setFoundPatterns(res.finalPatterns));
+			.then((res) => setFoundPatterns(res.finalPatterns));}
+	};
+
+	/**
+	 * Controls the toggle for the strict mode button
+	 */
+	const handleStrictMode = () => {
+		setStrictComparison((prev) => !prev);
 	};
 
 	/**
@@ -189,13 +202,22 @@ function SearchView(props: SearchViewProps) {
 						))}
 					</div>
 					<div className="d-flex center">
-						<button
+						<input
+							type="checkbox"
+							className="btn-check"
+							autoComplete="off"
+							id="strictModeBtn"
+							onChange={handleStrictMode}
+						/>
+						<label
 							className={`${
 								tagsActive ? "visible" : "invisible"
-							}  btn btn-soft small p-2 m-2 text-muted border border-primary btn btn-primary mx-auto`}
+							}  btn btn-soft small p-2 m-2 text-muted border border-primary btn btn-outline-primary mx-auto`}
+							htmlFor="strictModeBtn"
 						>
-							Strict Comparison
-						</button>
+							Strict comparison
+						</label>
+
 						<button
 							className={`${
 								tagsActive ? "visible" : "invisible"
@@ -233,7 +255,7 @@ function SearchView(props: SearchViewProps) {
 							></input>
 						</div>
 					</form>
-					<div className="w-75 d-flex flex-column mx-auto mt-5">
+					<div className="w-60 d-flex flex-column mx-auto mt-5">
 						{resultsHtml}
 					</div>
 				</>

@@ -48,7 +48,7 @@ const destroyAllBasedOnPatternId = (id: number) =>
 //PATCH a tag
 //This will only be used by the admin side, there's no reason for people to have access to this
 const update = (values: { name: string; id: number }) =>
-	Query("UPDATE patter_tags SET content = ? WHERE id = ?", [
+	Query("UPDATE pattern_tags SET content = ? WHERE id = ?", [
 		values.name,
 		values.id,
 	]);
