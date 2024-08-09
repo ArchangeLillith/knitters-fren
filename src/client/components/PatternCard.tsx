@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IPattern, Tag, Tags } from "../utils/types";
 import dayjs from "dayjs";
 import patternTags from "../services/pattern-tags";
+import TagButton from "./TagButton";
 
 interface PatternCardProps {
 	pattern: IPattern;
@@ -52,12 +53,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 				{tags && (
 					<div>
 						{tags.map((tag: Tag) => (
-							<div
-								className="btn btn-primary m-2"
-								key={`${tag.name}-inner-div-${pattern.author_id}-${pattern.id}`}
-							>
-								{tag.name}
-							</div>
+							<TagButton tag={tag} />
 						))}
 					</div>
 				)}

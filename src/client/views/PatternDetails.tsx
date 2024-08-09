@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { IPattern, Tags, Tag } from "../utils/types";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
+import TagButton from "../components/TagButton";
 
 interface PatternDetailsProps {}
 
@@ -61,12 +62,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 							{tags && (
 								<div>
 									{tags.map((tag) => (
-										<div
-											className="btn btn-primary m-2"
-											key={`tag-${tag.name}-${pattern.author_id}-${pattern.title}`}
-										>
-											{tag.name}
-										</div>
+										<TagButton tag={tag} />
 									))}
 								</div>
 							)}

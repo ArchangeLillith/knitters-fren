@@ -1,26 +1,43 @@
 import React, { useEffect, useState } from "react";
-import PatternCard from "../components/PatternCard";
 import { IPattern, Tag, Tags, objectType } from "../utils/types";
 import search from "../services/search";
 import SearchCard from "../components/SearchCard";
+import { useLocation } from "react-router-dom";
 
-interface SearchViewProps {}
-
-function SearchView(props: SearchViewProps) {
-	const [chosenTags, setChosenTags] = useState<objectType[]>([]);
-	const [foundPatterns, setFoundPatterns] = React.useState<IPattern[]>([]);
-	const [searchType, setSearchType] = useState<string>("tag");
-	const [tagsActive, setTagsActive] = useState<boolean>(false);
+function SearchView() {
+	const { state } = useLocation();
+	const externallySelectedTag: { id: string; name: string } = state;
 	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
+	const [chosenTags, setChosenTags] = useState<objectType[]>([]);
+	const [searchType, setSearchType] = useState<string>("tag");
 	const [queryString, setQueryString] = useState<string>("");
-	const [handleChecks, setHandleChecks] = useState<boolean>(false);
+	const [tagsActive, setTagsActive] = useState<boolean>(false);
+	const [foundPatterns, setFoundPatterns] = React.useState<IPattern[]>([]);
 	const [strictComparison, setStrictComparison] = useState<boolean>(false);
 
-	const updateSearchType = (e: any) => {
+	/**
+	 *
+	 * @param searchTypeDropdown - select dropdown that's value is what the user wants to search by
+	 * Sets the search type between the offered options, foundPatterns is reset on change of search type and the type of serach value is passed in on change of the select element which sets a state and has an effect on the search trigger function as well as UI elements
+	 */
+	const updateSearchType = (searchTypeDropdown: any) => {
 		setFoundPatterns([]);
 		setQueryString("");
-		setSearchType(e.target.value);
+		setSearchType(searchTypeDropdown.target.value);
 	};
+
+	/**
+	 **If this isn't wrapped in a useEffect and restricted by externallySelectedTag, it re-renders infinetly
+	 *If the usr has clicked on a tag anywhere else, it leads them here to the search and this scrapes the data from the state that came along with the navigate to set the value of the tag clicked on into the active tags (UI) and also adds it to the chosen tags that governs what will be searched for (backend)
+	 */
+	useEffect(() => {
+		if (externallySelectedTag) {
+			setTagsActive(true);
+			setChosenTags([
+				{ id: externallySelectedTag.id, name: externallySelectedTag.name },
+			]);
+		}
+	}, [externallySelectedTag]);
 
 	/** 🌈⭐ The debouncer ⭐🌈
 	 * Delays the call to fetch until the user is done typing for the delay set in the inner setTimeout.
@@ -67,12 +84,16 @@ function SearchView(props: SearchViewProps) {
 		findAllTags();
 	}, []);
 
+	/**
+	 * The real call to the api that gets the tags and sets them to the state to be rendered
+	 */
 	const findAllTags = () => {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setTags(data))
 			.catch((e) => console.log("[fetch erorr]", e));
 	};
+
 	/**
 	 * Currently only handles the search after the submit button is clicked on the tags, looking to perhaps refactor this so the trigger is debounced and acts similar to the text search trigger. Doesn't make sense to have two different triggers imo
 	 */
@@ -97,8 +118,8 @@ function SearchView(props: SearchViewProps) {
 	};
 
 	/**
-	 * Takes the found patterns from any search and formats the results into React friendly card components / a no patterns found message
-	 * @returns an array of PatternCards, a React component or a message saying there are no patterns with those params
+	 * Takes the found patterns from any search and formats the results into React friendly card components or a no patterns found message
+	 * @returns an array of PatternCards, a React component, or a message saying there are no patterns with those params
 	 */
 	const resultsHtml = foundPatterns ? (
 		foundPatterns.map((pattern, i) => (
@@ -125,13 +146,10 @@ function SearchView(props: SearchViewProps) {
 	);
 
 	/**
-	 * This handles the tags being cleared by the reset button. There's a bit of  flicker because the tags are being wiped and re-fetched, which will need to be adressed. The issue that's handling is that the buttons don't uncheck when the reset button is pressed, even if the active tags array is wiped. Perhaps we can use a termary in styling to tie the checked property to the state of the active tags but that seems perhaps resource intensive.
-	 * Refactor this ^
+	 * Handles the reset button, clears out the chosen tags array and sets the tags to inactive as that state handles the buttons that should only be avaliable if there are tags chosen
 	 */
 	const clearSelection = () => {
 		setChosenTags([]);
-		setTags([]);
-		findAllTags();
 		setTagsActive(false);
 	};
 
@@ -146,18 +164,12 @@ function SearchView(props: SearchViewProps) {
 			name: tagButton.target.name,
 		};
 
-		const updatedChosenTags = [...chosenTags];
-		const tagIndex = updatedChosenTags.findIndex(
-			(tag) => tag.name === tagToToggle.name
-		);
+		const updatedChosenTags = chosenTags.some(
+			(tag) => tag.id === tagToToggle.id
+		)
+			? chosenTags.filter((tag) => tag.id !== tagToToggle.id)
+			: [...chosenTags, tagToToggle];
 
-		if (tagIndex !== -1) {
-			console.log(`Removed`);
-			updatedChosenTags.splice(tagIndex, 1);
-		} else {
-			console.log(`Added`);
-			updatedChosenTags.push(tagToToggle);
-		}
 		setChosenTags(updatedChosenTags);
 		setTagsActive(updatedChosenTags.length > 0);
 	};
@@ -201,7 +213,9 @@ function SearchView(props: SearchViewProps) {
 									autoComplete="off"
 									onChange={tagToggle}
 									name={tag.name}
-									key={tag.name}
+									checked={chosenTags.some(
+										(chosenTag) => chosenTag.id === tag.id.toString()
+									)}
 								/>
 								<label
 									className="btn btn-outline-primary"
@@ -212,6 +226,11 @@ function SearchView(props: SearchViewProps) {
 							</div>
 						))}
 					</div>
+					<p>
+						{chosenTags.map((tag) => (
+							<p>{tag.name}</p>
+						))}
+					</p>
 					<div className="d-flex center">
 						<input
 							type="checkbox"

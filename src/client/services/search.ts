@@ -74,7 +74,7 @@ const findByTagsStrict = async (payload: objectType[]) => {
 			tagList: JSON.stringify(payload),
 		});
 		console.log(`response`, response);
-		if (response.finalPatterns.length === 0) {
+		if (response.finalPatterns.length === 0 || response === 404) {
 			return response.status(204).json({ message: "No patterns found" });
 		}
 		return response;
@@ -82,7 +82,6 @@ const findByTagsStrict = async (payload: objectType[]) => {
 		throw error;
 	}
 };
-
 
 /**
  * @param payload - the object that has all the data required to write a new pattern
