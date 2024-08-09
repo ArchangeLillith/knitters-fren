@@ -27,18 +27,26 @@ function SearchView() {
 	};
 
 	/**
-	 **If this isn't wrapped in a useEffect and restricted by externallySelectedTag, it re-renders infinetly
 	 *If the usr has clicked on a tag anywhere else, it leads them here to the search and this scrapes the data from the state that came along with the navigate to set the value of the tag clicked on into the active tags (UI) and also adds it to the chosen tags that governs what will be searched for (backend)
 	 */
 	useEffect(() => {
 		if (externallySelectedTag) {
-			setTagsActive(true);
-			setChosenTags([
-				{ id: externallySelectedTag.id, name: externallySelectedTag.name },
-			]);
+			findAllTags();
+			handleExternalTags();
+		} else {
+			findAllTags();
 		}
-	}, [externallySelectedTag]);
+	}, []);
 
+	const handleExternalTags = () => {
+		setTagsActive(true);
+		setChosenTags([
+			{
+				id: externallySelectedTag.id.toString(),
+				name: externallySelectedTag.name,
+			},
+		]);
+	};
 	/** 🌈⭐ The debouncer ⭐🌈
 	 * Delays the call to fetch until the user is done typing for the delay set in the inner setTimeout.
 	 */
@@ -76,13 +84,6 @@ function SearchView() {
 		return () => clearTimeout(getData);
 		//What the useEffect re-triggers off of a change
 	}, [queryString]);
-
-	/**
-	 * Calls to get all the tags when this page is first loaded to populate the tag list for users to interact with
-	 */
-	useEffect(() => {
-		findAllTags();
-	}, []);
 
 	/**
 	 * The real call to the api that gets the tags and sets them to the state to be rendered
@@ -123,8 +124,11 @@ function SearchView() {
 	 */
 	const resultsHtml = foundPatterns ? (
 		foundPatterns.map((pattern, i) => (
-			<div className="border rounded w-100 bg-soft m-2 border-primary">
-				<SearchCard pattern={pattern} key={`patternCard-${i}`} />
+			<div
+				className="border rounded w-100 bg-soft m-2 border-primary"
+				key={`patternCard-${i}`}
+			>
+				<SearchCard pattern={pattern} />
 			</div>
 		))
 	) : (
@@ -163,6 +167,7 @@ function SearchView() {
 			id: tagButton.target.id,
 			name: tagButton.target.name,
 		};
+		console.log(`Tag button`, tagButton);
 
 		const updatedChosenTags = chosenTags.some(
 			(tag) => tag.id === tagToToggle.id
@@ -170,6 +175,7 @@ function SearchView() {
 			? chosenTags.filter((tag) => tag.id !== tagToToggle.id)
 			: [...chosenTags, tagToToggle];
 
+		console.log(`Updated`, updatedChosenTags);
 		setChosenTags(updatedChosenTags);
 		setTagsActive(updatedChosenTags.length > 0);
 	};
@@ -226,11 +232,6 @@ function SearchView() {
 							</div>
 						))}
 					</div>
-					<p>
-						{chosenTags.map((tag) => (
-							<p>{tag.name}</p>
-						))}
-					</p>
 					<div className="d-flex center">
 						<input
 							type="checkbox"

@@ -13,7 +13,7 @@ const TagButton = ({ tag }) => {
 			className="btn btn-primary m-2"
 			key={`${tag.id}-tag-button`}
 			value={tag.name}
-			id={tag.id.toString()}
+			id={tag.id}
 			onClick={tagReroute}
 		>
 			{tag.name}
