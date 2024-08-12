@@ -43,14 +43,12 @@ function SearchView(props: SearchViewProps) {
 				case "content":
 					search
 						.findByContent(queryString)
-						.then((patterns) => setFoundPatterns(patterns))
-						.catch((e) => Toast.failure(e.message));
+						.then((patterns) => setFoundPatterns(patterns));
 					break;
 				case "title":
 					search
 						.findByTitle(queryString)
-						.then((patterns) => setFoundPatterns(patterns))
-						.catch((e) => Toast.failure(e.message));
+						.then((patterns) => setFoundPatterns(patterns));
 					break;
 			}
 		}, 2000);
@@ -77,8 +75,7 @@ function SearchView(props: SearchViewProps) {
 	const searchTrigger = () => {
 		search
 			.findByTags(chosenTags)
-			.then((res) => setFoundPatterns(res.finalPatterns))
-			.catch((e) => Toast.failure(e.message));
+			.then((res) => setFoundPatterns(res.finalPatterns));
 	};
 
 	/**
