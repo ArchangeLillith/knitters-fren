@@ -23,4 +23,5 @@ export interface IAuthorsTable {
 	name?: string;
 	created_at?: string;
 	password?: string;
+	role?: number;
 }
