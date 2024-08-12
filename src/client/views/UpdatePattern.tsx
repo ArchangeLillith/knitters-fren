@@ -10,16 +10,16 @@ interface UpdatePatternProps {}
 
 const UpdatePattern = (props: UpdatePatternProps) => {
 	const { id } = useParams();
-	const { state } = useLocation();
+	const { localUrlState } = useLocation();
 	const navigate = useNavigate();
 	const [pattern, setPattern] = useState<IPattern | undefined>(undefined);
 	const [title, setTitle] = useState<string>("");
 	const [content, setContent] = useState<string>("");
 	const [allTags, setAllTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 	const [selectedTags, setSelectedTags] = useState<Tags>([]);
-	const [prevTags, setPrevTags] = useState<Tags>([]);
 
 	//Yeah this errors but I think it's the linter throwing a fit, it does work
+	//Refactor how do I fix this error?? I've seen it done this way a million times, idk why here it throws a fit...
 	const handleChanges = (e: any) => {
 		setPattern((prev) => ({
 			...prev,
@@ -27,8 +27,11 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 		}));
 	};
 
+	/**
+	 *
+	 */
 	useEffect(() => {
-		if (state) return;
+		if (localUrlState) return;
 		if (!id) return;
 		//Get the pattern
 		patternService.getOnePattern(id).then((pattern: IPattern) => {
@@ -49,7 +52,7 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 				setSelectedTags(data);
 			})
 			.catch((e) => Toast.failure(e.message));
-	}, [id, state]);
+	}, [id, localUrlState]);
 
 	const handleUpdate: (e: React.MouseEvent<HTMLButtonElement>) => void = (
 		e: React.MouseEvent<HTMLButtonElement>

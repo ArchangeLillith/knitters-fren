@@ -39,6 +39,9 @@ function SearchView() {
 		}
 	}, []);
 
+	/**
+	 * Handles the setting of tags if the user came from an external page. It sets the visual tag to active in the UI, and adds the tag that was selected to the chosen tags array
+	 */
 	const handleExternalTags = () => {
 		setTagsActive(true);
 		setChosenTags([
@@ -48,6 +51,7 @@ function SearchView() {
 			},
 		]);
 	};
+
 	/** 🌈⭐ The debouncer ⭐🌈
 	 * Delays the call to fetch until the user is done typing for the delay set in the inner setTimeout.
 	 */
@@ -80,14 +84,14 @@ function SearchView() {
 						.then((patterns) => setFoundPatterns(patterns));
 					break;
 			}
-		}, 2000);
+		}, 1000);
 		//Cleanup function that runs after a re-render and removes the old setTimeout
 		return () => clearTimeout(getData);
 		//What the useEffect re-triggers off of a change
 	}, [queryString]);
 
 	/**
-	 * The real call to the api that gets the tags and sets them to the state to be rendered
+	 * The call to the api that gets the tags and sets them to the state to be rendered
 	 */
 	const findAllTags = () => {
 		fetch(process.env.ROOT_URL + "/api/tags")
@@ -97,9 +101,7 @@ function SearchView() {
 	};
 
 	/**
-	 * @param e - The submit button rendered with the tags on the tag view of the search
-	 * Currently only handles the search after the submit button is clicked on the tags, lking to perhaps refactor this so the trigger is debounced and acts similar to the text search trigger. Doesn't make sense to have two different triggers imo
-	 *
+	 * Handles the search by tags when the submit button is clicked
 	 */
 	const searchTrigger = () => {
 		setFoundPatterns([]);
@@ -164,7 +166,7 @@ function SearchView() {
 	 * @param tagButton - The tag button that is clicked
 	 * Toggles the selected tags as the user clicks them 'on' and 'off', modifying the chosenTags state
 	 */
-	//Refactor what type is this???
+	//Refactor what type is this??? Tried casting the id:tag... as HTML, tried addin gtype to the tagToggle, React.HouseEvent<anything> isn't working.... HELP
 	const tagToggle = (tagButton: any) => {
 		const tagToToggle = {
 			id: tagButton.target.id,

@@ -22,6 +22,9 @@ const Home = (props: HomeProps) => {
 	});
 	const [mostRecent, setMostRecent] = React.useState<IPattern[]>([]);
 
+	/**
+	 * Onload trigger, gets the patterns and sorts them, setting states for featured and most recent tiles
+	 */
 	useEffect(() => {
 		try {
 			patternService.getAllPatterns().then((data) => {

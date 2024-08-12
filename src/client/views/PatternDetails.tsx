@@ -28,7 +28,8 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	 * Grabs the pattern that's indicated by the URL param from the database on load only to add them into a state to display all the patterns in the database
 	 */
 	useEffect(() => {
-		//This error here is my linter throwing a fit, it shouldn't be undefined cause you can't get here without a param in your url
+		//Annoying to have this here, there's no way to access this page without an id in the url, but my linter/typescript doesn't know that so it throws a fit below that id can be undefined, but it can't if you reach this page...
+		if (!id) return;
 		patternService.getOnePattern(id).then((data) => setPattern(data));
 		patternTags
 			.allByPatternId(parseInt(id))
@@ -40,6 +41,8 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	 * This is a one stop shop for deletion of a pattern. It calls the delete function for the joint table as well, because you can't delete the pattern without first cleaing the joint table anyways
 	 */
 	const handleDelete = () => {
+		//Same thing here, thinks id can be undefined when there's no possible way for it to be undefined if you're on this page
+		if (!id) return;
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns"))
