@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PatternCard from "../components/PatternCard";
 import { IPattern, Tag, Tags, objectType } from "../utils/types";
 import search from "../services/search";
+import Toast from "../components/Toast";
 
 interface SearchViewProps {}
 
@@ -63,7 +64,7 @@ function SearchView(props: SearchViewProps) {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setTags(data))
-			.catch((e) => console.log("[fetch erorr]", e));
+			.catch((e) => Toast.failure(e.message));
 	}, []);
 
 	/**

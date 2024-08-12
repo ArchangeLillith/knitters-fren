@@ -6,22 +6,29 @@ import { useParams } from "react-router-dom";
 import { IPattern, Tags, Tag } from "../utils/types";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
+import Toast from "../components/Toast";
 
 interface PatternDetailsProps {}
 
 const PatternDetails = (props: PatternDetailsProps) => {
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const [pattern, setPattern] = React.useState<IPattern>();
-	const [tags, setTags] = React.useState<Tags>();
+	const [pattern, setPattern] = React.useState<IPattern>({
+		id: "0",
+		author_id: "Loading...",
+		title: "Loading...",
+		content: "Loading...",
+		created_at: "Loading...",
+	});
+	const [tags, setTags] = React.useState<Tags>([]);
 
 	useEffect(() => {
 		//This error here is my linter throwing a fit, it shouldn't be undefined cause you can't get here without a param in your url
 		patternService.getOnePattern(id).then((data) => setPattern(data));
 		patternTags
 			.allByPatternId(parseInt(id))
-			.then((tagsReturned) => setTags(tagsReturned));
-		// .catch((e) => Toast.error(e.message));
+			.then((tagsReturned) => setTags(tagsReturned))
+			.catch((e) => Toast.failure(e.message));
 	}, []);
 
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -29,7 +36,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns"))
-			.catch();
+			.catch((e) => Toast.failure(e.message));
 	};
 
 	return (
