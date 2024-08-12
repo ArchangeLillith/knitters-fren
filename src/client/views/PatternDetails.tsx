@@ -7,14 +7,21 @@ import { IPattern, Tags, Tag } from "../utils/types";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
 import TagButton from "../components/TagButton";
+import Toast from "../components/Toast";
 
 interface PatternDetailsProps {}
 
 const PatternDetails = (props: PatternDetailsProps) => {
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const [pattern, setPattern] = React.useState<IPattern>();
-	const [tags, setTags] = React.useState<Tags>();
+	const [pattern, setPattern] = React.useState<IPattern>({
+		id: "0",
+		author_id: "Loading...",
+		title: "Loading...",
+		content: "Loading...",
+		created_at: "Loading...",
+	});
+	const [tags, setTags] = React.useState<Tags>([]);
 
 	//Refactor we should paginate this whole view
 	/**
@@ -25,8 +32,8 @@ const PatternDetails = (props: PatternDetailsProps) => {
 		patternService.getOnePattern(id).then((data) => setPattern(data));
 		patternTags
 			.allByPatternId(parseInt(id))
-			.then((tagsReturned) => setTags(tagsReturned));
-		// .catch((e) => Toast.error(e.message));
+			.then((tagsReturned) => setTags(tagsReturned))
+			.catch((e) => Toast.failure(e.message));
 	}, []);
 
 	/**
@@ -36,7 +43,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns"))
-			.catch();
+			.catch((e) => Toast.failure(e.message));
 	};
 
 	return (

@@ -2,9 +2,9 @@ import { objectType } from "../utils/types";
 import baseService from "./base";
 
 /**
- * @param searchString - the query string
- * Searches the database to find any title matches the query string
- * @returns an array of patterns that have the query in the title
+ * @param searchString - the string to search by
+ * Searches the databse for ANY title that matches the searchString
+ * @returns an array of patterns that match the search or an empty array
  */
 const findByTitle = async (searchString: string) => {
 	console.log(`Search string`, searchString);
@@ -44,9 +44,9 @@ const findByContent = async (searchString: string) => {
 };
 
 /**
- * @param payload - an array of strings that are the names of tags to search by
+ * @param payload - an array of objects of type {id: number(?), name: string}
  * Searches the database to find any pattern that includes AT LEAST ONE of the tags
- * @returns an array of patterns that have at least one of the tags
+ * @returns
  */
 const findByTags = async (payload: objectType[]) => {
 	try {

@@ -1,5 +1,9 @@
 import baseService from "./base";
 
+/**
+ * Calls to backend and returns all patterns from database
+ * @returns an array of patterns
+ */
 const getAllPatterns = async () => {
 	try {
 		const patterns = await baseService.get("/api/patterns");
@@ -45,11 +49,10 @@ const addNewPattern = async (payload: {
 };
 
 /**
- *
- * @param id - the id of the pattern that is to be deleted
- * Calls to the backend and deletes the pattern after removing all the entries in pattern_tags
+ * @param id - the patternId to destroy
+ * Destorys the pattern based on id, backend also handles the joint table deletion so this is a one stop shop to delete the pattern fully
  */
-const destroyPattern = async (id: number) => {
+const destroyPattern = async (id: string) => {
 	try {
 		await baseService.destroy(`/api/patterns/${id}`);
 	} catch (error) {
@@ -58,10 +61,9 @@ const destroyPattern = async (id: number) => {
 };
 
 /**
- *
- * @param id - the patternId of the pattern being updated
- * @param payload - the new data to be written to the patternId passed in
- * Writes the new data to the id passed in to update the pattern
+ * @param id - the pattern that's being updated
+ * @param payload - the new data to be written to the pattern
+ * Updates data on the pattern based on id, but doesn't change the pattern id
  */
 const updatePattern = async (
 	id: string,

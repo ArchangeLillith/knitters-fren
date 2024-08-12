@@ -3,6 +3,7 @@ import { IPattern } from "../utils/types";
 import PatternCard from "../components/PatternCard";
 import patternService from "../services/pattern";
 import Container from "../components/Container";
+import Toast from "../components/Toast";
 
 interface PatternsProps {}
 
@@ -13,8 +14,10 @@ const Patterns = (props: PatternsProps) => {
 	 * This fetches all the patterns on load once from the databse and sets them in state to display them
 	 */
 	useEffect(() => {
-		patternService.getAllPatterns().then((data) => setPatterns(data));
-		// .catch((e) => Toast.error(e.message));
+		patternService
+			.getAllPatterns()
+			.then((data) => setPatterns(data))
+			.catch((e) => Toast.failure(e.message));
 	}, []);
 
 	return (

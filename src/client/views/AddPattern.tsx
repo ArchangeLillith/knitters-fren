@@ -4,6 +4,7 @@ import Container from "../components/Container";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
 import { Tag, Tags } from "../utils/types";
+import Toast from "../components/Toast";
 
 interface AddPatternProps {}
 
@@ -31,7 +32,7 @@ const AddPattern = (props: AddPatternProps) => {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setTags(data))
-			.catch((e) => console.log("[fetch erorr]", e));
+			.catch((e) => Toast.failure(e.message));
 	}, []);
 
 	/**

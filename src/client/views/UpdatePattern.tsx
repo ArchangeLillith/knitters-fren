@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import patternService from "../services/pattern";
 import { IPattern, Tag, Tags } from "../utils/types";
 import patternTags from "../services/pattern-tags";
+import Toast from "../components/Toast";
 
 interface UpdatePatternProps {}
 
@@ -11,17 +12,15 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 	const { id } = useParams();
 	const { state } = useLocation();
 	const navigate = useNavigate();
-	const [pattern, setPattern] = useState<IPattern | undefined>();
-	const [title, setTitle] = useState<string>();
-	const [content, setContent] = useState<string>();
+	const [pattern, setPattern] = useState<IPattern | undefined>(undefined);
+	const [title, setTitle] = useState<string>("");
+	const [content, setContent] = useState<string>("");
 	const [allTags, setAllTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 	const [selectedTags, setSelectedTags] = useState<Tags>([]);
 	const [prevTags, setPrevTags] = useState<Tags>([]);
 
 	//Yeah this errors but I think it's the linter throwing a fit, it does work
-	const handleChanges = (
-		e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>
-	) => {
+	const handleChanges = (e: any) => {
 		setPattern((prev) => ({
 			...prev,
 			[e.target.name]: e.target.value,
@@ -41,7 +40,7 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setAllTags(data))
-			.catch((e) => console.log("[fetch erorr]", e));
+			.catch((e) => Toast.failure(e.message));
 
 		//Get the tags that are already selected for this pattern
 		patternTags
@@ -49,7 +48,7 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 			.then((data) => {
 				setSelectedTags(data);
 			})
-			.catch((e) => console.log("[fetch error]", e));
+			.catch((e) => Toast.failure(e.message));
 	}, [id, state]);
 
 	const handleUpdate: (e: React.MouseEvent<HTMLButtonElement>) => void = (

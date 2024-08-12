@@ -46,9 +46,15 @@ $link-hover-color: darken($link-color, 20%);
 .btn-muted{
   background-color: $muted;
 }
+
 .btn-soft{
   background-color: $soft;
 }
+
 .w-60{
   width: 60%;
+}
+
+.border-primary{
+  border: $primary;
 }
