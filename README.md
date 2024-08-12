@@ -66,6 +66,11 @@ I'm hoping that the more organized my patterns are, the more I and other knitter
 * [![React][React.js]][React-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 * [![SASS][SASS]][SASS-url]
+* [![nodejs][nodejs]][nodejs-url]
+* [![express][express]][express-url]
+* [![Passport][Passport]][Passport-url]
+* [![JWT][JSON-web-tokens]][JSON-web-tokens-url]
+* [![MySQL][MySQL]][MySQL-url]
 
 I challenged myself to only use Bootstrap and a touch of SASS for styling in this project as I want to understand more what Bootstrap has to offer. I deviated a bit for minor things such as font styling or small color changes that aren't Bootstrap native. 
 
@@ -168,10 +173,19 @@ Thank you to Elivaras who's been helping me learn version control and keeping my
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[SASS]: https://img.shields.io/badge/SASS-ff94c6?style=for-the-badge&logo=SASS&logoColor=white
-[SASS-url]: https://sass-lang.com/
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
+[SASS]: https://img.shields.io/badge/SASS-ff94c6?style=for-the-badge&logo=SASS&logoColor=white
+[SASS-url]: https://sass-lang.com/
+[nodejs]: https://img.shields.io/badge/node.js-d8e3db?style=for-the-badge&logo=nodedotjs&logoColor=#fffffff
+[nodejs-url]: https://nodejs.org/en
+[express]: https://img.shields.io/badge/express-c3c6c7?style=for-the-badge&logo=express&logoColor=##9ccce6
+[express-url]:https://expressjs.com/
+[Passport]: https://img.shields.io/badge/Passport-4e5052?style=for-the-badge&logo=passport&logoColor=#62e371
+[Passport-url]: https://www.passportjs.org/
+[JSON-web-tokens]:https://img.shields.io/badge/JSON_Web_Tokens-6fd1cb?style=for-the-badge&logo=jsonwebtokens&logoColor=#fffffff
+[JSON-web-tokens-url]: https://jwt.io/
+[MySQL]: https://img.shields.io/badge/MySQL-ffffff?style=for-the-badge&logo=mysql&logoColor=#fffffff
+[MySQL-url]: https://www.mysql.com/
