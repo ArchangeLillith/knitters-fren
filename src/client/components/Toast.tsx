@@ -6,6 +6,7 @@ interface TemplateToastProps {
 	icon: any;
 	message: string;
 }
+
 const TemplateToast = ({ icon, message }: TemplateToastProps) => {
 	return (
 		<div className="flex items-center">
@@ -28,6 +29,7 @@ const success = (message: string) => {
 		}
 	);
 };
+
 const failure = (message: string) => {
 	toast.success(
 		<TemplateToast
@@ -42,6 +44,7 @@ const failure = (message: string) => {
 		}
 	);
 };
+
 const Toast = {
 	success,
 	failure,

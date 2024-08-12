@@ -12,6 +12,9 @@ interface PatternCardProps {
 const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 	const [tags, setTags] = React.useState<Tags>();
 
+	/**
+	 * Grabs all the tags for the pattern that's passed in to the component
+	 */
 	useEffect(() => {
 		patternTags
 			.allByPatternId(parseInt(pattern.id))

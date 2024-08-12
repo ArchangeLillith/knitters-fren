@@ -1,6 +1,11 @@
 import { objectType } from "../utils/types";
 import baseService from "./base";
 
+/**
+ * @param searchString - the string to search by
+ * Searches the databse for ANY title that matches the searchString
+ * @returns an array of patterns that match the search or an empty array
+ */
 const findByTitle = async (searchString: string) => {
 	console.log(`Search string`, searchString);
 	try {
@@ -16,6 +21,11 @@ const findByTitle = async (searchString: string) => {
 	}
 };
 
+/**
+ * @param searchString - the string to search by
+ * Searches the databse for a pattern that's content includes the searchString
+ * @returns an array of patterns that match the search or an empty array
+ */
 const findByContent = async (searchString: string) => {
 	console.log(`Search string`, searchString);
 	try {
@@ -33,6 +43,11 @@ const findByContent = async (searchString: string) => {
 	}
 };
 
+/**
+ * @param payload - an array of objects of type {id: number(?), name: string}
+ * Finds patterns by tags and returns the patterns that match 
+ * @returns 
+ */
 const findByTags = async (payload: objectType[]) => {
 	try {
 		const response = await baseService.post(`/api/search/tag`, {
