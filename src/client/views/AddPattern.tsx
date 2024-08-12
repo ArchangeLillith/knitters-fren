@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import patternService from "../services/pattern";
 import Container from "../components/Container";
-import { Tag, Tags } from "../utils/types";
+import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
+import { Tag, Tags } from "../utils/types";
+import Toast from "../components/Toast";
 
 interface AddPatternProps {}
 
@@ -29,7 +29,7 @@ const AddPattern = (props: AddPatternProps) => {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setTags(data))
-			.catch((e) => console.log("[fetch erorr]", e));
+			.catch((e) => Toast.failure(e.message));
 	}, []);
 
 	const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,7 +45,7 @@ const AddPattern = (props: AddPatternProps) => {
 			patternId = pattern.id;
 			if (patternId) {
 				patternTags
-					.addNewTag({ pattern_id: patternId, tag_id: newArr })
+					.addNewTags({ pattern_id: patternId, tag_ids: newArr })
 					.then(() => navigate(`/patterns/${patternId}`));
 			}
 		} catch (error) {
@@ -89,6 +89,8 @@ const AddPattern = (props: AddPatternProps) => {
 					<label htmlFor="pattern-title">Pattern Title</label>
 					<input
 						type="text"
+						required={true}
+						maxLength={100}
 						onChange={(e) => setTitle(e.target.value)}
 						value={title}
 						className="form-control bg-soft"
@@ -99,13 +101,15 @@ const AddPattern = (props: AddPatternProps) => {
 				<div className="form-group flex-grow-1 d-flex flex-column pt-4">
 					<label htmlFor="pattern-details">Pattern Details</label>
 					<textarea
-						rows={10}
-						name="body"
-						value={content}
+						required={true}
+						maxLength={10000}
 						onChange={(e) => setContent(e.target.value)}
-						placeholder="Start writing..."
+						value={content}
 						className="form-control-lg form-control flex-grow-1 bg-soft"
 						id="pattern-details"
+						placeholder="Start writing..."
+						name="body"
+						rows={10}
 					></textarea>
 				</div>
 				<div>
