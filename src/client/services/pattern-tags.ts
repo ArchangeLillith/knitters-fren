@@ -15,9 +15,10 @@ const allByPatternId = async (id: number) => {
 };
 
 /**
- * @param payload - an object with the patternId and the tagIds to add to the joint table
- * Adds the tags to the joint table associated with the patternId that's passed in as well
- * @returns the pattern
+ *
+ * @param payload - an object of the patternId and an array of patterns that need to be added to the pattern_tags joint table
+ * Adds the tags to the pattern_tags joint table based on the id in the paramater object
+ * @returns the pattern (I think)
  */
 const addNewTags = async (payload: {
 	pattern_id: number;

@@ -14,9 +14,10 @@ const getAllPatterns = async () => {
 };
 
 /**
- * @param id - the patternId to search by
- * Searches the databse for a pattern based on id
- * @returns a pattern or an empty array if no pattern is found with that id
+ *
+ * @param id - the id of the requested pattern
+ * Calls to the backend to grab the pattern based on the id passed in
+ * @returns the pattern requested
  */
 const getOnePattern = async (id: string) => {
 	try {
@@ -28,9 +29,10 @@ const getOnePattern = async (id: string) => {
 };
 
 /**
- * @param payload - an object with all the necessary data to add a new pattern to the database
- * Adds a new pattern to the database with the data passed in
- * @returns the pattern that was just created
+ *
+ * @param payload - an object with the required parameters to write a pattern into the database
+ * Calls to the backend and writes a new pattern to the database
+ * @returns the patternId of the newly written pattern
  */
 const addNewPattern = async (payload: {
 	title: string;
