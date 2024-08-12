@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { IPattern, Tags, Tag } from "../utils/types";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
+import TagButton from "../components/TagButton";
 import Toast from "../components/Toast";
 
 interface PatternDetailsProps {}
@@ -22,6 +23,10 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	});
 	const [tags, setTags] = React.useState<Tags>([]);
 
+	//Refactor we should paginate this whole view
+	/**
+	 * Grabs the pattern that's indicated by the URL param from the database on load only to add them into a state to display all the patterns in the database
+	 */
 	useEffect(() => {
 		//This error here is my linter throwing a fit, it shouldn't be undefined cause you can't get here without a param in your url
 		patternService.getOnePattern(id).then((data) => setPattern(data));
@@ -31,8 +36,10 @@ const PatternDetails = (props: PatternDetailsProps) => {
 			.catch((e) => Toast.failure(e.message));
 	}, []);
 
-	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-		//This is a one stop shop for deletion of a pattern. It calls the delete function for the joint table as well, because you can't delete the pattern without first cleaing the joint table anyways
+	/**
+	 * This is a one stop shop for deletion of a pattern. It calls the delete function for the joint table as well, because you can't delete the pattern without first cleaing the joint table anyways
+	 */
+	const handleDelete = () => {
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns"))
@@ -62,12 +69,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 							{tags && (
 								<div>
 									{tags.map((tag) => (
-										<div
-											className="btn btn-primary m-2"
-											key={`tag-${tag.name}-${pattern.author_id}-${pattern.title}`}
-										>
-											{tag.name}
-										</div>
+										<TagButton tag={tag} />
 									))}
 								</div>
 							)}

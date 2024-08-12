@@ -1,6 +1,11 @@
 import { objectType } from "../utils/types";
 import baseService from "./base";
 
+/**
+ * @param searchString - the string to search by
+ * Searches the databse for ANY title that matches the searchString
+ * @returns an array of patterns that match the search or an empty array
+ */
 const findByTitle = async (searchString: string) => {
 	console.log(`Search string`, searchString);
 	try {
@@ -16,6 +21,11 @@ const findByTitle = async (searchString: string) => {
 	}
 };
 
+/**
+ * @param searchString - the query string
+ * Searches the database to find any pattern that has a content that includes the search string
+ * @returns an array of patterns that have the search string in the content section
+ */
 const findByContent = async (searchString: string) => {
 	console.log(`Search string`, searchString);
 	try {
@@ -33,6 +43,11 @@ const findByContent = async (searchString: string) => {
 	}
 };
 
+/**
+ * @param payload - an array of objects of type {id: number(?), name: string}
+ * Searches the database to find any pattern that includes AT LEAST ONE of the tags
+ * @returns
+ */
 const findByTags = async (payload: objectType[]) => {
 	try {
 		const response = await baseService.post(`/api/search/tag`, {
@@ -48,6 +63,31 @@ const findByTags = async (payload: objectType[]) => {
 	}
 };
 
+/**
+ * @param payload - an array of strings that are the names of tags to search by
+ * Searches the database to find any pattern that EXACTLY matches ALL the tags selected
+ * @returns an array of patterns that has all the tags in the payload
+ */
+const findByTagsStrict = async (payload: objectType[]) => {
+	try {
+		const response = await baseService.post(`/api/search/tag/strict`, {
+			tagList: JSON.stringify(payload),
+		});
+		console.log(`response`, response);
+		if (response.finalPatterns.length === 0 || response === 404) {
+			return response.status(204).json({ message: "No patterns found" });
+		}
+		return response;
+	} catch (error) {
+		throw error;
+	}
+};
+
+/**
+ * @param payload - the object that has all the data required to write a new pattern
+ * Writes a new pattern to the database
+ * @returns the new pattern id
+ */
 const addNewPattern = async (payload: {
 	title: string;
 	content: string;
@@ -62,6 +102,10 @@ const addNewPattern = async (payload: {
 	}
 };
 
+/**
+ * @param id - the id of the pattern that is going to be destroyed
+ * Removes a pattern from the database completely
+ */
 const destroyPattern = async (id: number) => {
 	try {
 		await baseService.destroy(`/api/patterns/${id}`);
@@ -70,6 +114,11 @@ const destroyPattern = async (id: number) => {
 	}
 };
 
+/**
+ * @param id - the id of the pattern that's being updated
+ * @param payload - the new values that are being assigned to the pattern
+ * Updates a pattern with new values in any field, keeping the same id for that pattern
+ */
 const updatePattern = async (
 	id: string,
 	payload: { content: string; author_id: string }
@@ -86,4 +135,5 @@ export default {
 	destroyPattern,
 	updatePattern,
 	findByContent,
+	findByTagsStrict,
 };
