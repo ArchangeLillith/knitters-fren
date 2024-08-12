@@ -3,6 +3,7 @@ import { IPattern } from "../utils/types";
 import patternService from "../services/pattern";
 import PatternCard from "../components/PatternCard";
 import { Link, useNavigate } from "react-router-dom";
+import Toast from "../components/Toast";
 
 interface AdminPanelProps {}
 
@@ -14,19 +15,19 @@ const AdminPanel = (props: AdminPanelProps) => {
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns/admin"))
-			.catch();
+			.catch((e) => Toast.failure(e.message));
 	};
 
 	useEffect(() => {
-		patternService.getAllPatterns().then((data) => setPatterns(data));
-		// .catch((e) => Toast.error(e.message));
+		patternService.getAllPatterns().then((data) => setPatterns(data))
+		.catch((e) => Toast.failure(e.message));
 	}, []);
 	return (
 		<div className="w-75 d-flex flex-column mx-auto mt-5">
 			{patterns.map((pattern) => (
 				<div>
 					<div className="border rounded w-100 bg-soft m-2 border-primary">
-						<PatternCard pattern={pattern} tags={false} />
+						<PatternCard pattern={pattern} />
 						<button
 							id={pattern.id}
 							onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
