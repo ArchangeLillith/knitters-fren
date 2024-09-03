@@ -24,8 +24,6 @@
 	"author": "Aria Walford",
 	"license": "MIT",
 	"dependencies": {
-		"@stripe/react-stripe-js": "^2.7.1",
-		"@stripe/stripe-js": "^3.5.0",
 		"@types/react-router-dom": "^5.3.3",
 		"@types/webpack": "^5.28.5",
 		"bcrypt": "^5.1.1",
@@ -36,7 +34,6 @@
 		"express": "^4.19.2",
 		"form-data": "^4.0.0",
 		"jsonwebtoken": "^9.0.2",
-		"mailgun.js": "^10.2.1",
 		"morgan": "^1.10.0",
 		"mysql2": "^3.9.8",
 		"passport": "^0.7.0",
@@ -47,7 +44,6 @@
 		"react-icons": "^5.2.1",
 		"react-router-dom": "^6.23.1",
 		"react-toastify": "^10.0.5",
-		"stripe": "^15.9.0",
 		"uuid": "^9.0.1",
 		"webpack": "^5.91.0"
 	},
