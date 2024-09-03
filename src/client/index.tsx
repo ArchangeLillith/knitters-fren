@@ -4,7 +4,6 @@ import App from "./App/App";
 
 import "./styles/app.scss";
 import "./styles/styles.css";
-import '@stripe/stripe-js'
 
 // ESBuild Hot Reload for dev environment only
 if (process.env.NODE_ENV === "development") {

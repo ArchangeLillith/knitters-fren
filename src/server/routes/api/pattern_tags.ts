@@ -16,7 +16,7 @@ router.get("/:id", async (req, res, next) => {
 	}
 });
 
-//POST /api/pattern_tags/id
+//POST /api/pattern_tags/delete/id
 router.post("/:id", async (req, res, next) => {
 	//Input to insert: values: { pattern_id: number; tag_ids: number[] }
 	const pattern_id = parseInt(req.params.id);

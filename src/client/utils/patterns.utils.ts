@@ -1,5 +1,6 @@
 import { IPattern } from "./types";
 
+//Zach
 //Refactor the sortby into an enum and make the whole thing a switch rather than a bunch of ifs
 export function sortPatterns(patterns: IPattern[], sortBy: string): IPattern[] {
 	if (sortBy === "date") {

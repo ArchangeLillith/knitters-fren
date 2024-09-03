@@ -6,24 +6,37 @@ import { IPattern } from "../utils/types";
 import patternService from "../services/pattern";
 import { sortPatterns } from "../utils/patterns.utils";
 import MostRecentRow from "../components/MostRecent";
+import Toast from "../components/Toast";
 
 interface HomeProps {}
 
 const Home = (props: HomeProps) => {
 	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
-	const [featured, setFeatured] = React.useState<IPattern>();
+	//This may blink more than if I left it blank, not sure what the best thing to do is
+	const [featured, setFeatured] = React.useState<IPattern>({
+		id: "0",
+		author_id: "Loading...",
+		title: "Loading...",
+		content: "Loading...",
+		created_at: "Loading...",
+	});
 	const [mostRecent, setMostRecent] = React.useState<IPattern[]>([]);
 
+	/**
+	 * Onload trigger, gets the patterns and sorts them, setting states for featured and most recent tiles
+	 */
 	useEffect(() => {
-		patternService.getAllPatterns().then((data) => {
-			const sortedPatterns: IPattern[] = sortPatterns(data, "date");
-			setPatterns(data);
-			const randomNumber = getRandomInt(data.length - 1);
-			setFeatured(data[randomNumber]);
-			setMostRecent(sortedPatterns.splice(0, 3));
-		});
-
-		// .catch((e) => Toast.error(e.message));
+		try {
+			patternService.getAllPatterns().then((data) => {
+				const sortedPatterns: IPattern[] = sortPatterns(data, "date");
+				setPatterns(data);
+				const randomNumber = getRandomInt(data.length - 1);
+				setFeatured(data[randomNumber]);
+				setMostRecent(sortedPatterns.splice(0, 3));
+			});
+		} catch {
+			(e) => Toast.failure(e.message);
+		}
 	}, []);
 
 	return (
