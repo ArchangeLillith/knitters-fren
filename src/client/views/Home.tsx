@@ -59,12 +59,20 @@ const Home = (props: HomeProps) => {
 					{featured && <PatternCard pattern={featured} featured={true} />}
 				</div>
 				<div className="mb-5">
-					<img
-						alt="site-logo-sleeping-nanachi"
-						src="/images/Nanachi-logo.png"
-						className="py-4"
-						style={{ height: "130%" }}
-					/>
+					<a
+						href="https://x.com/vbnmat"
+						target="_blank"
+						data-bs-toggle="tooltip"
+						data-bs-placement="top"
+						title="Meet the artist!"
+					>
+						<img
+							alt="site-logo-sleeping-nanachi"
+							src="/images/Nanachi-logo.png"
+							className="py-4"
+							style={{ height: "130%" }}
+						/>
+					</a>
 				</div>
 			</div>
 			<div className="container-fluid container" key="lower-section-container">

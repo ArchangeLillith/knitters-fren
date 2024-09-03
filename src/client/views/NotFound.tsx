@@ -9,12 +9,20 @@ const NotFound = (props: NotFoundProps) => {
 			id="404-container"
 		>
 			<div className="display-3">Sorry, this page doesn't exist</div>
-			<img
-				style={{ width: "250px" }}
-				src="/images/404.gif"
-				alt="loading..."
-				className="404-nanachi "
-			/>
+			<a
+				href="https://x.com/vbnmat"
+				target="_blank"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Meet the artist!"
+			>
+				<img
+					style={{ width: "250px" }}
+					src="/images/404.gif"
+					alt="loading..."
+					className="404-nanachi "
+				/>
+			</a>
 		</div>
 	);
 };

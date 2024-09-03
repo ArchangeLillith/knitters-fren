@@ -8,11 +8,19 @@ interface FooterProps {}
 const Footer = (props: FooterProps) => {
 	return (
 		<footer className="footer fixed-bottom justify-content-center align-items-center bg-muted d-flex">
-			<img
-				src="/images/nanachi-footer-hang.png"
-				style={{ height: "100px" }}
-				alt="Footer Image"
-			/>
+			<a
+				href="https://x.com/vbnmat"
+				target="_blank"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Meet the artist!"
+			>
+				<img
+					src="/images/nanachi-footer-hang.png"
+					style={{ height: "100px" }}
+					alt="Footer Image"
+				/>
+			</a>
 			<div className="text-center mx-5 w-100">
 				<div>
 					<ul

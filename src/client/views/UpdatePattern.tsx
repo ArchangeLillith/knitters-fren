@@ -158,15 +158,23 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 					Update the pattern~
 				</button>
 			</form>
-			<img
-				src="/images/drawing-nanachi.png"
-				style={{
-					position: "absolute",
-					top: "70%",
-					right: "4%",
-					width: "250px",
-				}}
-			></img>
+			<a
+				href="https://x.com/vbnmat"
+				target="_blank"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Meet the artist!"
+			>
+				<img
+					src="/images/drawing-nanachi.png"
+					style={{
+						position: "absolute",
+						top: "70%",
+						right: "4%",
+						width: "250px",
+					}}
+				></img>
+			</a>
 		</div>
 	);
 };

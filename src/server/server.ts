@@ -1,12 +1,14 @@
 import express from "express";
+import * as passport from "passport";
 import morgan from "morgan";
 import cors from "cors";
 import routes from "./routes";
-import { configurePassport } from "./middlewares/passport";
 import path from "path";
 
 const isProduction = process.env.NODE_ENV === "production";
 const isDevelopment = process.env.NODE_ENV === "development";
+
+import "./middlewares/passport-strategies.mw";
 
 const app = express();
 
@@ -22,7 +24,7 @@ app.head("status", (req, res) => {
 	res.sendStatus(200);
 });
 
-configurePassport(app);
+app.use(passport.initialize());
 app.use(express.static("public"));
 //Telling the backend to expect json, and telling it to use express to parse the json
 app.use(express.json());

@@ -1,8 +1,6 @@
-import { Router, query } from "express";
-import { checkToken } from "../../middlewares/auth.mw";
-import { v4 as uuidv4 } from "uuid";
+import { Router } from "express";
+
 import db from "../../db";
-import { useParams } from "react-router-dom";
 
 const router = Router();
 //Run all these routes prepended with the method through this middle ware
@@ -28,14 +26,6 @@ router.get("/", async (req, res, next) => {
 		res.json(result);
 	} catch (error) {
 		//Goes to our global error handler
-		next(error);
-	}
-});
-
-router.get("/private", checkToken, async (req, res, next) => {
-	try {
-		res.json("Private endpoint");
-	} catch (error) {
 		next(error);
 	}
 });

@@ -3,6 +3,7 @@ import patternsRouter from "./patterns";
 import tagsRouter from "./tags";
 import authorsRouter from "./authors";
 import searchRouter from "./search";
+import privateRouter from "./private";
 
 import pattern_tagsRouter from "./pattern_tags";
 

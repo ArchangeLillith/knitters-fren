@@ -80,17 +80,24 @@ const AddPattern = (props: AddPatternProps) => {
 
 	return (
 		<Container>
-			<img
-				src="/images/teacup-nanachi.png"
-				alt="teacup-nanachi"
-				style={{
-					zIndex: "-1",
-					width: "250px",
-					position: "absolute",
-					right: "1%",
-					top: "12%",
-				}}
-			/>
+			<a
+				href="https://x.com/vbnmat"
+				target="_blank"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Meet the artist!"
+			>
+				<img
+					src="/images/teacup-nanachi.png"
+					alt="teacup-nanachi"
+					style={{
+						width: "250px",
+						position: "absolute",
+						right: "1%",
+						top: "12%",
+					}}
+				/>
+			</a>
 			<form className="d-flex flex-column my-4 py-4">
 				<div className="form-group flex-grow-1 d-flex flex-column">
 					<label htmlFor="pattern-title">Pattern Title</label>
