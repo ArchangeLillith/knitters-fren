@@ -1,4 +1,5 @@
-import { Query } from "../pool";
+import { Query } from "../query";
+
 //API calls
 const all = () => Query<string[]>(`SELECT * FROM tags;`);
 

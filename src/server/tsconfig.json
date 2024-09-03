@@ -3,20 +3,15 @@
 	"compilerOptions": {
 		"outDir": "./dist/",
 		"module": "commonjs",
-		//What language typescript should look at to help us with auto complete and syntax
-		"target": "es5",
-		//Helpers for importing and exporting
+		"target": "ES5",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
-		//Allows the use of newer typsecript so it doesn't throw a fit
 		"lib": ["ES2017"],
-		"types": ["node", "express"],
-		//Shows where it can find our custom typings/interfaces
+		"types": ["node"],
 		"typeRoots": [
 			"./node_modules/@types",
 			"../node_modules/@types",
-			"../../node_modules/@types",
-			"./src/server/types"
+			"../../node_modules/@types"
 		]
 	},
 	"include": ["."]

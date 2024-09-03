@@ -1,5 +1,5 @@
-import { Query } from "../pool";
 import { IAuthorsTable, IPatternTable } from "../../types";
+import { Query } from "../query";
 
 //GET all patterns, joined to show the name of the author
 const all = () =>

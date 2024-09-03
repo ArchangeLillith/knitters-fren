@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 
-//Looks for the .env at the root
 dotenv.config();
 
 export default {

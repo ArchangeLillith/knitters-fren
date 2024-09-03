@@ -1,5 +1,5 @@
-import { Query } from "../pool";
 import { IAuthorsTable, IPatternTable } from "../../types";
+import { Query } from "../query";
 
 //GET all tags by the pattern ID
 const allByPatternId = (id: number) =>

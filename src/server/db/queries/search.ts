@@ -1,5 +1,5 @@
-import { Query } from "../pool";
-import { IAuthorsTable, IPatternTable } from "../../types";
+import {  IPatternTable } from "../../types";
+import { Query } from "../query";
 
 //Title query
 const findByTitle = (title: string) =>
