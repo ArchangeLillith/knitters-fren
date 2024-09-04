@@ -30,7 +30,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	useEffect(() => {
 		//Annoying to have this here, there's no way to access this page without an id in the url, but my linter/typescript doesn't know that so it throws a fit below that id can be undefined, but it can't if you reach this page...
 		if (!id) return;
-		patternService.getOnePattern(id).then((data) => setPattern(data));
+		patternService.getOnePattern(id).then(([data]) => setPattern(data));
 		patternTags
 			.allByPatternId(parseInt(id))
 			.then((tagsReturned) => setTags(tagsReturned))

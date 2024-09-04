@@ -1,21 +1,21 @@
-import {  IPatternTable } from "../../types";
+import type { IPatternTable } from "../../types";
 import { Query } from "../query";
 
 //Title query
-const findByTitle = (title: string) =>
+const findByTitle = (title: string): Promise<IPatternTable[]> =>
 	Query<IPatternTable[]>(
 		`SELECT * FROM patterns WHERE title LIKE concat('%', ?, '%')`,
 		[title]
 	);
 
-const findByContent = (content: string) =>
+const findByContent = (content: string): Promise<IPatternTable[]> =>
 	Query<IPatternTable[]>(
 		`SELECT * FROM patterns WHERE content LIKE concat('%', ?, '%')`,
 		[content]
 	);
 
 //Tags query
-const findByTags = (tag: number) =>
+const findByTags = (tag: number): Promise<IPatternTable[]> =>
 	Query<IPatternTable[]>(
 		`SELECT p.id, p.author_id, p.title, p.content, p.created_at
 		FROM patterns p
@@ -25,7 +25,7 @@ const findByTags = (tag: number) =>
 		[tag]
 	);
 
-const findByTagsStrict = (tags: number[]) =>
+const findByTagsStrict = (tags: number[]): Promise<IPatternTable[]> =>
 	Query<IPatternTable[]>(
 		`
 			SELECT p.id, p.author_id, p.title, p.content, p.created_at

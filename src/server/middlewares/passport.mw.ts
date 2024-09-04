@@ -15,8 +15,7 @@ export function configurePassport(app: Express) {
 			},
 			async (email, password, done) => {
 				try {
-					const [userFound] = await db.authors.find("email", email);
-
+					const [userFound] = await db.authors.find(email);
 					if (
 						userFound &&
 						(await bcrypt.compare(password, userFound.password))

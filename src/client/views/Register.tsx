@@ -8,6 +8,10 @@ const Register = (props: RegisterProps) => {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 
+	const registerUser= () => {
+		
+	}
+
 	return (
 		<Container>
 			<div className="d-flex align-items-center flex-column justify-content-center">
@@ -48,12 +52,12 @@ const Register = (props: RegisterProps) => {
 								placeholder="Password"
 							/>
 						</div>
-						<button type="submit" className="btn btn-primary mb-2">
+						<button type="button" className="btn btn-primary mb-2" onClick={registerUser}>
 							Submit
 						</button>
 						<div>
-							Don't have an account? Register{" "}
-							<Link to="/register" style={{ color: "#cb8585" }}>
+							Already have an account? Log in{" "}
+							<Link to="/login" style={{ color: "#cb8585" }}>
 								here!
 							</Link>
 						</div>

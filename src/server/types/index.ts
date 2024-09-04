@@ -25,3 +25,8 @@ export interface IAuthorsTable {
 	password?: string;
 	role?: number;
 }
+
+export interface IPatternTags {
+	name: string;
+	id: number;
+}

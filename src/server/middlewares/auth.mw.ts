@@ -6,31 +6,39 @@ export const handleLogin = (
 	res: Response,
 	next: NextFunction
 ) => {
-	passport.authenticate("local", { session: false }, (error, user, info) => {
-		if (error) {
-			return next(error);
-		}
+	passport.authenticate(
+		"local",
+		{ session: false },
+		(error: Error, user, info) => {
+			if (error) {
+				return next(error);
+			}
 
-		if (info) {
-			return res.status(401).json({ message: info.message });
-		}
+			if (info) {
+				return res.status(401).json({ message: info.message });
+			}
 
-		req.currentUser = user;
-		next();
-	})(req, res, next);
+			req.currentUser = user;
+			next();
+		}
+	)(req, res, next);
 };
 
 export const checkToken = (req: Request, res: Response, next: NextFunction) => {
-	passport.authenticate("jwt", { session: false }, (error, user, info) => {
-		if (error) {
-			return next(error);
-		}
+	passport.authenticate(
+		"jwt",
+		{ session: false },
+		(error: Error, user, info) => {
+			if (error) {
+				return next(error);
+			}
 
-		if (info) {
-			return res.status(401).json({ message: info.message });
-		}
+			if (info) {
+				return res.status(401).json({ message: info.message });
+			}
 
-		req.payload = user;
-		next();
-	})(req, res, next);
+			req.payload = user;
+			next();
+		}
+	)(req, res, next);
 };

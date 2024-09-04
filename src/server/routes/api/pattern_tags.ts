@@ -16,6 +16,7 @@ router.get("/:id", async (req, res, next) => {
 	}
 });
 
+//*Delete query
 //POST /api/pattern_tags/delete/id
 router.post("/:id", async (req, res, next) => {
 	//Input to insert: values: { pattern_id: number; tag_ids: number[] }
@@ -26,7 +27,6 @@ router.post("/:id", async (req, res, next) => {
 		const tag_id: number = parseInt(idArray[i]);
 		values.push([pattern_id, tag_id]);
 	}
-	console.log(`VALUES`, values);
 	try {
 		await db.pattern_tags.destroyAllBasedOnPatternId(pattern_id);
 		try {
