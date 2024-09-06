@@ -5,7 +5,7 @@ import baseService from "./base";
  * Gets all the tags for the pattern id passed in
  * @returns an array(?) of tags
  */
-const allByPatternId = async (id: number) => {
+const allByPatternId = async (id: string) => {
 	try {
 		const patterns = await baseService.get(`/api/pattern_tags/${id}`);
 		return patterns;
@@ -21,7 +21,7 @@ const allByPatternId = async (id: number) => {
  * @returns the pattern (I think)
  */
 const addNewTags = async (payload: {
-	pattern_id: number;
+	pattern_id: string;
 	tag_ids: number[];
 }) => {
 	try {
@@ -32,6 +32,7 @@ const addNewTags = async (payload: {
 		);
 		return response.pattern;
 	} catch (error) {
+		console.log(`catch in addnewtags`);
 		throw error;
 	}
 };

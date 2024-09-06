@@ -1,9 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthProvider";
+import storage from "../utils/storage";
 
 interface NavBarProps {}
 
 const NavBar = (props: NavBarProps) => {
+	const { logout } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const { authState } = useContext(AuthContext);
+	const logOut = () => {
+		try {
+			//Remove the token
+			storage.removeToken();
+			//Set auth state back to false
+			logout();
+			//Go home!
+			navigate(`/`);
+		} catch (error) {
+			console.error("Error logging out:", error);
+		}
+	};
 	return (
 		<nav
 			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
@@ -59,11 +76,27 @@ const NavBar = (props: NavBarProps) => {
 							</Link>
 						</li>
 					</ul>
-					<div>
-						<Link to="/login" className="nav-link">
-							Login!
-						</Link>
-					</div>
+					{authState.username && (
+						<div>
+							<div>Welcome back {authState.username}!</div>
+						</div>
+					)}
+					{authState.authenticated && (
+						<div>
+							<div>
+								<button onClick={logOut} className="nav-link">
+									Log out!
+								</button>
+							</div>
+						</div>
+					)}
+					{!authState.authenticated && (
+						<div>
+							<Link to="/login" className="nav-link">
+								Login!
+							</Link>
+						</div>
+					)}
 				</div>
 			</div>
 		</nav>

@@ -19,10 +19,11 @@ export interface IPatternTable {
 
 export interface IAuthorsTable {
 	id?: string;
-	name?: string;
-	created_at?: string;
+	username?: string;
+	email?: string;
 	password?: string;
-	role?: number;
+	created_at?: string;
+	role?: string;
 }
 
 export interface IPatternTags {

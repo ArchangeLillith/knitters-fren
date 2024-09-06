@@ -14,12 +14,12 @@ const all = (): Promise<(IPatternTable & IAuthorsTable)[]> =>
 		authors ON authors.id = patterns.author_id;`);
 
 //GET one pattern, joined to show the authors name
-const oneById = (id: number): Promise<IPatternTable & IAuthorsTable> =>
+const oneById = (id: string): Promise<IPatternTable & IAuthorsTable> =>
 	Query<IPatternTable & IAuthorsTable>(
 		`
 SELECT 
   patterns.*,
-  authors.name 
+  authors.username 
 FROM 
   patterns 
       JOIN 
@@ -47,14 +47,12 @@ FROM
 //POST a pattern
 //! this does not include any tags, ensure tags are being set too
 const insert = async (values: IPatternTable): Promise<any> => {
-	const { title, content, author_id } = values;
-	console.log("Hit the SQL query with: ", title, content, author_id);
+	const { title, content, id, author_id } = values;
 
 	try {
-		const sanitizedValues = [title, content, parseInt(author_id)];
-
+		const sanitizedValues = [title, content, id, author_id];
 		const returnedHeaders = await QueryMetadata(
-			"INSERT INTO patterns (title, content, author_id) VALUES (?, ?, ?)",
+			"INSERT INTO patterns (title, content, id, author_id) VALUES (?, ?, ?, ?)",
 			sanitizedValues
 		);
 		return returnedHeaders;
@@ -66,7 +64,7 @@ const insert = async (values: IPatternTable): Promise<any> => {
 };
 
 //DELETE a pattern
-const destroy = (id: number): Promise<ResultSetHeader> =>
+const destroy = (id: string): Promise<ResultSetHeader> =>
 	QueryMetadata("DELETE FROM patterns WHERE id = ?", [id]);
 
 //PATCH a pattern

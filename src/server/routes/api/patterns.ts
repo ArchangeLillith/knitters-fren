@@ -9,7 +9,7 @@ const router = Router();
 //GET api/patterns/:id
 router.get("/:id", async (req, res, next) => {
 	try {
-		const id = parseInt(req.params.id);
+		const id = req.params.id;
 		//The one pattern comes back in an array and this destructures it to only the pattern
 		const result = await db.patterns.oneById(id);
 		res.json(result);
@@ -48,7 +48,7 @@ router.post("/", async (req, res, next) => {
 //DELETE api/patterns/:id
 router.delete("/:id", async (req, res, next) => {
 	try {
-		const id = parseInt(req.params.id);
+		const id = req.params.id;
 		const author_id = req.body.author_id;
 		await db.pattern_tags.destroyAllBasedOnPatternId(id);
 		const result = await db.patterns.destroy(id);

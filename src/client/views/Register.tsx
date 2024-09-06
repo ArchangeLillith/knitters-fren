@@ -42,21 +42,13 @@ const Register = (props: RegisterProps) => {
 			<div className="d-flex align-items-center flex-column justify-content-center">
 				<div className="d-flex align-items-center flex-column justify-content-center p-2 my-5 mx-3 bg-soft border-pink rounded w-50">
 					<h3>Nice to meet you</h3>
-					<a
-						href="https://x.com/vbnmat"
-						target="_blank"
-						data-bs-toggle="tooltip"
-						data-bs-placement="top"
-						title="Meet the artist!"
-					>
-						<img
-							src="/images/nice-to-meet-you-nanachi.png"
-							alt="teacup-nanachi"
-							style={{
-								width: "250px",
-							}}
-						/>
-					</a>
+					<img
+						src="/images/nice-to-meet-you-nanachi.png"
+						alt="teacup-nanachi"
+						style={{
+							width: "250px",
+						}}
+					/>
 					<form onSubmit={registerUser}>
 						<div className="form-group">
 							<label htmlFor="emailInput">Email address</label>

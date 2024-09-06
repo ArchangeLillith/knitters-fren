@@ -32,7 +32,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 		if (!id) return;
 		patternService.getOnePattern(id).then(([data]) => setPattern(data));
 		patternTags
-			.allByPatternId(parseInt(id))
+			.allByPatternId(id)
 			.then((tagsReturned) => setTags(tagsReturned))
 			.catch((e) => Toast.failure(e.message));
 	}, []);

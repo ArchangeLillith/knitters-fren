@@ -12,9 +12,20 @@ export interface IPattern {
 }
 
 export interface IUser {
+	id?: string;
 	username?: string;
 	email?: string;
 	patternsAuthored?: string[];
 	patternsFavorited?: string[];
 	commentsAuthored?: string[];
 }
+
+export enum ELocations {
+	CreatePattern = "/patterns/new",
+	FavoritePatterns = "/patterns/favorites",
+}
+
+export const locationStrings: Record<string, string> = {
+	[ELocations.CreatePattern]: "new pattern ",
+	[ELocations.FavoritePatterns]: "favorite patterns ",
+};

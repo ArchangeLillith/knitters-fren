@@ -47,7 +47,7 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 
 		//Get the tags that are already selected for this pattern
 		patternTags
-			.allByPatternId(parseInt(id))
+			.allByPatternId(id)
 			.then((data) => {
 				setSelectedTags(data);
 			})
@@ -71,7 +71,7 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 		console.log(`DTO`, patternDTO);
 		noteService.updatePattern(id, patternDTO);
 
-		const pattern_id: number = parseInt(pattern.id);
+		const pattern_id: string = pattern.id;
 		const tag_ids: number[] = [];
 		for (let tag of selectedTags) {
 			tag_ids.push(tag.id);

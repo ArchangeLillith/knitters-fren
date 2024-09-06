@@ -27,7 +27,6 @@ const Home = (props: HomeProps) => {
 	useEffect(() => {
 		try {
 			patternService.getAllPatterns().then((data) => {
-				console.log(`DATA`, data);
 				const sortedPatterns: IPattern[] = sortPatterns(data, "date");
 				setPatterns(data);
 				const randomNumber = getRandomInt(data.length - 1);

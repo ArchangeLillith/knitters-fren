@@ -36686,7 +36686,7 @@
 			setFoundPatterns([]);
 			if (strictComparison) {
 				search_default
-					.findByTagsStrict(chosenTags)
+					.Strict(chosenTags)
 					.then((res) => setFoundPatterns(res.finalPatterns));
 			} else {
 				search_default

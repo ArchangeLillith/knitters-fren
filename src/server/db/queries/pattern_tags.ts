@@ -3,7 +3,7 @@ import type { IAuthorsTable, IPatternTable, IPatternTags } from "../../types";
 import { Query, QueryMetadata } from "../query";
 
 //GET all tags by the pattern ID
-const allByPatternId = (id: number): Promise<IPatternTags[]> =>
+const allByPatternId = (id: string): Promise<IPatternTags[]> =>
 	Query<IPatternTags[]>(
 		`
 SELECT 
@@ -33,7 +33,7 @@ FROM
 	);
 
 //POST the original tags to the pattern
-const insert = (values: [number, number][]): Promise<ResultSetHeader> => {
+const insert = (values: [string, number][]): Promise<ResultSetHeader> => {
 	// Dynamically create placeholders for however many pairs of numbers are in the array
 	const placeholders = values.map(() => `(?, ?)`).join(", ");
 
@@ -50,7 +50,7 @@ const insert = (values: [number, number][]): Promise<ResultSetHeader> => {
 };
 
 //DELETE all tags from one pattern
-const destroyAllBasedOnPatternId = (id: number): Promise<ResultSetHeader> =>
+const destroyAllBasedOnPatternId = (id: string): Promise<ResultSetHeader> =>
 	QueryMetadata("DELETE FROM pattern_tags WHERE pattern_id = ?", [id]);
 
 //PATCH a tag

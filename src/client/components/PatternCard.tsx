@@ -18,7 +18,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 	 */
 	useEffect(() => {
 		patternTags
-			.allByPatternId(parseInt(pattern.id))
+			.allByPatternId(pattern.id)
 			.then((tagsReturned) => setTags(tagsReturned));
 	}, []);
 

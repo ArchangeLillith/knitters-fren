@@ -5,6 +5,7 @@ import patternService from "../services/pattern";
 import Container from "../components/Container";
 import Toast from "../components/Toast";
 import { Navigate, useLocation } from "react-router-dom";
+import AuthWrapper from "../components/AuthWrapper";
 
 interface PatternsProps {}
 
@@ -26,6 +27,7 @@ const FavoritePatterns = (props: PatternsProps) => {
 		return <Navigate to="/" state={{ from: location }} />;
 	}
 	return (
+		<AuthWrapper>
 		<Container>
 			<div className="w-75 d-flex flex-column mx-auto mt-5">
 				{patterns.map((pattern) => (
@@ -38,6 +40,7 @@ const FavoritePatterns = (props: PatternsProps) => {
 				))}
 			</div>
 		</Container>
+		</AuthWrapper>
 	);
 };
 

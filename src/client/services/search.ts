@@ -55,7 +55,7 @@ const findByTags = async (payload: objectType[]) => {
 		});
 		console.log(`response`, response);
 		if (response.finalPatterns.length === 0) {
-			return response.status(204).json({ message: "No patterns found" });
+			throw new Error("No patterns found");
 		}
 		return response;
 	} catch (error) {

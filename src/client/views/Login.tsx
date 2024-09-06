@@ -1,19 +1,22 @@
 import React, { FormEvent, useContext, useState } from "react";
 import Container from "../components/Container";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginService from "../services/auth";
 import { AuthContext } from "../components/AuthProvider";
+import { locationStrings } from "../utils/types";
 interface LoginProps {}
 
 const Login = (props: LoginProps) => {
+	const { login } = useContext(AuthContext);
+	const { state } = useLocation();
+	const fromLocation = state?.from;
+	const navigate = useNavigate();
 	const [password, setPassword] = useState<string>("");
 	const [username, setUsername] = useState<string>("");
-	const navigate = useNavigate();
 
 	const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		try {
-			const { login } = useContext(AuthContext);
 			//Authenticat and get the token
 			const token = await loginService.loginUser({ username, password });
 			//Use the token to update the auth state
@@ -24,9 +27,18 @@ const Login = (props: LoginProps) => {
 			console.error("Error logging in:", error);
 		}
 	};
+
 	return (
 		<Container>
 			<div className="d-flex align-items-center flex-column justify-content-center">
+				{fromLocation && (
+					<div className="d-flex align-items-center">
+						<div>
+							You've been redirected from the {locationStrings[fromLocation]}{" "}
+							page because you need to be logged in to access that page
+						</div>
+					</div>
+				)}
 				<div className="d-flex align-items-center flex-column justify-content-center p-2 my-5 mx-3 bg-soft border-pink rounded w-50">
 					<h3>Welcome back~</h3>
 					<img

@@ -35,6 +35,7 @@ const getOnePattern = async (id: string) => {
  * @returns the patternId of the newly written pattern
  */
 const addNewPattern = async (payload: {
+	id: string;
 	title: string;
 	content: string;
 	author_id: string;
