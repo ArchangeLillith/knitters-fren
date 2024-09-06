@@ -28,8 +28,8 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 				{featured && (
 					// Changing the text color here to white for the featured section
 					<Link
-						className="text-color-white text-decoration-none"
-						style={{ fontSize: "30px" }}
+						className="text-decoration-none"
+						style={{ fontSize: "30px", color: "white" }}
 						to={`/patterns/${pattern.id}`}
 					>
 						{pattern.title}
@@ -38,7 +38,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 				{!featured && (
 					//Changing the text to the primary color which is default
 					<Link
-						className="font-color-primary text-decoration-none"
+						className="font-color-primary link text-decoration-none"
 						style={{ fontSize: "25px" }}
 						to={`/patterns/${pattern.id}`}
 					>

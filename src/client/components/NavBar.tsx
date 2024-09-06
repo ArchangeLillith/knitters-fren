@@ -11,7 +11,7 @@ const NavBar = (props: NavBarProps) => {
 		>
 			<div className="container-fluid">
 				<Link
-					className="navbar-brand "
+					className="navbar-brand"
 					to="/"
 					style={{
 						fontFamily: "'Brush Script MT', cursive",

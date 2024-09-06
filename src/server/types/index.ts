@@ -19,7 +19,6 @@ export interface IPatternTable {
 
 export interface IAuthorsTable {
 	id?: string;
-	email?: string;
 	name?: string;
 	created_at?: string;
 	password?: string;

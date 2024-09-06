@@ -30,7 +30,7 @@ const Footer = (props: FooterProps) => {
 						<li className="nav-item mx-2" style={{ color: "#e78686" }}>
 							<Link
 								to="/"
-								className="primary-link  text-decoration-none"
+								className="primary-link link text-decoration-none"
 								aria-current="page"
 							>
 								Home
@@ -62,7 +62,11 @@ const Footer = (props: FooterProps) => {
 				<span className="muted text-white small fw-lighter fst-italic">
 					Developed by Aria Walford for Covalence labs and personal use, images
 					from{" "}
-					<a href="https://www.pixiv.net/en/users/13981606/illustrations">
+					<a
+						target="_blank"
+						className="link"
+						href="https://www.pixiv.net/en/users/13981606/illustrations"
+					>
 						this creator
 					</a>
 				</span>

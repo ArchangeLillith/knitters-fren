@@ -130,7 +130,7 @@ function SearchView() {
 	const resultsHtml = foundPatterns ? (
 		foundPatterns.map((pattern, i) => (
 			<div
-				className="border rounded w-100 bg-soft m-2 border-primary"
+				className="border rounded w-100 bg-soft m-2 border-pink"
 				key={`patternCard-${i}`}
 			>
 				<SearchCard pattern={pattern} />
@@ -256,7 +256,7 @@ function SearchView() {
 						<label
 							className={`${
 								tagsActive ? "visible" : "invisible"
-							}  btn btn-soft small p-2 m-2 text-muted border border-primary btn btn-outline-primary mx-auto`}
+							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-outline-primary mx-auto`}
 							htmlFor="strictModeBtn"
 						>
 							Strict comparison
@@ -265,7 +265,7 @@ function SearchView() {
 						<button
 							className={`${
 								tagsActive ? "visible" : "invisible"
-							}  btn btn-soft small p-2 m-2 text-muted border border-primary btn btn-primary mx-auto`}
+							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 							onClick={searchTrigger}
 						>
 							Search!
@@ -274,7 +274,7 @@ function SearchView() {
 							onClick={clearSelection}
 							className={`${
 								tagsActive ? "visible" : "invisible"
-							}  btn btn-soft small p-2 m-2 text-muted border border-primary btn btn-primary mx-auto`}
+							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 						>
 							Clear Tags
 						</button>

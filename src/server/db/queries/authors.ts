@@ -14,11 +14,17 @@ const find = (val: string): Promise<IAuthorsTable[]> =>
 	Query<IAuthorsTable[]>(`SELECT * FROM authors WHERE email = ?;`, [val]);
 
 const insert = (values: {
-	name: string;
+	id: string;
 	email: string;
-	handle: string;
+	username: string;
+	password: string;
+	role: string;
 }): Promise<ResultSetHeader> => {
-	return QueryMetadata("INSERT INTO authors SET ?", [values]);
+	const { id, email, username, password, role } = values;
+	return QueryMetadata(
+		"INSERT INTO authors (id, email, username, password, role) VALUES (?,?,?,?,?)",
+		[id, email, username, password, role]
+	);
 };
 
 export default { all, one, find, insert };

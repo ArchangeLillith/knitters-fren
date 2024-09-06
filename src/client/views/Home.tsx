@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import Container from "../components/Container";
 import PatternCard from "../components/PatternCard";
 import { IPattern } from "../utils/types";
@@ -28,6 +27,7 @@ const Home = (props: HomeProps) => {
 	useEffect(() => {
 		try {
 			patternService.getAllPatterns().then((data) => {
+				console.log(`DATA`, data);
 				const sortedPatterns: IPattern[] = sortPatterns(data, "date");
 				setPatterns(data);
 				const randomNumber = getRandomInt(data.length - 1);
@@ -45,7 +45,7 @@ const Home = (props: HomeProps) => {
 				<div
 					id="featured-patterns"
 					className="mt-5 bg-bright rounded justify-content-center d-flex flex-column align-items-center "
-					style={{ maxWidth: "50%" }}
+					style={{ maxWidth: "50%", paddingRight: "3%", paddingLeft: "3%" }}
 				>
 					<div
 						style={{

@@ -10,12 +10,11 @@ export function configurePassport(app: Express) {
 	passport.use(
 		new PassportLocal.Strategy(
 			{
-				usernameField: "email",
 				session: false,
 			},
-			async (email, password, done) => {
+			async (username, password, done) => {
 				try {
-					const [userFound] = await db.authors.find(email);
+					const [userFound] = await db.authors.find(username);
 					if (
 						userFound &&
 						(await bcrypt.compare(password, userFound.password))

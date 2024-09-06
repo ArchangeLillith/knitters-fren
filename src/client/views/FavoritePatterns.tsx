@@ -4,22 +4,27 @@ import PatternCard from "../components/PatternCard";
 import patternService from "../services/pattern";
 import Container from "../components/Container";
 import Toast from "../components/Toast";
+import { Navigate, useLocation } from "react-router-dom";
 
 interface PatternsProps {}
 
-const Patterns = (props: PatternsProps) => {
+const FavoritePatterns = (props: PatternsProps) => {
 	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
-
+	const location = useLocation();
 	/**
 	 * This fetches all the patterns on load once from the databse and sets them in state to display them
 	 */
 	useEffect(() => {
-		patternService
-			.getAllPatterns()
-			.then((data) => setPatterns(data))
-			.catch((e) => Toast.failure(e.message));
+		//make this get eh fav patterns
+		// patternService
+		// 	.getAllPatterns()
+		// 	.then((data) => setPatterns(data))
+		// 	.catch((e) => Toast.failure(e.message));
 	}, []);
-
+	const loggedIn = false;
+	if (!loggedIn) {
+		return <Navigate to="/" state={{ from: location }} />;
+	}
 	return (
 		<Container>
 			<div className="w-75 d-flex flex-column mx-auto mt-5">
@@ -36,4 +41,4 @@ const Patterns = (props: PatternsProps) => {
 	);
 };
 
-export default Patterns;
+export default FavoritePatterns;

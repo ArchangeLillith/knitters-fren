@@ -26,7 +26,7 @@ const AdminPanel = (props: AdminPanelProps) => {
 		<div className="w-75 d-flex flex-column mx-auto mt-5">
 			{patterns.map((pattern) => (
 				<div>
-					<div className="border rounded w-100 bg-soft m-2 border-primary">
+					<div className="border rounded w-100 bg-soft m-2 border-pink">
 						<PatternCard pattern={pattern} />
 						<button
 							id={pattern.id}

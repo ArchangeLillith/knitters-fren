@@ -10,3 +10,11 @@ export interface IPattern {
 	created_at: string;
 	tags?: string[];
 }
+
+export interface IUser {
+	username?: string;
+	email?: string;
+	patternsAuthored?: string[];
+	patternsFavorited?: string[];
+	commentsAuthored?: string[];
+}

@@ -1,44 +1,69 @@
 import React, { createContext, useState, useEffect } from "react";
 import authService from "../services/auth";
+import storage from "../utils/storage";
+import { IPattern, IUser } from "../utils/types";
 
-//Bro what an ugly type lol
-export const AuthContext = createContext<
-	[
-		{ authenticated: boolean; checking: boolean },
-		React.Dispatch<
-			React.SetStateAction<{
-				authenticated: boolean;
-				checking: boolean;
-			}>
-		>
-	]
->([{ authenticated: true, checking: true }, () => {}]);
+interface AuthState extends IUser {
+	authenticated: boolean;
+}
+
+// Extend AuthContext to include a login function
+interface AuthContextType {
+	authState: AuthState;
+	setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
+	login: (token: string) => void;
+	updateUserData: (userData: IUser) => void; // Function to update user data
+}
+
+export const AuthContext = createContext<AuthContextType>({
+	authState: { authenticated: false },
+	setAuthState: () => {},
+	login: () => {},
+	updateUserData: () => {},
+});
 
 interface AuthProviderProps {
 	children: React.ReactNode;
 }
 
 const AuthProvider = (props: AuthProviderProps) => {
-	const [authState, setAuthState] = useState<{
-		authenticated: boolean;
-		checking: boolean;
-	}>({
+	const [authState, setAuthState] = useState<AuthState>({
 		authenticated: false,
-		checking: true,
 	});
 
-	// useEffect(() => {
-	// 	authService
-	// 		.validateToken()
-	// 		.then(() => {
-	// 			setAuthState({ authenticated: true, checking: false });
-	// 		})
-	// 		.catch(() => setAuthState({ authenticated: false, checking: false }));
-	// }, []);
+	const login = () => {
+		setAuthState((prevState) => ({
+			...prevState,
+			authenticated: true,
+		}));
+	};
 
-	//If your app isn't rendering, this is why. This will intercept the render and only give you what this is spitting out, so we need to tell it that it should render all it's children instead of itself. This allows us to wrap the whole app in a context and dodge having to prop drill
+	// Function to update user data in the state
+	const updateUserData = (userData: IUser) => {
+		setAuthState((prevState) => ({
+			...prevState,
+			...userData,
+		}));
+	};
+
+	useEffect(() => {
+		const token = storage.getToken();
+		if (!token) {
+			return;
+		}
+		authService
+			.validateToken(token)
+			.then((userData) => {
+				// Assuming validateToken returns user data
+				setAuthState({ authenticated: true, ...userData });
+			})
+			.catch(() => setAuthState({ authenticated: false }));
+	}, []);
+
 	return (
-		<AuthContext.Provider value={[authState, setAuthState]}>
+		<AuthContext.Provider
+			value={{ authState, setAuthState, login, updateUserData }}
+		>
 			{props.children}
 		</AuthContext.Provider>
 	);

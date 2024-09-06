@@ -7,7 +7,7 @@ const all = (): Promise<(IPatternTable & IAuthorsTable)[]> =>
 	Query<(IPatternTable & IAuthorsTable)[]>(`
 	SELECT 
 		patterns.*,
-		authors.name 
+		authors.username
 	FROM 
 		patterns 
 				JOIN 

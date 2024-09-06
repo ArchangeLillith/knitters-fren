@@ -29,7 +29,7 @@ const MostRecentRow = ({ pattern }: PatternCardProps) => {
 				<Link
 					to={`/patterns/${pattern.id}`}
 					key={`most-recent-${pattern.id}`}
-					className="lead w-50"
+					className="lead w-50 link"
 				>
 					{pattern.title}
 				</Link>

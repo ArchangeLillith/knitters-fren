@@ -34,13 +34,12 @@ FROM
 
 //POST the original tags to the pattern
 const insert = (values: [number, number][]): Promise<ResultSetHeader> => {
-	// Dynamically create placeholders for each tuple, e.g., "(?, ?), (?, ?), ..."
+	// Dynamically create placeholders for however many pairs of numbers are in the array
 	const placeholders = values.map(() => `(?, ?)`).join(", ");
 
-	// Flatten the values array, e.g., [[1, 2], [3, 4]] becomes [1, 2, 3, 4]
+	// Flatten the values array, [[1, 2], [3, 4]] becomes [1, 2, 3, 4]
 	const flattenedValues = values.flat();
 
-	// Construct the SQL query with the dynamically created placeholders
 	const sql = `
     INSERT INTO pattern_tags (pattern_id, tag_id)
     VALUES ${placeholders};
