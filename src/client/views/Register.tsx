@@ -1,11 +1,19 @@
-import React, { FormEvent, MouseEventHandler, useState } from "react";
-import { Link } from "react-router-dom";
+import React, {
+	FormEvent,
+	MouseEventHandler,
+	useContext,
+	useState,
+} from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import registerService from "../services/auth";
+import { AuthContext } from "../components/AuthProvider";
 
 interface RegisterProps {}
 
 const Register = (props: RegisterProps) => {
+	const { login } = useContext(AuthContext);
+	const navigate = useNavigate();
 	const [email, setEmail] = useState<string>("");
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
@@ -24,7 +32,8 @@ const Register = (props: RegisterProps) => {
 			errors.push("all fields are required");
 		return errors;
 	};
-	const registerUser = (event: FormEvent<HTMLFormElement>) => {
+
+	const registerUser = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		const errors = validateFields(email, password, confirmPassword, username);
@@ -34,7 +43,10 @@ const Register = (props: RegisterProps) => {
 			return;
 		}
 		const authorDTO = { email, password, username };
-		registerService.registerUser(authorDTO);
+		const token = await registerService.registerUser(authorDTO);
+		login(token);
+		//Go home!
+		navigate(`/`);
 	};
 
 	return (

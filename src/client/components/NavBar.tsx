@@ -9,6 +9,10 @@ const NavBar = (props: NavBarProps) => {
 	const { logout } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
+
+	/**
+	 * Logs the user out by removing the token and calling to the auth state to reset the state
+	 */
 	const logOut = () => {
 		try {
 			//Remove the token
@@ -21,6 +25,7 @@ const NavBar = (props: NavBarProps) => {
 			console.error("Error logging out:", error);
 		}
 	};
+	
 	return (
 		<nav
 			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}

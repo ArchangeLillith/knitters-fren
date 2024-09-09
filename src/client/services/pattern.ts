@@ -15,8 +15,8 @@ const getAllPatterns = async () => {
 
 /**
  *
- * @param id - the id of the requested pattern
  * Calls to the backend to grab the pattern based on the id passed in
+ * @param id - the id of the requested pattern
  * @returns the pattern requested
  */
 const getOnePattern = async (id: string) => {
@@ -30,8 +30,8 @@ const getOnePattern = async (id: string) => {
 
 /**
  *
- * @param payload - an object with the required parameters to write a pattern into the database
  * Calls to the backend and writes a new pattern to the database
+ * @param payload - an object with the required parameters to write a pattern into the database
  * @returns the patternId of the newly written pattern
  */
 const addNewPattern = async (payload: {
@@ -50,8 +50,8 @@ const addNewPattern = async (payload: {
 };
 
 /**
- * @param id - the patternId to destroy
  * Destorys the pattern based on id, backend also handles the joint table deletion so this is a one stop shop to delete the pattern fully
+ * @param id - the patternId to destroy
  */
 const destroyPattern = async (id: string) => {
 	try {
@@ -62,9 +62,9 @@ const destroyPattern = async (id: string) => {
 };
 
 /**
+ * Updates data on the pattern based on id, but doesn't change the pattern id
  * @param id - the pattern that's being updated
  * @param payload - the new data to be written to the pattern
- * Updates data on the pattern based on id, but doesn't change the pattern id
  */
 const updatePattern = async (
 	id: string,

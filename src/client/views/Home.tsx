@@ -9,17 +9,23 @@ import Toast from "../components/Toast";
 
 interface HomeProps {}
 
+interface PatternProps {
+	fullList: IPattern[];
+	featured: IPattern;
+	mostRecent: IPattern[];
+}
 const Home = (props: HomeProps) => {
-	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
-	//This may blink more than if I left it blank, not sure what the best thing to do is
-	const [featured, setFeatured] = React.useState<IPattern>({
-		id: "0",
-		author_id: "Loading...",
-		title: "Loading...",
-		content: "Loading...",
-		created_at: "Loading...",
+	const [patterns, setPatterns] = React.useState<PatternProps>({
+		fullList: [],
+		featured: {
+			id: "0",
+			author_id: "Loading...",
+			title: "Loading...",
+			content: "Loading...",
+			created_at: "Loading...",
+		},
+		mostRecent: [],
 	});
-	const [mostRecent, setMostRecent] = React.useState<IPattern[]>([]);
 
 	/**
 	 * Onload trigger, gets the patterns and sorts them, setting states for featured and most recent tiles
@@ -27,14 +33,17 @@ const Home = (props: HomeProps) => {
 	useEffect(() => {
 		try {
 			patternService.getAllPatterns().then((data) => {
+				const fullList = data;
 				const sortedPatterns: IPattern[] = sortPatterns(data, "date");
-				setPatterns(data);
 				const randomNumber = getRandomInt(data.length - 1);
-				setFeatured(data[randomNumber]);
-				setMostRecent(sortedPatterns.splice(0, 3));
+				setPatterns({
+					fullList: fullList,
+					featured: fullList[randomNumber],
+					mostRecent: sortedPatterns.splice(0, 3),
+				});
 			});
 		} catch {
-			(e) => Toast.failure(e.message);
+			(e) => alert(e);
 		}
 	}, []);
 
@@ -55,23 +64,17 @@ const Home = (props: HomeProps) => {
 					>
 						Featured Pattern:
 					</div>
-					{featured && <PatternCard pattern={featured} featured={true} />}
+					{patterns.featured && (
+						<PatternCard pattern={patterns.featured} featured={true} />
+					)}
 				</div>
 				<div className="mb-5">
-					<a
-						href="https://x.com/vbnmat"
-						target="_blank"
-						data-bs-toggle="tooltip"
-						data-bs-placement="top"
-						title="Meet the artist!"
-					>
-						<img
-							alt="site-logo-sleeping-nanachi"
-							src="/images/Nanachi-logo.png"
-							className="py-4"
-							style={{ height: "130%" }}
-						/>
-					</a>
+					<img
+						alt="site-logo-sleeping-nanachi"
+						src="/images/Nanachi-logo.png"
+						className="py-4"
+						style={{ height: "130%" }}
+					/>
 				</div>
 			</div>
 			<div className="container-fluid container" key="lower-section-container">
@@ -82,7 +85,7 @@ const Home = (props: HomeProps) => {
 					<div>
 						<h4 className="text-soft">Most Recent Patterns</h4>
 					</div>
-					{mostRecent.map((pattern) => (
+					{patterns.mostRecent.map((pattern) => (
 						<MostRecentRow
 							pattern={pattern}
 							key={`${pattern.id}-most-recent-row`}
@@ -93,7 +96,7 @@ const Home = (props: HomeProps) => {
 			<div className="container-fluid container">
 				<div className="bg-soft w-70 my-3 py-4 rounded">
 					<h3 className="mx-4">All Patterns:</h3>
-					{patterns.map((pattern) => (
+					{patterns.fullList.map((pattern) => (
 						<div
 							key={`all-pattern-outer-wrapper-${pattern.title}`}
 							className="my-2 w-75 m-auto"

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IPattern, Tag, Tags } from "../utils/types";
 import dayjs from "dayjs";
 import patternTags from "../services/pattern-tags";
@@ -53,7 +53,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 				{tags && (
 					<div>
 						{tags.map((tag: Tag) => (
-							<TagButton tag={tag} />
+							<TagButton tag={tag} key={tag.id} />
 						))}
 					</div>
 				)}

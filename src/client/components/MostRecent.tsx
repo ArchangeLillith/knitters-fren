@@ -18,7 +18,7 @@ const MostRecentRow = ({ pattern }: PatternCardProps) => {
 		patternTags
 			.allByPatternId(pattern.id)
 			.then((tagsReturned) => setTags(tagsReturned));
-	}, []);
+	}, [pattern.id]);
 
 	return (
 		<div key={`${pattern.id}-wrapper-most-recent`}>
@@ -26,24 +26,15 @@ const MostRecentRow = ({ pattern }: PatternCardProps) => {
 				className="d-flex flex-row justify-content-around"
 				key={`${pattern.id}-most-recent`}
 			>
-				<Link
-					to={`/patterns/${pattern.id}`}
-					key={`most-recent-${pattern.id}`}
-					className="lead w-50 link"
-				>
+				<Link to={`/patterns/${pattern.id}`} className="lead w-50 link">
 					{pattern.title}
 				</Link>
-				<p
-					className="small w-75"
-					key={`most-recent-${pattern.id}-${pattern.created_at}`}
-				>
-					{pattern.content.slice(0, 150)}...
-				</p>
+				<p className="small w-75">{pattern.content.slice(0, 150)}...</p>
 			</div>
 			{tags && (
-				<div>
+				<div key="tags-container">
 					{tags.map((tag: Tag) => (
-						<TagButton tag={tag} />
+						<TagButton tag={tag} key={tag.id} />
 					))}
 				</div>
 			)}

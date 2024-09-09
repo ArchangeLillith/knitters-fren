@@ -10,7 +10,7 @@ interface PatternCardProps {
 	featured?: boolean;
 }
 
-const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
+const PatternCard = ({ pattern }: PatternCardProps) => {
 	const [tags, setTags] = React.useState<Tags>();
 
 	/**

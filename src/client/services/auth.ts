@@ -1,11 +1,15 @@
 import baseService from "./base";
 import storage from "../utils/storage";
-import { IUser } from "../utils/types";
+import { IAuthor } from "../utils/types";
 import { jwtDecode } from "jwt-decode";
 
-const loginUser = async (payload: { [key: string]: string }) => {
+/**
+ * Called from login component, this calls to our api and attempts to return a token which then is set to the local storage
+ * @param payload - The sanitized values from the frontend that are being compared to the data in the database
+ * @returns A JWT if the login succeeded, or an error if not
+ */
+const loginUser = async (payload: { username: string; password: string }) => {
 	try {
-		//Try to post the payload and if the response is good, the token is given back from the server and set in the users local storage
 		const { token } = await baseService.post("/auth/login", payload);
 		console.log(`TOKEN IN STORAGE`, token);
 		storage.setToken(token);
@@ -15,9 +19,17 @@ const loginUser = async (payload: { [key: string]: string }) => {
 	}
 };
 
-const registerUser = async (payload: { [key: string]: string }) => {
+/**
+ *Registers the user by posting against the database with the sanitized payload from the component
+ * @param payload - The input from the user coming from the component
+ * @returns A JWT or error
+ */
+const registerUser = async (payload: {
+	email: string;
+	password: string;
+	username: string;
+}) => {
 	try {
-		//The payload is posted at the register url and if everything goes well, the server responds with a token which is then set in the users local storage
 		const token = await baseService.post("/auth/register/", payload);
 		storage.setToken(token);
 		return token;
@@ -27,31 +39,27 @@ const registerUser = async (payload: { [key: string]: string }) => {
 	}
 };
 
-const validateToken = async (token: string): Promise<IUser> => {
+/**
+ *Validates the JWT, decodes out the id and grabs the user from the database based on that ID
+ * @param token - The JWT
+ * @returns the user
+ */
+const getUserFromToken = async (token: string): Promise<IAuthor> => {
 	try {
-		console.log(`validate token`);
-		//Pings against the validation url and ensures that the user is who they say they are
 		const validated = await baseService.get("/auth/validate/me");
-		console.log(`validated`, validated);
-		//Return if not validated
 		if (validated.message !== "success") {
-			console.log(`validated false`);
 			throw new Error(
 				"token bad, something went wrong with frontend check of token"
 			);
 		}
-		//Decode to grab ID
 		const decoded: any = jwtDecode(token);
 		const userId: string = decoded.id;
-		//Grab author from db
-		const user: IUser = await baseService.get(`/api/authors/${userId}`);
+		const user: IAuthor = await baseService.get(`/api/authors/${userId}`);
 		console.log(`USER`, user);
-		//Cry if user isn't fetched
 		if (!user) throw new Error("user couldn't be fetched TT_TT");
-		//Otherwise return the user (tags still attached)
 		return user;
 	} catch (error) {
-		console.log(`ERROR in alidateToken`, error);
+		console.log(`ERROR in get?UserFromToen`, error);
 		throw error;
 	}
 };
@@ -59,5 +67,5 @@ const validateToken = async (token: string): Promise<IUser> => {
 export default {
 	loginUser,
 	registerUser,
-	validateToken,
+	getUserFromToken,
 };
