@@ -1,7 +1,7 @@
 import passport from "passport";
 import type { Request, Response, NextFunction } from "express";
 
-export const handleLogin = (
+export const verifyTokenAndRole = (
 	req: Request,
 	res: Response,
 	next: NextFunction
@@ -19,26 +19,9 @@ export const handleLogin = (
 			}
 
 			req.currentUser = user;
-			console.log(`USER from missleware`, user);
-			next();
-		}
-	)(req, res, next);
-};
-
-export const checkToken = (req: Request, res: Response, next: NextFunction) => {
-	passport.authenticate(
-		"jwt",
-		{ session: false },
-		(error: Error, user, info) => {
-			if (error) {
-				return next(error);
+			if (user.role !== "admin") {
+				return res.status(403).json({ message: "Insufficient permissions" });
 			}
-
-			if (info) {
-				return res.status(401).json({ message: info.message });
-			}
-
-			req.payload = user;
 			next();
 		}
 	)(req, res, next);

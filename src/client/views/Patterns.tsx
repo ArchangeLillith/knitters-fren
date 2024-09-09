@@ -3,7 +3,6 @@ import { IPattern } from "../utils/types";
 import PatternCard from "../components/PatternCard";
 import patternService from "../services/pattern";
 import Container from "../components/Container";
-import Toast from "../components/Toast";
 
 interface PatternsProps {}
 
@@ -17,7 +16,7 @@ const Patterns = (props: PatternsProps) => {
 		patternService
 			.getAllPatterns()
 			.then((data) => setPatterns(data))
-			.catch((e) => Toast.failure(e.message));
+			.catch((e) => alert(e));
 	}, []);
 
 	return (

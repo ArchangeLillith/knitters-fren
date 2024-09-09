@@ -3,7 +3,6 @@ import authService from "../services/auth";
 import storage from "../utils/storage";
 import { IAuthor } from "../utils/types";
 
-
 interface AuthState extends IAuthor {
 	authenticated: boolean;
 }
@@ -13,8 +12,8 @@ interface AuthState extends IAuthor {
 interface AuthContextType {
 	authState: AuthState;
 	setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
-	login: (token: string) => void;
-	logout: () => void;
+	loginToAuthState: (token: string) => void;
+	logoutFromAuthState: () => void;
 	updateUserData: (userData: Partial<IAuthor>) => void;
 }
 
@@ -24,8 +23,8 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({
 	authState: { authenticated: false },
 	setAuthState: () => {},
-	login: () => {},
-	logout: () => {},
+	loginToAuthState: () => {},
+	logoutFromAuthState: () => {},
 	updateUserData: () => {},
 });
 
@@ -33,43 +32,39 @@ interface AuthProviderProps {
 	children: React.ReactNode;
 }
 
-/**
- * 
- * @param props - children that wrapped by this component
- * @returns The auth context wrapping all the children that were passed in
- */
-const AuthProvider = (props: AuthProviderProps) => {
+const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [authState, setAuthState] = useState<AuthState>({
 		authenticated: false,
+		id: undefined,
+		username: "",
+		role: "user",
 	});
 
 	/**
 	 * The function that handles the auth state to reflect a log in
-	 * @param token - JWT token to be stored in local storage
+	 * @param token - a JWT
 	 */
-	const login = async (token: string) => {
+	const loginToAuthState = async (token: string) => {
 		try {
-			console.log(`Login triggered`);
 			const userData = await authService.getUserFromToken(token);
-			console.log(`userdata from validate token`, userData);
 			setAuthState({ authenticated: true, ...userData });
 		} catch (error) {
-			console.log(`Error in loggin in`);
 			setAuthState({ authenticated: false });
+			alert(error);
 		}
 	};
 
 	/**
 	 * The function that resets a user in auth state when they log out
 	 */
-	const logout = () => {
+	const logoutFromAuthState = () => {
 		setAuthState({ authenticated: false });
 	};
 
-/**
- * Updates the userdata in state for the components to use
- * @param userData - The user data from the user that just logged in 
- */
+	/**
+	 * Updates the userdata in state for the components to use
+	 * @param userData - The user data to be set in state
+	 */
 	const updateUserData = (userData: Partial<IAuthor>) => {
 		setAuthState((prevState) => ({
 			...prevState,
@@ -89,17 +84,27 @@ const AuthProvider = (props: AuthProviderProps) => {
 		authService
 			.getUserFromToken(token)
 			.then((userData) => {
-				// Assuming validateToken returns user data
-				setAuthState({ authenticated: true, ...userData });
+				setAuthState({
+					authenticated: true,
+					id: userData.id,
+					username: userData.username,
+					role: userData.role,
+				});
 			})
 			.catch(() => setAuthState({ authenticated: false }));
 	}, []);
 
 	return (
 		<AuthContext.Provider
-			value={{ authState, setAuthState, login, logout, updateUserData }}
+			value={{
+				authState,
+				setAuthState,
+				loginToAuthState,
+				logoutFromAuthState,
+				updateUserData,
+			}}
 		>
-			{props.children}
+			{children}
 		</AuthContext.Provider>
 	);
 };

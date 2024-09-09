@@ -8,7 +8,10 @@ import { jwtDecode } from "jwt-decode";
  * @param payload - The sanitized values from the frontend that are being compared to the data in the database
  * @returns A JWT if the login succeeded, or an error if not
  */
-const loginUser = async (payload: { username: string; password: string }) => {
+const authenticateUserAndStoreToken = async (payload: {
+	username: string;
+	password: string;
+}) => {
 	try {
 		const { token } = await baseService.post("/auth/login", payload);
 		console.log(`TOKEN IN STORAGE`, token);
@@ -24,7 +27,7 @@ const loginUser = async (payload: { username: string; password: string }) => {
  * @param payload - The input from the user coming from the component
  * @returns A JWT or error
  */
-const registerUser = async (payload: {
+const registerUserAndStoreToken = async (payload: {
 	email: string;
 	password: string;
 	username: string;
@@ -65,7 +68,7 @@ const getUserFromToken = async (token: string): Promise<IAuthor> => {
 };
 
 export default {
-	loginUser,
-	registerUser,
+	authenticateUserAndStoreToken,
+	registerUserAndStoreToken,
 	getUserFromToken,
 };

@@ -1,27 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { IPattern } from "../utils/types";
 import patternService from "../services/pattern";
 import PatternCard from "../components/PatternCard";
-import { Link, useNavigate } from "react-router-dom";
-import Toast from "../components/Toast";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { AuthContext } from "../components/AuthProvider";
 
-interface AdminPanelProps {}
-
-const AdminPanel = (props: AdminPanelProps) => {
+const AdminPanel = () => {
+	const { authState } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
 
 	const handleDelete = (id: string) => {
+		//Refactor throw a do you want to delete this? here, a modal probs
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns/admin"))
-			.catch((e) => Toast.failure(e.message));
+			.catch((error) => alert(error));
 	};
 
 	useEffect(() => {
-		patternService.getAllPatterns().then((data) => setPatterns(data))
-		.catch((e) => Toast.failure(e.message));
+		patternService
+			.getAllPatterns()
+			.then((data) => setPatterns(data))
+			.catch((error) => alert(error));
 	}, []);
+
+	if (authState.role !== "admin") {
+		return <Navigate to="/" />;
+	}
 	return (
 		<div className="w-75 d-flex flex-column mx-auto mt-5">
 			{patterns.map((pattern) => (
@@ -31,7 +37,7 @@ const AdminPanel = (props: AdminPanelProps) => {
 						<button
 							id={pattern.id}
 							onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-								handleDelete(e.target.id)
+								handleDelete((e.target as HTMLButtonElement).id)
 							}
 							className="btn btn-primary m-3"
 						>

@@ -1,15 +1,11 @@
 import React, { useEffect } from "react";
 import { IPattern } from "../utils/types";
 import PatternCard from "../components/PatternCard";
-import patternService from "../services/pattern";
 import Container from "../components/Container";
-import Toast from "../components/Toast";
 import { Navigate, useLocation } from "react-router-dom";
 import AuthWrapper from "../components/AuthWrapper";
 
-interface PatternsProps {}
-
-const FavoritePatterns = (props: PatternsProps) => {
+const FavoritePatterns = () => {
 	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
 	const location = useLocation();
 	/**

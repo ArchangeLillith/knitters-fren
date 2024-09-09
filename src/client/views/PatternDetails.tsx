@@ -7,7 +7,6 @@ import { IPattern, Tags, Tag } from "../utils/types";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
 import TagButton from "../components/TagButton";
-import Toast from "../components/Toast";
 
 interface PatternDetailsProps {}
 
@@ -34,7 +33,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 		patternTags
 			.allByPatternId(id)
 			.then((tagsReturned) => setTags(tagsReturned))
-			.catch((e) => Toast.failure(e.message));
+			.catch((e) => alert(e));
 	}, []);
 
 	/**
@@ -46,7 +45,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns"))
-			.catch((e) => Toast.failure(e.message));
+			.catch((e) => alert(e));
 	};
 
 	return (

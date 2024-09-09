@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import db from "../../db";
+import { verifyTokenAndRole } from "../../middlewares/admin.mw";
 
 const router = Router();
 //Run all these routes prepended with the method through this middle ware
@@ -46,7 +47,7 @@ router.post("/", async (req, res, next) => {
 });
 
 //DELETE api/patterns/:id
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", verifyTokenAndRole, async (req, res, next) => {
 	try {
 		const id = req.params.id;
 		const author_id = req.body.author_id;

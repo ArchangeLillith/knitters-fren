@@ -3,10 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
 import storage from "../utils/storage";
 
-interface NavBarProps {}
-
-const NavBar = (props: NavBarProps) => {
-	const { logout } = useContext(AuthContext);
+const NavBar = () => {
+	const { logoutFromAuthState } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
 
@@ -15,17 +13,14 @@ const NavBar = (props: NavBarProps) => {
 	 */
 	const logOut = () => {
 		try {
-			//Remove the token
 			storage.removeToken();
-			//Set auth state back to false
-			logout();
-			//Go home!
+			logoutFromAuthState();
 			navigate(`/`);
 		} catch (error) {
 			console.error("Error logging out:", error);
 		}
 	};
-	
+
 	return (
 		<nav
 			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
@@ -93,6 +88,11 @@ const NavBar = (props: NavBarProps) => {
 									Log out!
 								</button>
 							</div>
+						</div>
+					)}
+					{authState.role === "admin" && (
+						<div>
+							<Link to="/admin">Admin Panel</Link>
 						</div>
 					)}
 					{!authState.authenticated && (

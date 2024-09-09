@@ -3,9 +3,7 @@ import { FaHeart } from "react-icons/fa";
 import { PiYarnLight } from "react-icons/pi";
 import { Link } from "react-router-dom";
 
-interface FooterProps {}
-
-const Footer = (props: FooterProps) => {
+const Footer = () => {
 	return (
 		<footer className="footer fixed-bottom justify-content-center align-items-center bg-muted d-flex">
 			<a

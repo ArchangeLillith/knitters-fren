@@ -11,7 +11,10 @@ const one = (id: string): Promise<IAuthorsTable> =>
 
 //Authorization calls
 const find = (val: string): Promise<IAuthorsTable[]> =>
-	Query<IAuthorsTable[]>(`SELECT * FROM authors WHERE email = ?;`, [val]);
+	Query<IAuthorsTable[]>(
+		`SELECT * FROM authors WHERE email = ? OR username = ?;`,
+		[val, val]
+	);
 
 const insert = (values: {
 	id: string;

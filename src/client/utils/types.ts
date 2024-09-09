@@ -24,6 +24,7 @@ export interface IAuthor {
 	patternsAuthored?: string[];
 	patternsFavorited?: string[];
 	commentsAuthored?: string[];
+	role?: "user" | "admin";
 }
 
 /**

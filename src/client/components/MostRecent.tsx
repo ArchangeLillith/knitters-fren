@@ -8,7 +8,7 @@ interface PatternCardProps {
 	pattern: IPattern;
 }
 
-const MostRecentRow = ({ pattern }: PatternCardProps) => {
+const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {
 	const [tags, setTags] = React.useState<Tags>();
 
 	/**

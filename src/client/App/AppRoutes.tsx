@@ -26,6 +26,7 @@ const App = (props: AppProps) => {
 				<Route path="/patterns" element={<Patterns />}></Route>
 				<Route path="/favorites" element={<FavoritePatterns />}></Route>
 				<Route path="/search" element={<SearchView />}></Route>
+				<Route path="/admin" element={<AdminPanel />}></Route>
 				<Route path="/patterns/:id" element={<PatternDetails />}></Route>
 				<Route path="/patterns/new" element={<AddPattern />}></Route>
 				<Route path="/patterns/admin" element={<AdminPanel />}></Route>

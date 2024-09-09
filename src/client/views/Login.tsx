@@ -4,10 +4,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginService from "../services/auth";
 import { AuthContext } from "../components/AuthProvider";
 import { locationStrings } from "../utils/types";
-interface LoginProps {}
 
-const Login = (props: LoginProps) => {
-	const { login } = useContext(AuthContext);
+const Login = () => {
+	const { loginToAuthState } = useContext(AuthContext);
 	const { state } = useLocation();
 	const fromLocation = state?.from;
 	const navigate = useNavigate();
@@ -17,11 +16,8 @@ const Login = (props: LoginProps) => {
 	const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		try {
-			//Authenticat and get the token
-			const token = await loginService.loginUser({ username, password });
-			//Use the token to update the auth state
-			login(token);
-			//Go home!
+			const token = await loginService.authenticateUserAndStoreToken({ username, password });
+			loginToAuthState(token);
 			navigate(`/`);
 		} catch (error) {
 			console.error("Error logging in:", error);

@@ -5,16 +5,13 @@ import { IPattern } from "../utils/types";
 import patternService from "../services/pattern";
 import { sortPatterns } from "../utils/patterns.utils";
 import MostRecentRow from "../components/MostRecent";
-import Toast from "../components/Toast";
-
-interface HomeProps {}
 
 interface PatternProps {
 	fullList: IPattern[];
 	featured: IPattern;
 	mostRecent: IPattern[];
 }
-const Home = (props: HomeProps) => {
+const Home = () => {
 	const [patterns, setPatterns] = React.useState<PatternProps>({
 		fullList: [],
 		featured: {

@@ -9,10 +9,9 @@ import Container from "../components/Container";
 import registerService from "../services/auth";
 import { AuthContext } from "../components/AuthProvider";
 
-interface RegisterProps {}
 
-const Register = (props: RegisterProps) => {
-	const { login } = useContext(AuthContext);
+const Register = () => {
+	const { loginToAuthState } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [email, setEmail] = useState<string>("");
 	const [username, setUsername] = useState<string>("");
@@ -43,8 +42,8 @@ const Register = (props: RegisterProps) => {
 			return;
 		}
 		const authorDTO = { email, password, username };
-		const token = await registerService.registerUser(authorDTO);
-		login(token);
+		const token = await registerService.registerUserAndStoreToken(authorDTO);
+		loginToAuthState(token);
 		//Go home!
 		navigate(`/`);
 	};

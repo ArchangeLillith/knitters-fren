@@ -4,14 +4,11 @@ import Container from "../components/Container";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
 import { IPattern, Tag, Tags } from "../utils/types";
-import Toast from "../components/Toast";
 import AuthWrapper from "../components/AuthWrapper";
 import { AuthContext } from "../components/AuthProvider";
 import { v4 as uuidv4 } from "uuid";
 
-interface AddPatternProps {}
-
-const AddPattern = (props: AddPatternProps) => {
+const AddPattern = () => {
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
 	const [title, setTitle] = React.useState<string>("");
@@ -38,7 +35,7 @@ const AddPattern = (props: AddPatternProps) => {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setTags(data))
-			.catch((e) => Toast.failure(e.message));
+			.catch((error) => alert(error));
 	}, []);
 
 	/**
@@ -65,8 +62,7 @@ const AddPattern = (props: AddPatternProps) => {
 				navigate(`/patterns/${patternId}`);
 			}
 		} catch (error) {
-			//Refactor this should show errors that impact the user, like the title being a dupe
-			// .catch(e => Toast.error(e.message));
+			alert(error);
 		}
 	};
 
@@ -89,24 +85,16 @@ const AddPattern = (props: AddPatternProps) => {
 	return (
 		<AuthWrapper>
 			<Container>
-				<a
-					href="https://x.com/vbnmat"
-					target="_blank"
-					data-bs-toggle="tooltip"
-					data-bs-placement="top"
-					title="Meet the artist!"
-				>
-					<img
-						src="/images/teacup-nanachi.png"
-						alt="teacup-nanachi"
-						style={{
-							width: "250px",
-							position: "absolute",
-							right: "1%",
-							top: "12%",
-						}}
-					/>
-				</a>
+				<img
+					src="/images/teacup-nanachi.png"
+					alt="teacup-nanachi"
+					style={{
+						width: "250px",
+						position: "absolute",
+						right: "1%",
+						top: "12%",
+					}}
+				/>
 				<form className="d-flex flex-column my-4 py-4">
 					<div className="form-group flex-grow-1 d-flex flex-column">
 						<label htmlFor="pattern-title">Pattern Title</label>
