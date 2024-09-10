@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import db from "../../db";
 import { verifyTokenAndRole } from "../../middlewares/admin.mw";
+import { verifyAuthor } from "../../middlewares/author.mw";
 
 const router = Router();
 //Run all these routes prepended with the method through this middle ware
@@ -47,13 +48,11 @@ router.post("/", async (req, res, next) => {
 });
 
 //DELETE api/patterns/:id
-router.delete("/:id", verifyTokenAndRole, async (req, res, next) => {
+router.delete("/:id", verifyAuthor, verifyTokenAndRole, async (req, res, next) => {
 	try {
 		const id = req.params.id;
-		const author_id = req.body.author_id;
 		await db.pattern_tags.destroyAllBasedOnPatternId(id);
 		const result = await db.patterns.destroy(id);
-		//Refactor if here there's an error it shouldn't continue
 		if (!result.affectedRows) {
 			throw new Error("No affected rows");
 		}

@@ -14,12 +14,14 @@ router.post("/", async (req, res, next) => {
 		if (!email || !isValidEmail(email)) {
 			const error = new Error("invalid email");
 			error["status"] = 400;
+			console.log(`invalid email`);
 			throw error;
 		}
 		const [emailFound] = await db.authors.find(email);
 		if (emailFound) {
 			const error = new Error("email already registered");
 			error["status"] = 400;
+			console.log(`email registered already`);
 			throw error;
 		}
 
@@ -37,7 +39,6 @@ router.post("/", async (req, res, next) => {
 		const hash = await bcrypt.hash(password, salt);
 
 		authorDTO.password = hash;
-
 		await db.authors.insert(authorDTO);
 		delete authorDTO.password;
 		const token = createJWT(authorDTO.id);

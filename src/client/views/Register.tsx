@@ -6,9 +6,8 @@ import React, {
 } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
-import registerService from "../services/auth";
+import authService from "../services/auth";
 import { AuthContext } from "../components/AuthProvider";
-
 
 const Register = () => {
 	const { loginToAuthState } = useContext(AuthContext);
@@ -42,7 +41,7 @@ const Register = () => {
 			return;
 		}
 		const authorDTO = { email, password, username };
-		const token = await registerService.registerUserAndStoreToken(authorDTO);
+		const token = await authService.registerUserAndStoreToken(authorDTO);
 		loginToAuthState(token);
 		//Go home!
 		navigate(`/`);

@@ -33,11 +33,11 @@ const registerUserAndStoreToken = async (payload: {
 	username: string;
 }) => {
 	try {
-		const token = await baseService.post("/auth/register/", payload);
+		console.log(`REGISTER AND STORE TOKEN`);
+		const { token } = await baseService.post("/auth/register/", payload);
 		storage.setToken(token);
 		return token;
 	} catch (error) {
-		console.log(`ERROR`, error);
 		throw error;
 	}
 };
@@ -50,7 +50,7 @@ const registerUserAndStoreToken = async (payload: {
 const getUserFromToken = async (token: string): Promise<IAuthor> => {
 	try {
 		const validated = await baseService.get("/auth/validate/me");
-		if (validated.message !== "success") {
+		if (validated?.message !== "success") {
 			throw new Error(
 				"token bad, something went wrong with frontend check of token"
 			);
@@ -58,7 +58,6 @@ const getUserFromToken = async (token: string): Promise<IAuthor> => {
 		const decoded: any = jwtDecode(token);
 		const userId: string = decoded.id;
 		const user: IAuthor = await baseService.get(`/api/authors/${userId}`);
-		console.log(`USER`, user);
 		if (!user) throw new Error("user couldn't be fetched TT_TT");
 		return user;
 	} catch (error) {
