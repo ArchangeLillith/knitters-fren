@@ -10,7 +10,7 @@ interface PatternCardProps {
 	featured?: boolean;
 }
 
-const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
+const PatternCard = ({ pattern }: PatternCardProps) => {
 	const [tags, setTags] = React.useState<Tags>();
 
 	/**
@@ -18,7 +18,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 	 */
 	useEffect(() => {
 		patternTags
-			.allByPatternId(parseInt(pattern.id))
+			.allByPatternId(pattern.id)
 			.then((tagsReturned) => setTags(tagsReturned));
 	}, []);
 

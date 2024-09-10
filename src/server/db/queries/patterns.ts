@@ -1,24 +1,25 @@
-import { Query } from "../pool";
-import { IAuthorsTable, IPatternTable } from "../../types";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
+import type { IAuthorsTable, IPatternTable } from "../../types";
+import { Query, QueryMetadata } from "../query";
 
 //GET all patterns, joined to show the name of the author
-const all = () =>
+const all = (): Promise<(IPatternTable & IAuthorsTable)[]> =>
 	Query<(IPatternTable & IAuthorsTable)[]>(`
 	SELECT 
 		patterns.*,
-		authors.name 
+		authors.username
 	FROM 
 		patterns 
 				JOIN 
 		authors ON authors.id = patterns.author_id;`);
 
 //GET one pattern, joined to show the authors name
-const one = (id: string) =>
-	Query<(IPatternTable & IAuthorsTable)[]>(
+const oneById = (id: string): Promise<IPatternTable & IAuthorsTable> =>
+	Query<IPatternTable & IAuthorsTable>(
 		`
 SELECT 
   patterns.*,
-  authors.name 
+  authors.username 
 FROM 
   patterns 
       JOIN 
@@ -27,8 +28,8 @@ FROM
 		[id]
 	);
 
-const oneByTitle = (title: string) =>
-	Query<(IPatternTable & IAuthorsTable)[]>(
+const oneByTitle = (title: string): Promise<IPatternTable & IAuthorsTable> =>
+	Query<IPatternTable & IAuthorsTable>(
 		`
 SELECT 
   patterns.*,
@@ -44,23 +45,37 @@ FROM
 //TODO GET all patterns by _____ (tag, author, name)(do this by a checkbox on the front end so we don't have to join like three tables.... Or maybe that's okay?)
 
 //POST a pattern
-const insert = (values: IPatternTable) =>
-	Query("INSERT INTO patterns SET ?", [values]);
+//! this does not include any tags, ensure tags are being set too
+const insert = async (values: IPatternTable): Promise<any> => {
+	const { title, content, id, author_id } = values;
+
+	try {
+		const sanitizedValues = [title, content, id, author_id];
+		const returnedHeaders = await QueryMetadata(
+			"INSERT INTO patterns (title, content, id, author_id) VALUES (?, ?, ?, ?)",
+			sanitizedValues
+		);
+		return returnedHeaders;
+	} catch (error) {
+		// Handle any errors that may occur
+		console.error("Error executing query:", error);
+		throw error;
+	}
+};
 
 //DELETE a pattern
-const destroy = (id: number) =>
-	Query("DELETE FROM patterns WHERE id = ?", [id]);
+const destroy = (id: string): Promise<ResultSetHeader> =>
+	QueryMetadata("DELETE FROM patterns WHERE id = ?", [id]);
 
 //PATCH a pattern
 const update = (patternDTO: {
 	author_id: string;
 	content: string;
 	id: string;
-}) =>
-	Query("UPDATE patterns SET content = ? WHERE id = ? AND author_id = ?", [
-		patternDTO.content,
-		patternDTO.id,
-		patternDTO.author_id,
-	]);
+}): Promise<ResultSetHeader> =>
+	QueryMetadata(
+		"UPDATE patterns SET content = ? WHERE id = ? AND author_id = ?",
+		[patternDTO.content, patternDTO.id, patternDTO.author_id]
+	);
 
-export default { all, one, insert, destroy, update, oneByTitle };
+export default { all, oneById, insert, destroy, update, oneByTitle };

@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 
-//Looks for the .env at the root
 dotenv.config();
 
 export default {
@@ -17,4 +16,8 @@ export default {
 		secret: process.env.JWT_SECRET,
 		expires: process.env.JWT_EXPIRES,
 	},
+	roles:{
+		admin: process.env.ROLE_ADMIN,
+		user: process.env.ROLE_USER
+	}
 };

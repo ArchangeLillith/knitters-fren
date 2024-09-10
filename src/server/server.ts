@@ -1,64 +1,54 @@
 import express from "express";
-import * as passport from "passport";
 import morgan from "morgan";
+import config from "./config";
 import cors from "cors";
 import routes from "./routes";
+import {
+	globalErrorHandler,
+	notFoundHandler,
+} from "./middlewares/error-handlers.mw";
+import { configurePassport } from "./middlewares/passport.mw";
 import path from "path";
-
-const isProduction = process.env.NODE_ENV === "production";
-const isDevelopment = process.env.NODE_ENV === "development";
-
-import "./middlewares/passport-strategies.mw";
 
 const app = express();
 
-if (isDevelopment) {
-	app.use(cors());
-}
+// Apply CORS middleware for all environments
+app.use(
+	cors({
+		origin: ["http://localhost:8000"],
+		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+		allowedHeaders: ["Content-Type", "Authorization"],
+	})
+);
 
-//Health check~ Highest possible level of request to be able to check if its an endpoint that's not working or if your whole backend crashed
-app.get("status", (req, res) => {
-	res.sendStatus(200);
-});
-app.head("status", (req, res) => {
-	res.sendStatus(200);
-});
-
-app.use(passport.initialize());
+configurePassport(app);
 app.use(express.static("public"));
-//Telling the backend to expect json, and telling it to use express to parse the json
-app.use(express.json());
-//Logging on the top level for any of our routes
 app.use(morgan("dev"));
-//Tells the app to use the routes we want it to
+app.use(express.json());
 app.use(routes);
-
-if (isProduction) {
-	app.use(express.static("public"));
-}
-
-//Tells our backeng that these are frontend routes and to instead throw the request to the frontend
+//Refactor take these into an array elsewhere
 app.get(
 	[
+		"/",
 		"/login",
 		"/profile",
 		"/register",
 		"/patterns",
-		"/patterns/:id",
-		"/patterns/new",
-		"/patterns/:id/update",
+		"/gallery",
 		"/search",
-		"/search/*",
+		"/favorites",
+		"/patterns/new",
 	],
-	(req, res) => res.sendFile(path.join(__dirname, "../public/index.html"))
+	(req, res) => res.sendFile(path.join(__dirname, "../../public/index.html"))
 );
 
-// 404 fallback for client side routing
-if (isProduction) {
-	app.get("*", (req, res) => {
-		res.sendFile("index.html", { root: "public" });
-	});
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static("public"));
 }
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
+
+app.listen(config.app.port, () =>
+	console.log(`Server running on port ${config.app.port}~`)
+);

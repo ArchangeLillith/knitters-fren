@@ -1,10 +1,79 @@
-/* This is linked in case we want to test or do some cutstom styling */
+/* This is linked in case we want to test or do some custom styling */
 .select-none {
 	-webkit-user-select: none; /* Safari */
 	-ms-user-select: none; /* IE 10 and IE 11 */
 	user-select: none; /* Standard syntax */
 }
 
+.link:hover,
+.primary-link:hover {
+	color: #f9b5b5;
+}
+.link {
+	color: rgb(255, 255, 255);
+}
+/* Colors */
+body,
+#root {
+	background-color: #f0c9c9;
+	padding-bottom: 40px;
+}
+
+.bg-bright {
+	background-color: #f09b9b;
+}
+
+.font-color-primary {
+	color: #e78686;
+}
+
+.font-color-white {
+	color: #ffffff;
+}
+
+.bg-soft {
+	background-color: #fbe2e2;
+}
+
+.text-soft {
+	color: #fbe2e2;
+}
+
+.bg-muted {
+	background-color: #d5a7a7;
+}
+
+.bg-navbar {
+	background-color: #cb8585;
+}
+
+.btn-muted {
+	background-color: #d5a7a7;
+}
+
+.btn-soft {
+	background-color: #fbe2e2;
+}
+
+.w-60 {
+	width: 60%;
+}
+
+.border-pink {
+	border: 1px solid #e78686; /* Assuming border-width is 1px */
+}
+
 a:hover {
-	color: #965050;
+	color: #d4d4d4; /* This is 20% darker than #ffffff */
+}
+
+.primary-link,
+a {
+	color: #c56161;
+}
+
+.btn.btn-outline-primary {
+	color: #ffffff;
+	border-color: #cb8585;
+	background-color: #da9898;
 }

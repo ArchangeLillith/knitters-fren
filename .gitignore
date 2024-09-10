@@ -32,3 +32,6 @@ pids
 # XCF files for editing the images, kept in directory locally for ease of access
 XCF
 .xcf
+
+# Notes that are local only because they're sensitive/only for me
+login-stream.txt

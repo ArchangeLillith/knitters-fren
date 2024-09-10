@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IPattern, Tag, Tags } from "../utils/types";
 import dayjs from "dayjs";
 import patternTags from "../services/pattern-tags";
@@ -18,7 +18,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 	 */
 	useEffect(() => {
 		patternTags
-			.allByPatternId(parseInt(pattern.id))
+			.allByPatternId(pattern.id)
 			.then((tagsReturned) => setTags(tagsReturned));
 	}, []);
 
@@ -28,8 +28,8 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 				{featured && (
 					// Changing the text color here to white for the featured section
 					<Link
-						className="text-color-white text-decoration-none"
-						style={{ fontSize: "30px" }}
+						className="text-decoration-none"
+						style={{ fontSize: "30px", color: "white" }}
 						to={`/patterns/${pattern.id}`}
 					>
 						{pattern.title}
@@ -38,7 +38,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 				{!featured && (
 					//Changing the text to the primary color which is default
 					<Link
-						className="font-color-primary text-decoration-none"
+						className="font-color-primary link text-decoration-none"
 						style={{ fontSize: "25px" }}
 						to={`/patterns/${pattern.id}`}
 					>
@@ -53,7 +53,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 				{tags && (
 					<div>
 						{tags.map((tag: Tag) => (
-							<TagButton tag={tag} />
+							<TagButton tag={tag} key={tag.id} />
 						))}
 					</div>
 				)}

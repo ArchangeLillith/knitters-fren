@@ -5,7 +5,7 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 	optional?: boolean;
 }
 
-const Container = ({ children, ...rest }: ContainerProps) => {
+const Container = ({ children }: ContainerProps) => {
 	return (
 		<section
 			className="container"

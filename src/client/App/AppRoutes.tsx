@@ -13,19 +13,20 @@ import Login from "../views/Login";
 import SearchView from "../views/SearchView";
 
 import NavBar from "../components/NavBar";
+import FavoritePatterns from "../views/FavoritePatterns";
 
 interface AppProps {}
 
 const App = (props: AppProps) => {
-	const navigate = useNavigate();
-
 	return (
 		<div>
 			<NavBar />
 			<Routes>
 				<Route path="/" element={<Home />}></Route>
 				<Route path="/patterns" element={<Patterns />}></Route>
+				<Route path="/favorites" element={<FavoritePatterns />}></Route>
 				<Route path="/search" element={<SearchView />}></Route>
+				<Route path="/admin" element={<AdminPanel />}></Route>
 				<Route path="/patterns/:id" element={<PatternDetails />}></Route>
 				<Route path="/patterns/new" element={<AddPattern />}></Route>
 				<Route path="/patterns/admin" element={<AdminPanel />}></Route>

@@ -8,6 +8,7 @@ const getToken = () => {
 
 //Sets the token into the users local storage
 const setToken = (token: string) => {
+	console.log(`Token set in storage:`, token);
 	localStorage.setItem(TOKEN_KEY, token);
 	return true;
 };

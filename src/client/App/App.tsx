@@ -15,12 +15,6 @@ const App = (props: AppProps) => {
 	return (
 		<BrowserRouter>
 			<AuthProvider>
-				<ToastContainer
-					position="bottom-right"
-					autoClose={3000}
-					draggable={false}
-					pauseOnHover={true}
-				/>
 				<AppRoutes />
 			</AuthProvider>
 			<Footer />

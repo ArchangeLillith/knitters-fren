@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import noteService from "../services/pattern";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import patternService from "../services/pattern";
 import { IPattern, Tag, Tags } from "../utils/types";
 import patternTags from "../services/pattern-tags";
-import Toast from "../components/Toast";
 
-interface UpdatePatternProps {}
-
-const UpdatePattern = (props: UpdatePatternProps) => {
-	const { id } = useParams();
-	const { localUrlState } = useLocation();
+const UpdatePattern = () => {
+	const { id } = useParams<string>();
 	const navigate = useNavigate();
 	const [pattern, setPattern] = useState<IPattern | undefined>(undefined);
 	const [title, setTitle] = useState<string>("");
@@ -18,66 +14,48 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 	const [allTags, setAllTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 	const [selectedTags, setSelectedTags] = useState<Tags>([]);
 
-	//Yeah this errors but I think it's the linter throwing a fit, it does work
-	//Refactor how do I fix this error?? I've seen it done this way a million times, idk why here it throws a fit...
-	const handleChanges = (e: any) => {
-		setPattern((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value,
-		}));
-	};
-
-	/**
-	 *
-	 */
 	useEffect(() => {
-		if (localUrlState) return;
 		if (!id) return;
-		//Get the pattern
-		patternService.getOnePattern(id).then((pattern: IPattern) => {
-			setPattern(pattern);
-			setContent(pattern.content);
+		patternService.getOnePattern(id).then((fetchedPattern: IPattern) => {
+			setPattern(fetchedPattern);
+			setContent(fetchedPattern.content);
 		});
 
-		//Get all the tags
-		fetch(process.env.ROOT_URL + "/api/tags")
+		fetch(`${process.env.ROOT_URL}/api/tags`)
 			.then((res) => res.json())
 			.then((data) => setAllTags(data))
-			.catch((e) => Toast.failure(e.message));
+			.catch((error) => alert(error));
 
-		//Get the tags that are already selected for this pattern
 		patternTags
-			.allByPatternId(parseInt(id))
+			.allByPatternId(id)
 			.then((data) => {
 				setSelectedTags(data);
 			})
-			.catch((e) => Toast.failure(e.message));
-	}, [id, localUrlState]);
+			.catch((error) => alert(error));
+	}, [id]);
 
-	const handleUpdate: (e: React.MouseEvent<HTMLButtonElement>) => void = (
-		e: React.MouseEvent<HTMLButtonElement>
-	) => {
+	const handleChanges = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const { name, value } = e.target;
+		setPattern((prevPattern) =>
+			prevPattern ? { ...prevPattern, [name]: value } : prevPattern
+		);
+	};
+
+	const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		if (!id || !pattern) return;
-		const patternDTO: {
-			content: string;
-			author_id: string;
-			id: string;
-		} = {
+
+		const patternDTO = {
 			content: pattern.content,
 			author_id: pattern.author_id,
 			id,
 		};
-		console.log(`DTO`, patternDTO);
+
 		noteService.updatePattern(id, patternDTO);
 
-		const pattern_id: number = parseInt(pattern.id);
-		const tag_ids: number[] = [];
-		for (let tag of selectedTags) {
-			tag_ids.push(tag.id);
-		}
+		const tagIds = selectedTags.map((tag) => tag.id);
 		patternTags
-			.addNewTags({ pattern_id, tag_ids })
+			.addNewTags({ pattern_id: pattern.id, tag_ids: tagIds })
 			.then(() => navigate(`/patterns/${id}`));
 	};
 
@@ -99,9 +77,9 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 				<div className="display-6">Edit your Pattern:</div>
 				<div className="form-group flex-grow-1 d-flex flex-column">
 					<textarea
-						required={true}
+						required
 						maxLength={100}
-						value={pattern?.title}
+						value={title}
 						onChange={(e) => setTitle(e.target.value)}
 						className="w-100 rounded my-2 py-1 text-large"
 						id="pattern-title"
@@ -112,11 +90,11 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 					className="w-100 rounded my-4"
 					rows={15}
 					name="content"
-					required={true}
+					required
 					maxLength={10000}
-					value={pattern?.content}
+					value={content}
 					onChange={handleChanges}
-				></textarea>
+				/>
 				<div>
 					<label htmlFor="tags">Choose your tags:</label>
 					<div
@@ -141,7 +119,6 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 										autoComplete="off"
 										onChange={tagToggle}
 										name={tag.name}
-										key={tag.name}
 									/>
 									<label
 										className="btn btn-outline-primary"
@@ -158,23 +135,16 @@ const UpdatePattern = (props: UpdatePatternProps) => {
 					Update the pattern~
 				</button>
 			</form>
-			<a
-				href="https://x.com/vbnmat"
-				target="_blank"
-				data-bs-toggle="tooltip"
-				data-bs-placement="top"
-				title="Meet the artist!"
-			>
-				<img
-					src="/images/drawing-nanachi.png"
-					style={{
-						position: "absolute",
-						top: "70%",
-						right: "4%",
-						width: "250px",
-					}}
-				></img>
-			</a>
+			<img
+				src="/images/drawing-nanachi.png"
+				style={{
+					position: "absolute",
+					top: "70%",
+					right: "4%",
+					width: "250px",
+				}}
+				alt="Nanachi"
+			/>
 		</div>
 	);
 };

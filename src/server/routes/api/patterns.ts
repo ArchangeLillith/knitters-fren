@@ -1,6 +1,8 @@
 import { Router } from "express";
 
 import db from "../../db";
+import { verifyTokenAndRole } from "../../middlewares/admin.mw";
+import { verifyAuthor } from "../../middlewares/author.mw";
 
 const router = Router();
 //Run all these routes prepended with the method through this middle ware
@@ -11,7 +13,7 @@ router.get("/:id", async (req, res, next) => {
 	try {
 		const id = req.params.id;
 		//The one pattern comes back in an array and this destructures it to only the pattern
-		const [result] = await db.patterns.one(id);
+		const result = await db.patterns.oneById(id);
 		res.json(result);
 	} catch (error) {
 		//Goes to our global error handler
@@ -35,9 +37,10 @@ router.post("/", async (req, res, next) => {
 	try {
 		const patternDTO = { ...req.body };
 		//The insert
-		await db.patterns.insert(patternDTO);
+		const returnedHeaders = await db.patterns.insert(patternDTO);
+		console.log(`insertedpattern`, returnedHeaders);
 		//The get request to get what was just put in, in the form the navigation and frontend expects it back
-		const [pattern] = await db.patterns.oneByTitle(patternDTO.title);
+		const pattern = await db.patterns.oneById(returnedHeaders.insertId);
 		res.json({ pattern, message: "New pattern created" });
 	} catch (error) {
 		next(error);
@@ -45,14 +48,11 @@ router.post("/", async (req, res, next) => {
 });
 
 //DELETE api/patterns/:id
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", verifyAuthor, verifyTokenAndRole, async (req, res, next) => {
 	try {
-		const id = parseInt(req.params.id);
-		const author_id = req.body.author_id;
+		const id = req.params.id;
 		await db.pattern_tags.destroyAllBasedOnPatternId(id);
 		const result = await db.patterns.destroy(id);
-		console.log(`RESUKT`, result);
-		//Refactor if here there's an error it shouldn't continue
 		if (!result.affectedRows) {
 			throw new Error("No affected rows");
 		}

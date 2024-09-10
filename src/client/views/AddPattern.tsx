@@ -1,30 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
-import { Tag, Tags } from "../utils/types";
-import Toast from "../components/Toast";
+import { IPattern, Tag, Tags } from "../utils/types";
+import AuthWrapper from "../components/AuthWrapper";
+import { AuthContext } from "../components/AuthProvider";
+import { v4 as uuidv4 } from "uuid";
 
-interface AddPatternProps {}
-
-const AddPattern = (props: AddPatternProps) => {
+const AddPattern = () => {
 	const navigate = useNavigate();
+	const { authState } = useContext(AuthContext);
 	const [title, setTitle] = React.useState<string>("");
 	const [content, setContent] = React.useState<string>("");
 	const [selectedTags, setSelectedTags] = useState<Tags>([]);
 	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 
 	const newPatternDTO: {
+		id: string;
 		title: string;
 		content: string;
 		author_id: string;
 	} = {
+		id: uuidv4(),
 		title,
 		content,
-		author_id: "1",
+		author_id: authState.id!,
 	};
-	
+
 	/**
 	 * Grabs all the tags on load to display to the user when creating their pattern so they can choose which ones they'd like to add
 	 */
@@ -32,7 +35,7 @@ const AddPattern = (props: AddPatternProps) => {
 		fetch(process.env.ROOT_URL + "/api/tags")
 			.then((res) => res.json())
 			.then((data) => setTags(data))
-			.catch((e) => Toast.failure(e.message));
+			.catch((error) => alert(error));
 	}, []);
 
 	/**
@@ -44,21 +47,22 @@ const AddPattern = (props: AddPatternProps) => {
 	) => {
 		submitButton.preventDefault();
 		const newArr: number[] = [];
-		let patternId: number;
+		let patternId: string;
 		for (let i = 0; i < selectedTags.length; i++) {
 			newArr.push(selectedTags[i].id);
 		}
 		try {
-			const pattern = await patternService.addNewPattern(newPatternDTO);
+			const pattern: IPattern = await patternService.addNewPattern(
+				newPatternDTO
+			);
+			console.log(`Pattern,`, pattern);
 			patternId = pattern.id;
 			if (patternId) {
-				patternTags
-					.addNewTags({ pattern_id: patternId, tag_ids: newArr })
-					.then(() => navigate(`/patterns/${patternId}`));
+				patternTags.addNewTags({ pattern_id: patternId, tag_ids: newArr });
+				navigate(`/patterns/${patternId}`);
 			}
 		} catch (error) {
-			//Refactor this should show errors that impact the user, like the title being a dupe
-			// .catch(e => Toast.error(e.message));
+			alert(error);
 		}
 	};
 
@@ -79,14 +83,8 @@ const AddPattern = (props: AddPatternProps) => {
 	};
 
 	return (
-		<Container>
-			<a
-				href="https://x.com/vbnmat"
-				target="_blank"
-				data-bs-toggle="tooltip"
-				data-bs-placement="top"
-				title="Meet the artist!"
-			>
+		<AuthWrapper>
+			<Container>
 				<img
 					src="/images/teacup-nanachi.png"
 					alt="teacup-nanachi"
@@ -97,77 +95,77 @@ const AddPattern = (props: AddPatternProps) => {
 						top: "12%",
 					}}
 				/>
-			</a>
-			<form className="d-flex flex-column my-4 py-4">
-				<div className="form-group flex-grow-1 d-flex flex-column">
-					<label htmlFor="pattern-title">Pattern Title</label>
-					<input
-						type="text"
-						required={true}
-						maxLength={100}
-						onChange={(e) => setTitle(e.target.value)}
-						value={title}
-						className="form-control bg-soft"
-						id="pattern-title"
-						placeholder="Title..."
-					/>
-				</div>
-				<div className="form-group flex-grow-1 d-flex flex-column pt-4">
-					<label htmlFor="pattern-details">Pattern Details</label>
-					<textarea
-						required={true}
-						maxLength={10000}
-						onChange={(e) => setContent(e.target.value)}
-						value={content}
-						className="form-control-lg form-control flex-grow-1 bg-soft"
-						id="pattern-details"
-						placeholder="Start writing..."
-						name="body"
-						rows={10}
-					></textarea>
-				</div>
-				<div>
-					<label htmlFor="tags">Choose your tags:</label>
-					<div
-						id="tags-div"
-						className="form-control-lg form-control flex-grow-1 bg-soft"
-					>
-						{tags.map((tag: Tag) => (
-							<div
-								className="m-1 d-inline-flex btn-group"
-								role="group"
-								aria-label="Basic checkbox toggle button group"
-								key={`${tag.id}-container`}
-							>
-								<input
-									type="checkbox"
-									className="btn-check"
-									id={`${tag.id}`}
-									autoComplete="off"
-									onChange={tagToggle}
-									name={tag.name}
-									key={tag.name}
-								/>
-								<label
-									className="btn btn-outline-primary"
-									htmlFor={`${tag.id}`}
-								>
-									{tag.name}
-								</label>
-							</div>
-						))}
+				<form className="d-flex flex-column my-4 py-4">
+					<div className="form-group flex-grow-1 d-flex flex-column">
+						<label htmlFor="pattern-title">Pattern Title</label>
+						<input
+							type="text"
+							required={true}
+							maxLength={100}
+							onChange={(e) => setTitle(e.target.value)}
+							value={title}
+							className="form-control bg-soft"
+							id="pattern-title"
+							placeholder="Title..."
+						/>
 					</div>
-				</div>
-				<div className="d-flex justify-content-center align-items-center">
-					<button
-						className="btn btn-primary py-1 w-25 my-3"
-						onClick={handleSubmit}
-					>
-						Add Pattern~
-					</button>
-				</div>
-			</form>
-		</Container>
+					<div className="form-group flex-grow-1 d-flex flex-column pt-4">
+						<label htmlFor="pattern-details">Pattern Details</label>
+						<textarea
+							required={true}
+							maxLength={10000}
+							onChange={(e) => setContent(e.target.value)}
+							value={content}
+							className="form-control-lg form-control flex-grow-1 bg-soft"
+							id="pattern-details"
+							placeholder="Start writing..."
+							name="body"
+							rows={10}
+						></textarea>
+					</div>
+					<div>
+						<label htmlFor="tags">Choose your tags:</label>
+						<div
+							id="tags-div"
+							className="form-control-lg form-control flex-grow-1 bg-soft"
+						>
+							{tags.map((tag: Tag) => (
+								<div
+									className="m-1 d-inline-flex btn-group"
+									role="group"
+									aria-label="Basic checkbox toggle button group"
+									key={`${tag.id}-container`}
+								>
+									<input
+										type="checkbox"
+										className="btn-check"
+										id={`${tag.id}`}
+										autoComplete="off"
+										onChange={tagToggle}
+										name={tag.name}
+										key={tag.name}
+									/>
+									<label
+										className="btn btn-outline-primary"
+										htmlFor={`${tag.id}`}
+									>
+										{tag.name}
+									</label>
+								</div>
+							))}
+						</div>
+					</div>
+					<div className="d-flex justify-content-center align-items-center">
+						<button
+							className="btn btn-primary py-1 w-25 my-3"
+							onClick={handleSubmit}
+						>
+							Add Pattern~
+						</button>
+					</div>
+				</form>
+			</Container>
+		</AuthWrapper>
 	);
 };
 

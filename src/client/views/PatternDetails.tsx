@@ -7,7 +7,6 @@ import { IPattern, Tags, Tag } from "../utils/types";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
 import TagButton from "../components/TagButton";
-import Toast from "../components/Toast";
 
 interface PatternDetailsProps {}
 
@@ -30,11 +29,11 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	useEffect(() => {
 		//Annoying to have this here, there's no way to access this page without an id in the url, but my linter/typescript doesn't know that so it throws a fit below that id can be undefined, but it can't if you reach this page...
 		if (!id) return;
-		patternService.getOnePattern(id).then((data) => setPattern(data));
+		patternService.getOnePattern(id).then(([data]) => setPattern(data));
 		patternTags
-			.allByPatternId(parseInt(id))
+			.allByPatternId(id)
 			.then((tagsReturned) => setTags(tagsReturned))
-			.catch((e) => Toast.failure(e.message));
+			.catch((e) => alert(e));
 	}, []);
 
 	/**
@@ -46,7 +45,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 		patternService
 			.destroyPattern(id)
 			.then(() => navigate("/patterns"))
-			.catch((e) => Toast.failure(e.message));
+			.catch((e) => alert(e));
 	};
 
 	return (

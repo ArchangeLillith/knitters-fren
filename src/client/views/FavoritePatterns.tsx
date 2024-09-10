@@ -1,25 +1,29 @@
 import React, { useEffect } from "react";
 import { IPattern } from "../utils/types";
 import PatternCard from "../components/PatternCard";
-import patternService from "../services/pattern";
 import Container from "../components/Container";
+import { Navigate, useLocation } from "react-router-dom";
+import AuthWrapper from "../components/AuthWrapper";
 
-interface PatternsProps {}
-
-const Patterns = (props: PatternsProps) => {
+const FavoritePatterns = () => {
 	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
-
+	const location = useLocation();
 	/**
 	 * This fetches all the patterns on load once from the databse and sets them in state to display them
 	 */
 	useEffect(() => {
-		patternService
-			.getAllPatterns()
-			.then((data) => setPatterns(data))
-			.catch((e) => alert(e));
+		//make this get eh fav patterns
+		// patternService
+		// 	.getAllPatterns()
+		// 	.then((data) => setPatterns(data))
+		// 	.catch((e) => Toast.failure(e.message));
 	}, []);
-
+	const loggedIn = false;
+	if (!loggedIn) {
+		return <Navigate to="/" state={{ from: location }} />;
+	}
 	return (
+		<AuthWrapper>
 		<Container>
 			<div className="w-75 d-flex flex-column mx-auto mt-5">
 				{patterns.map((pattern) => (
@@ -32,7 +36,8 @@ const Patterns = (props: PatternsProps) => {
 				))}
 			</div>
 		</Container>
+		</AuthWrapper>
 	);
 };
 
-export default Patterns;
+export default FavoritePatterns;

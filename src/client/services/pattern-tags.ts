@@ -1,11 +1,11 @@
 import baseService from "./base";
 
 /**
- * @param id - the id of the pattern we want the tags for
  * Gets all the tags for the pattern id passed in
+ * @param id - the id of the pattern we want the tags for
  * @returns an array(?) of tags
  */
-const allByPatternId = async (id: number) => {
+const allByPatternId = async (id: string) => {
 	try {
 		const patterns = await baseService.get(`/api/pattern_tags/${id}`);
 		return patterns;
@@ -16,12 +16,12 @@ const allByPatternId = async (id: number) => {
 
 /**
  *
- * @param payload - an object of the patternId and an array of patterns that need to be added to the pattern_tags joint table
  * Adds the tags to the pattern_tags joint table based on the id in the paramater object
+ * @param payload - an object of the patternId and an array of patterns that need to be added to the pattern_tags joint table
  * @returns the pattern (I think)
  */
 const addNewTags = async (payload: {
-	pattern_id: number;
+	pattern_id: string;
 	tag_ids: number[];
 }) => {
 	try {
@@ -32,13 +32,14 @@ const addNewTags = async (payload: {
 		);
 		return response.pattern;
 	} catch (error) {
+		console.log(`catch in addnewtags`);
 		throw error;
 	}
 };
 
 /**
- * @param id - id of pattern we want to remove patterns from
  * Removes all tag association from pattern_tags table based on the patternId
+ * @param id - id of pattern we want to remove patterns from
  */
 const destroyAllTagsBasedOnId = async (id: any) => {
 	try {

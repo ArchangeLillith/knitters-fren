@@ -1,22 +1,22 @@
-import * as esbuild from 'esbuild';
+import * as esbuild from "esbuild";
 
 try {
 	await esbuild.build({
-		entryPoints: ['src/server/server.ts'],
+		entryPoints: ["src/server/server.ts"],
 		bundle: true,
 		sourcemap: false,
 		minify: true,
-		platform: 'node',
-		target: ['node18.6'],
-		packages: 'external',
+		platform: "node",
+		target: ["node18.6"],
+		packages: "external",
 		define: {
-			'process.env.NODE_ENV': "'production'"
+			"process.env.NODE_ENV": "'production'",
 		},
-		outfile: 'dist/server.js'
+		outfile: "dist/server.js",
 	});
 
-	console.log('Server bundled successfully for production!');
+	console.log("Server bundled successfully for production!");
 } catch (error) {
-	console.error('An error occurred during bundling:', error);
+	console.error("An error occurred during bundling:", error);
 	process.exit(1);
 }

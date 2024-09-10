@@ -1,9 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthProvider";
+import storage from "../utils/storage";
 
-interface NavBarProps {}
+const NavBar = () => {
+	const { logoutFromAuthState } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const { authState } = useContext(AuthContext);
 
-const NavBar = (props: NavBarProps) => {
+	/**
+	 * Logs the user out by removing the token and calling to the auth state to reset the state
+	 */
+	const logOut = () => {
+		try {
+			storage.removeToken();
+			logoutFromAuthState();
+			navigate(`/`);
+		} catch (error) {
+			console.error("Error logging out:", error);
+		}
+	};
+
 	return (
 		<nav
 			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
@@ -11,7 +28,7 @@ const NavBar = (props: NavBarProps) => {
 		>
 			<div className="container-fluid">
 				<Link
-					className="navbar-brand "
+					className="navbar-brand"
 					to="/"
 					style={{
 						fontFamily: "'Brush Script MT', cursive",
@@ -59,11 +76,32 @@ const NavBar = (props: NavBarProps) => {
 							</Link>
 						</li>
 					</ul>
-					<div>
-						<Link to="/login" className="nav-link">
-							Login!
-						</Link>
-					</div>
+					{authState.username && (
+						<div>
+							<div>Welcome back {authState.username}!</div>
+						</div>
+					)}
+					{authState.authenticated && (
+						<div>
+							<div>
+								<button onClick={logOut} className="nav-link">
+									Log out!
+								</button>
+							</div>
+						</div>
+					)}
+					{authState.role === "admin" && (
+						<div>
+							<Link to="/admin">Admin Panel</Link>
+						</div>
+					)}
+					{!authState.authenticated && (
+						<div>
+							<Link to="/login" className="nav-link">
+								Login!
+							</Link>
+						</div>
+					)}
 				</div>
 			</div>
 		</nav>
