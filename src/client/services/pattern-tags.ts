@@ -5,10 +5,24 @@ import baseService from "./base";
  * @param id - the id of the pattern we want the tags for
  * @returns an array(?) of tags
  */
+const all = async () => {
+	try {
+		const tags = await baseService.get(`/api/pattern_tags/`);
+		return tags;
+	} catch (error) {
+		throw error;
+	}
+};
+
+/**
+ * Gets all the tags for the pattern id passed in
+ * @param id - the id of the pattern we want the tags for
+ * @returns an array(?) of tags
+ */
 const allByPatternId = async (id: string) => {
 	try {
-		const patterns = await baseService.get(`/api/pattern_tags/${id}`);
-		return patterns;
+		const tags = await baseService.get(`/api/pattern_tags/${id}`);
+		return tags;
 	} catch (error) {
 		throw error;
 	}
@@ -24,7 +38,7 @@ const addNewTags = async (payload: {
 	pattern_id: string;
 	tag_ids: number[];
 }) => {
-	if (payload.tag_ids.length > 0) return;
+	if (payload.tag_ids.length < 0) return;
 
 	try {
 		console.log(`Adding tags to joint table....`);
@@ -55,6 +69,7 @@ const destroyAllTagsBasedOnId = async (id: any) => {
 };
 
 export default {
+	all,
 	allByPatternId,
 	addNewTags,
 	destroyAllTagsBasedOnId,

@@ -2,6 +2,17 @@ import type { ResultSetHeader } from "mysql2";
 import type { IAuthorsTable, IPatternTable, IPatternTags } from "../../types";
 import { Query, QueryMetadata } from "../query";
 
+//GET all tags
+const all = (): Promise<IPatternTags[]> =>
+	Query<IPatternTags[]>(
+		`
+SELECT 
+	tags.id AS id, 
+	tags.name AS name
+FROM 
+	tags
+		`
+	);
 //GET all tags by the pattern ID
 const allByPatternId = (id: string): Promise<IPatternTags[]> =>
 	Query<IPatternTags[]>(
@@ -66,6 +77,7 @@ const update = (values: {
 	]);
 
 export default {
+	all,
 	allByPatternId,
 	one,
 	insert,

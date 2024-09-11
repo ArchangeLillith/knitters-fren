@@ -13,6 +13,7 @@ const AddPattern = () => {
 	const { authState } = useContext(AuthContext);
 	const [title, setTitle] = React.useState<string>("");
 	const [content, setContent] = React.useState<string>("");
+	const [link, setLink] = React.useState<string>("");
 	const [selectedTags, setSelectedTags] = useState<Tags>([]);
 	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 
@@ -21,11 +22,13 @@ const AddPattern = () => {
 		title: string;
 		content: string;
 		author_id: string;
+		link: string
 	} = {
 		id: uuidv4(),
 		title,
 		content,
 		author_id: authState.id!,
+		link
 	};
 
 	/**
@@ -57,7 +60,8 @@ const AddPattern = () => {
 			);
 			console.log(`Pattern,`, pattern);
 			patternId = pattern.id;
-			if (patternId && newArr) {
+			if (newArr) {
+				console.log(`Adding tags because there are some:`, newArr);
 				patternTags.addNewTags({ pattern_id: patternId, tag_ids: newArr });
 			}
 			navigate(`/patterns/${patternId}`);
@@ -107,6 +111,17 @@ const AddPattern = () => {
 							className="form-control bg-soft"
 							id="pattern-title"
 							placeholder="Title..."
+						/>
+						<label htmlFor="pattern-link">Pattern Link</label>
+						<input
+							type="text"
+							required={true}
+							maxLength={100}
+							onChange={(e) => setLink(e.target.value)}
+							value={link}
+							className="form-control bg-soft"
+							id="pattern-link"
+							placeholder="Link..."
 						/>
 					</div>
 					<div className="form-group flex-grow-1 d-flex flex-column pt-4">

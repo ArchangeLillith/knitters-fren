@@ -83,9 +83,13 @@ router.delete("/:id", verifyToken, verifyAuthor, async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
 	const id: string = req.params.id;
 	try {
-		const patternDTO: { id: string; author_id: string; content: string } = {
+		const patternDTO: {
+			id: string;
+			content: string;
+			title: string;
+		} = {
 			id: req.body.id,
-			author_id: req.body.author_id,
+			title: req.body.title,
 			content: req.body.content,
 		};
 		console.log(`patternDTO`, patternDTO);

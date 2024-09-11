@@ -39,6 +39,7 @@ const addNewPattern = async (payload: {
 	title: string;
 	content: string;
 	author_id: string;
+	link: string;
 }) => {
 	try {
 		console.log(`Adding pattern....`);
@@ -69,7 +70,7 @@ const destroyPattern = async (id: string) => {
  */
 const updatePattern = async (
 	id: string,
-	payload: { content: string; author_id: string }
+	payload: { id: string; title: string; content: string }
 ) => {
 	try {
 		await baseService.put(`/api/patterns/${id}`, payload);

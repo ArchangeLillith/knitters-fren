@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { IPattern, Tags, Tag } from "../utils/types";
+import { IPattern, Tags } from "../utils/types";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
 import TagButton from "../components/TagButton";
@@ -61,6 +61,16 @@ const PatternDetails = (props: PatternDetailsProps) => {
 						>
 							{pattern.title}
 						</div>
+						{pattern.link !== "" && (
+							<object
+								width="100%"
+								height="1000"
+								data={pattern.link}
+								type="application/pdf"
+							>
+								{" "}
+							</object>
+						)}
 						<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>
 						<small key={`pattern-card-created-at-${pattern.id}`}>
 							{dayjs(pattern.created_at).format("MMMM D, YYYY")}

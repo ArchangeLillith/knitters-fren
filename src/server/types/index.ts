@@ -15,6 +15,7 @@ export interface IPatternTable {
 	title?: string;
 	content?: string;
 	created_at?: string;
+	link?: string;
 }
 
 export interface IAuthorsTable {

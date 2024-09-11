@@ -52,12 +52,12 @@ FROM
 //POST a pattern
 //! this does not include any tags, ensure tags are being set too
 const insert = async (values: IPatternTable): Promise<any> => {
-	const { title, content, id, author_id } = values;
+	const { title, content, id, author_id, link } = values;
 
 	try {
-		const sanitizedValues = [title, content, id, author_id];
+		const sanitizedValues = [title, content, id, author_id, link];
 		const returnedHeaders = await QueryMetadata(
-			"INSERT INTO patterns (title, content, id, author_id) VALUES (?, ?, ?, ?)",
+			"INSERT INTO patterns (title, content, id, author_id, link) VALUES (?, ?, ?, ?, ?)",
 			sanitizedValues
 		);
 		return returnedHeaders;
@@ -74,13 +74,14 @@ const destroy = (id: string): Promise<ResultSetHeader> =>
 
 //PATCH a pattern
 const update = (patternDTO: {
-	author_id: string;
-	content: string;
 	id: string;
+	title: string;
+	content: string;
 }): Promise<ResultSetHeader> =>
-	QueryMetadata(
-		"UPDATE patterns SET content = ? WHERE id = ? AND author_id = ?",
-		[patternDTO.content, patternDTO.id, patternDTO.author_id]
-	);
+	QueryMetadata("UPDATE patterns SET content = ?, title = ? WHERE id = ?", [
+		patternDTO.content,
+		patternDTO.title,
+		patternDTO.id,
+	]);
 
 export default { all, oneById, insert, destroy, update, oneByTitle };

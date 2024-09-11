@@ -4,9 +4,7 @@ import PatternCard from "../components/PatternCard";
 import patternService from "../services/pattern";
 import Container from "../components/Container";
 
-interface PatternsProps {}
-
-const Patterns = (props: PatternsProps) => {
+const Patterns = () => {
 	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
 
 	/**
