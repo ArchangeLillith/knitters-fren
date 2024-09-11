@@ -3,6 +3,7 @@ import { createJWT } from "../../utils/tokens";
 import db from "../../db";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
+import { logActivity } from "../../utils/logging";
 
 const router = Router();
 
@@ -42,6 +43,7 @@ router.post("/", async (req, res, next) => {
 		await db.authors.insert(authorDTO);
 		delete authorDTO.password;
 		const token = createJWT(authorDTO.id);
+		logActivity(authorDTO.id, "New user registered to site~", `Username: ${authorDTO.username}, Role: ${authorDTO.role}`)
 		res.json({ token });
 	} catch (error) {
 		next(error);

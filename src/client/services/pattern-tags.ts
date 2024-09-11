@@ -24,6 +24,8 @@ const addNewTags = async (payload: {
 	pattern_id: string;
 	tag_ids: number[];
 }) => {
+	if (payload.tag_ids.length > 0) return;
+
 	try {
 		console.log(`Adding tags to joint table....`);
 		const response = await baseService.post(
@@ -32,7 +34,10 @@ const addNewTags = async (payload: {
 		);
 		return response.pattern;
 	} catch (error) {
-		console.log(`catch in addnewtags`);
+		console.error(
+			`Tags no added correctly, catch in addNewTasgs, error is:`,
+			error
+		);
 		throw error;
 	}
 };

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { handleLogin } from "../../middlewares/auth.mw";
+import { handleLogin } from "../../middlewares/handleLogin.mw";
 import { createJWT } from "../../utils/tokens";
 
 const router = Router();

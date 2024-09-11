@@ -14,8 +14,10 @@ const all = (): Promise<(IPatternTable & IAuthorsTable)[]> =>
 		authors ON authors.id = patterns.author_id;`);
 
 //GET one pattern, joined to show the authors name
-const oneById = (id: string): Promise<IPatternTable & IAuthorsTable> =>
-	Query<IPatternTable & IAuthorsTable>(
+const oneById = async (
+	id: string
+): Promise<(IPatternTable & IAuthorsTable) | null> => {
+	const results = await Query<IPatternTable & IAuthorsTable>(
 		`
 SELECT 
   patterns.*,
@@ -27,6 +29,9 @@ FROM
   WHERE patterns.id = ?;`,
 		[id]
 	);
+
+	return results[0] || null;
+};
 
 const oneByTitle = (title: string): Promise<IPatternTable & IAuthorsTable> =>
 	Query<IPatternTable & IAuthorsTable>(

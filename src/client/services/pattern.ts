@@ -43,7 +43,8 @@ const addNewPattern = async (payload: {
 	try {
 		console.log(`Adding pattern....`);
 		const response = await baseService.post("/api/patterns", payload);
-		return response.pattern[0];
+		console.log(`response`, response);
+		return response.pattern;
 	} catch (error) {
 		throw error;
 	}

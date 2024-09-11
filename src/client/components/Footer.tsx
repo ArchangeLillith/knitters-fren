@@ -58,8 +58,7 @@ const Footer = () => {
 					</ul>
 				</div>
 				<span className="muted text-white small fw-lighter fst-italic">
-					Developed by Aria Walford for Covalence labs and personal use, images
-					from{" "}
+					Developed by Aria Walford for personal use, images from{" "}
 					<a
 						target="_blank"
 						className="link"

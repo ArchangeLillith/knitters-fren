@@ -57,10 +57,10 @@ const AddPattern = () => {
 			);
 			console.log(`Pattern,`, pattern);
 			patternId = pattern.id;
-			if (patternId) {
+			if (patternId && newArr) {
 				patternTags.addNewTags({ pattern_id: patternId, tag_ids: newArr });
-				navigate(`/patterns/${patternId}`);
 			}
+			navigate(`/patterns/${patternId}`);
 		} catch (error) {
 			alert(error);
 		}

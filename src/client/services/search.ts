@@ -83,57 +83,9 @@ const findByTagsStrict = async (payload: objectType[]) => {
 	}
 };
 
-/**
- * Writes a new pattern to the database
- * @param payload - the object that has all the data required to write a new pattern
- * @returns the new pattern id
- */
-const addNewPattern = async (payload: {
-	title: string;
-	content: string;
-	author_id: string;
-}) => {
-	try {
-		console.log(`Adding pattern....`);
-		const response = await baseService.post("/api/patterns", payload);
-		return response.pattern;
-	} catch (error) {
-		throw error;
-	}
-};
-
-/**
- * Removes a pattern from the database completely
- * @param id - the id of the pattern that is going to be destroyed
- */
-const destroyPattern = async (id: number) => {
-	try {
-		await baseService.destroy(`/api/patterns/${id}`);
-	} catch (error) {
-		throw error;
-	}
-};
-
-/**
- * Updates a pattern with new values in any field, keeping the same id for that pattern
- * @param id - the id of the pattern that's being updated
- * @param payload - the new values that are being assigned to the pattern
- */
-const updatePattern = async (
-	id: string,
-	payload: { content: string; author_id: string }
-) => {
-	try {
-		await baseService.put(`/api/patterns/${id}`, payload);
-	} catch (error) {}
-};
-
 export default {
 	findByTitle,
 	findByTags,
-	addNewPattern,
-	destroyPattern,
-	updatePattern,
 	findByContent,
 	findByTagsStrict,
 };

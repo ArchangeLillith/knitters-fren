@@ -20,7 +20,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 		content: "Loading...",
 		created_at: "Loading...",
 	});
-	const [tags, setTags] = React.useState<Tags>([]);
+	const [tags, setTags] = React.useState<Tags | null>([]);
 
 	//Refactor we should paginate this whole view
 	/**
@@ -29,7 +29,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	useEffect(() => {
 		//Annoying to have this here, there's no way to access this page without an id in the url, but my linter/typescript doesn't know that so it throws a fit below that id can be undefined, but it can't if you reach this page...
 		if (!id) return;
-		patternService.getOnePattern(id).then(([data]) => setPattern(data));
+		patternService.getOnePattern(id).then((data) => setPattern(data));
 		patternTags
 			.allByPatternId(id)
 			.then((tagsReturned) => setTags(tagsReturned))
@@ -40,7 +40,6 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	 * This is a one stop shop for deletion of a pattern. It calls the delete function for the joint table as well, because you can't delete the pattern without first cleaing the joint table anyways
 	 */
 	const handleDelete = () => {
-		//Same thing here, thinks id can be undefined when there's no possible way for it to be undefined if you're on this page
 		if (!id) return;
 		patternService
 			.destroyPattern(id)
@@ -71,7 +70,7 @@ const PatternDetails = (props: PatternDetailsProps) => {
 							{tags && (
 								<div>
 									{tags.map((tag) => (
-										<TagButton tag={tag} />
+										<TagButton tag={tag} key={tag.id} />
 									))}
 								</div>
 							)}
