@@ -38,6 +38,7 @@ app.get(
 		"/search",
 		"/favorites",
 		"/patterns/new",
+		"/admin",
 	],
 	(req, res) => res.sendFile(path.join(__dirname, "../../public/index.html"))
 );

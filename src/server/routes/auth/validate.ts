@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkToken } from "../../middlewares/auth.mw";
+import { checkToken } from "../../middlewares/handleLogin.mw";
 
 const router = Router();
 

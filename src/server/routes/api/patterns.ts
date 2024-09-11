@@ -1,8 +1,10 @@
 import { Router } from "express";
 
 import db from "../../db";
-import { verifyTokenAndRole } from "../../middlewares/admin.mw";
-import { verifyAuthor } from "../../middlewares/author.mw";
+import { verifyToken } from "../../middlewares/verifyToken.mw";
+import { verifyAuthor } from "../../middlewares/verifyAuthor.mw";
+import { logActivity } from "../../utils/logging";
+import patterns from "../../db/queries/patterns";
 
 const router = Router();
 //Run all these routes prepended with the method through this middle ware
@@ -38,24 +40,39 @@ router.post("/", async (req, res, next) => {
 		const patternDTO = { ...req.body };
 		//The insert
 		const returnedHeaders = await db.patterns.insert(patternDTO);
-		console.log(`insertedpattern`, returnedHeaders);
 		//The get request to get what was just put in, in the form the navigation and frontend expects it back
-		const pattern = await db.patterns.oneById(returnedHeaders.insertId);
-		res.json({ pattern, message: "New pattern created" });
+		if (returnedHeaders.affectedRows > 0) {
+			const pattern = await db.patterns.oneById(patternDTO.id);
+			logActivity(
+				pattern.author_id,
+				"New pattern created!",
+				`Pattern title: ${pattern.title}, Author: ${pattern.username}`
+			);
+			res.json({ pattern, message: "New pattern created" });
+		} else {
+			const error = new Error("Pattern not addded");
+			next(error);
+		}
 	} catch (error) {
 		next(error);
 	}
 });
 
 //DELETE api/patterns/:id
-router.delete("/:id", verifyAuthor, verifyTokenAndRole, async (req, res, next) => {
+router.delete("/:id", verifyToken, verifyAuthor, async (req, res, next) => {
 	try {
 		const id = req.params.id;
+		const { author_id, title, username } = await patterns.oneById(id);
 		await db.pattern_tags.destroyAllBasedOnPatternId(id);
 		const result = await db.patterns.destroy(id);
 		if (!result.affectedRows) {
 			throw new Error("No affected rows");
 		}
+		logActivity(
+			req.currentUser.id,
+			"Pattern deleted",
+			`Pattern title: ${title}, Author: ${username}, Author ID: ${author_id}`
+		);
 		res.json({ id, message: "Pattern deleted succesfully" });
 	} catch (error) {
 		next(error);
