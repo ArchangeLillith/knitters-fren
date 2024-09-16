@@ -1,17 +1,18 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { IPattern, Tag, Tags } from "../utils/types";
+import { Pattern, Tag, Tags } from "../utils/types";
 import dayjs from "dayjs";
 import patternTags from "../services/pattern-tags";
 import TagButton from "./TagButton";
 
 interface PatternCardProps {
-	pattern: IPattern;
+	pattern: Pattern;
 	featured?: boolean;
 }
 
 const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 	const [tags, setTags] = React.useState<Tags>();
+
 
 	/**
 	 * Fetches all pattern tags to set to state, displaying in the map
@@ -19,7 +20,8 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 	useEffect(() => {
 		patternTags
 			.allByPatternId(pattern.id)
-			.then((tagsReturned) => setTags(tagsReturned));
+			.then((tagsReturned) => setTags(tagsReturned))
+			.catch((error) => alert(error));
 	}, []);
 
 	return (
@@ -49,11 +51,12 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 					{pattern.content.slice(0, 200)}...
 				</p>
 				<small>{dayjs(pattern.created_at).format("MMMM D, YYYY")}</small>
+
 				<br />
 				{tags && (
 					<div>
 						{tags.map((tag: Tag) => (
-							<TagButton tag={tag} key={tag.id} />
+							<TagButton tag={tag} key={tag.id + pattern.id} />
 						))}
 					</div>
 				)}

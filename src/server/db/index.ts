@@ -4,9 +4,11 @@ import tags from "./queries/tags";
 import logs from "./queries/logs";
 import pattern_tags from "./queries/pattern_tags";
 import search from "./queries/search";
+import banned from "./queries/banned";
 
 export default {
 	authors,
+	banned,
 	patterns,
 	tags,
 	pattern_tags,

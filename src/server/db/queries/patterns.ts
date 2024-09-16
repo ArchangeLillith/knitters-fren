@@ -1,10 +1,10 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2";
-import type { IAuthorsTable, IPatternTable } from "../../types";
+import type { AuthorsTable, PatternTable } from "../../types";
 import { Query, QueryMetadata } from "../query";
 
 //GET all patterns, joined to show the name of the author
-const all = (): Promise<(IPatternTable & IAuthorsTable)[]> =>
-	Query<(IPatternTable & IAuthorsTable)[]>(`
+const all = (): Promise<(PatternTable & AuthorsTable)[]> =>
+	Query<(PatternTable & AuthorsTable)[]>(`
 	SELECT 
 		patterns.*,
 		authors.username
@@ -13,11 +13,28 @@ const all = (): Promise<(IPatternTable & IAuthorsTable)[]> =>
 				JOIN 
 		authors ON authors.id = patterns.author_id;`);
 
+//GET all pattern authored by one author_id
+const allByAuthor = (
+	author: string
+): Promise<(PatternTable & AuthorsTable)[]> =>
+	Query<(PatternTable & AuthorsTable)[]>(
+		`
+		SELECT 
+			patterns.*,
+			authors.username 
+		FROM 
+			patterns 
+					JOIN 
+					authors ON authors.id = patterns.author_id
+			WHERE patterns.author_id = ?;`,
+		[author]
+	);
+
 //GET one pattern, joined to show the authors name
 const oneById = async (
 	id: string
-): Promise<(IPatternTable & IAuthorsTable) | null> => {
-	const results = await Query<IPatternTable & IAuthorsTable>(
+): Promise<(PatternTable & AuthorsTable) | null> => {
+	const results = await Query<PatternTable & AuthorsTable>(
 		`
 SELECT 
   patterns.*,
@@ -33,12 +50,12 @@ FROM
 	return results[0] || null;
 };
 
-const oneByTitle = (title: string): Promise<IPatternTable & IAuthorsTable> =>
-	Query<IPatternTable & IAuthorsTable>(
+const oneByTitle = (title: string): Promise<PatternTable & AuthorsTable> =>
+	Query<PatternTable & AuthorsTable>(
 		`
 SELECT 
   patterns.*,
-  authors.name 
+  authors.username 
 FROM 
   patterns 
       JOIN 
@@ -51,13 +68,13 @@ FROM
 
 //POST a pattern
 //! this does not include any tags, ensure tags are being set too
-const insert = async (values: IPatternTable): Promise<any> => {
-	const { title, content, id, author_id, link } = values;
+const insert = async (values: PatternTable): Promise<any> => {
+	const { title, content, id, author_id, link, paid } = values;
 
 	try {
-		const sanitizedValues = [title, content, id, author_id, link];
+		const sanitizedValues = [title, content, id, author_id, link, paid];
 		const returnedHeaders = await QueryMetadata(
-			"INSERT INTO patterns (title, content, id, author_id, link) VALUES (?, ?, ?, ?, ?)",
+			"INSERT INTO patterns (title, content, id, author_id, link, paid) VALUES (?, ?, ?, ?, ?, ?)",
 			sanitizedValues
 		);
 		return returnedHeaders;
@@ -84,4 +101,19 @@ const update = (patternDTO: {
 		patternDTO.id,
 	]);
 
-export default { all, oneById, insert, destroy, update, oneByTitle };
+const updateAuthorToBanned = (id: string): Promise<ResultSetHeader> =>
+	QueryMetadata(
+		'UPDATE patterns SET author_id = "779e05a4-8988-4641-a2e5-5d9bb8391b65" WHERE id = ?',
+		[id]
+	);
+
+export default {
+	all,
+	allByAuthor,
+	oneById,
+	insert,
+	destroy,
+	update,
+	oneByTitle,
+	updateAuthorToBanned,
+};

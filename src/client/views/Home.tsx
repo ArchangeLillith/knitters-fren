@@ -1,17 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Container from "../components/Container";
 import PatternCard from "../components/PatternCard";
-import { IPattern } from "../utils/types";
+import { Pattern } from "../utils/types";
 import patternService from "../services/pattern";
-import { sortPatterns } from "../utils/patterns.utils";
+import { sortByDate } from "../utils/patterns.utils";
 import MostRecentRow from "../components/MostRecent";
+import { AuthContext } from "../components/AuthProvider";
 
 interface PatternProps {
-	fullList: IPattern[];
-	featured: IPattern;
-	mostRecent: IPattern[];
+	fullList: Pattern[];
+	featured: Pattern;
+	mostRecent: Pattern[];
 }
 const Home = () => {
+	const { authState } = useContext(AuthContext);
 	const [patterns, setPatterns] = React.useState<PatternProps>({
 		fullList: [],
 		featured: {
@@ -31,13 +33,17 @@ const Home = () => {
 		try {
 			patternService.getAllPatterns().then((data) => {
 				const fullList = data;
-				const sortedPatterns: IPattern[] = sortPatterns(data, "date");
-				const randomNumber = getRandomInt(data.length - 1);
+				const freePatterns = fullList.filter(
+					(pattern) => pattern.paid !== "true"
+				);
+				const sortedPatterns: Pattern[] = sortByDate(freePatterns) as Pattern[];
+				let randomNumber = getRandomInt(data.length - 1);
 				setPatterns({
 					fullList: fullList,
-					featured: fullList[randomNumber],
-					mostRecent: sortedPatterns.splice(0, 3),
+					featured: freePatterns[randomNumber],
+					mostRecent: sortedPatterns.slice(0, 3),
 				});
+				console.log(`patterns`, data);
 			});
 		} catch {
 			(e) => alert(e);
@@ -98,17 +104,27 @@ const Home = () => {
 							key={`all-pattern-outer-wrapper-${pattern.title}`}
 							className="my-2 w-75 m-auto"
 						>
-							<div
-								key={`all-pattern-inner-wrapper-${pattern.title}`}
-								className="border my-2 border-black rounded"
-							>
-								<PatternCard pattern={pattern} />
-							</div>
+							{pattern.paid === "true" &&
+								pattern.author_id === authState.id && (
+									<div
+										key={`all-pattern-inner-wrapper-${pattern.title}`}
+										className="border my-2 border-black rounded"
+									>
+										<PatternCard pattern={pattern} />
+									</div>
+								)}
+							{pattern.paid === "false" && (
+								<div
+									key={`all-pattern-inner-wrapper-${pattern.title}`}
+									className="border my-2 border-black rounded"
+								>
+									<PatternCard pattern={pattern} />
+								</div>
+							)}
 						</div>
 					))}
 				</div>
 			</div>
-			
 		</Container>
 	);
 };

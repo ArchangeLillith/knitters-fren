@@ -43,8 +43,10 @@ export function configurePassport(app: Express) {
 				secretOrKey: config.jwt.secret,
 			},
 			(payload, done) => {
+				console.log(`JWT PAYLOAD`, payload);
 				console.log("JWT strategy invoked");
 				try {
+					console.log(`Done in JWT strategy`);
 					done(null, payload);
 				} catch (error) {
 					console.log("Error in JWT strategy:", error);

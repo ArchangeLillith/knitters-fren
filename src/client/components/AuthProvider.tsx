@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect } from "react";
 import authService from "../services/auth";
 import storage from "../utils/storage";
-import { IAuthor } from "../utils/types";
+import { Author } from "../utils/types";
 
-interface AuthState extends IAuthor {
+interface AuthState extends Author {
 	authenticated: boolean;
 }
 /**
@@ -14,7 +14,7 @@ interface AuthContextType {
 	setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
 	loginToAuthState: (token: string) => void;
 	logoutFromAuthState: () => void;
-	updateUserData: (userData: Partial<IAuthor>) => void;
+	updateUserData: (userData: Partial<Author>) => void;
 }
 
 /**
@@ -65,7 +65,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	 * Updates the userdata in state for the components to use
 	 * @param userData - The user data to be set in state
 	 */
-	const updateUserData = (userData: Partial<IAuthor>) => {
+	const updateUserData = (userData: Partial<Author>) => {
 		setAuthState((prevState) => ({
 			...prevState,
 			...userData,

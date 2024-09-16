@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { IPattern, Tag, Tags } from "../utils/types";
+import { Pattern, Tag, Tags } from "../utils/types";
 import patternTags from "../services/pattern-tags";
 import TagButton from "./TagButton";
 
 interface PatternCardProps {
-	pattern: IPattern;
+	pattern: Pattern;
 }
 
 const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {

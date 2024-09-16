@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IPattern, Tag, Tags, objectType } from "../utils/types";
+import { Pattern, Tag, Tags, objectType } from "../utils/types";
 import search from "../services/search";
 import SearchCard from "../components/SearchCard";
 import { useLocation } from "react-router-dom";
@@ -12,7 +12,7 @@ function SearchView() {
 	const [searchType, setSearchType] = useState<string>("tag");
 	const [queryString, setQueryString] = useState<string>("");
 	const [tagsActive, setTagsActive] = useState<boolean>(false);
-	const [foundPatterns, setFoundPatterns] = React.useState<IPattern[]>([]);
+	const [foundPatterns, setFoundPatterns] = React.useState<Pattern[]>([]);
 	const [strictComparison, setStrictComparison] = useState<boolean>(false);
 	const [searchTriggered, setSearchTriggered] = useState<boolean>(false);
 

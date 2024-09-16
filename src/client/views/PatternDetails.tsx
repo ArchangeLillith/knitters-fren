@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import authorService from "../services/author";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { IPattern, Tags } from "../utils/types";
+import { Pattern, Tags } from "../utils/types";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
 import TagButton from "../components/TagButton";
@@ -13,7 +14,8 @@ interface PatternDetailsProps {}
 const PatternDetails = (props: PatternDetailsProps) => {
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const [pattern, setPattern] = React.useState<IPattern>({
+	const [author, setAuthor] = React.useState<string>("");
+	const [pattern, setPattern] = React.useState<Pattern>({
 		id: "0",
 		author_id: "Loading...",
 		title: "Loading...",
@@ -29,11 +31,23 @@ const PatternDetails = (props: PatternDetailsProps) => {
 	useEffect(() => {
 		//Annoying to have this here, there's no way to access this page without an id in the url, but my linter/typescript doesn't know that so it throws a fit below that id can be undefined, but it can't if you reach this page...
 		if (!id) return;
-		patternService.getOnePattern(id).then((data) => setPattern(data));
-		patternTags
-			.allByPatternId(id)
-			.then((tagsReturned) => setTags(tagsReturned))
-			.catch((e) => alert(e));
+		const fetchPAtternandAuthor = async () => {
+			try {
+				const pattern: Pattern = await patternService.getOnePattern(id);
+				setPattern(pattern);
+
+				const author: string = await authorService.getUsernameById(
+					pattern.author_id
+				);
+				setAuthor(author);
+
+				const tags: Tags = await patternTags.allByPatternId(pattern.id);
+				setTags(tags);
+			} catch (error) {
+				alert(`Error: ${error}`);
+			}
+		};
+		fetchPAtternandAuthor();
 	}, []);
 
 	/**
@@ -72,8 +86,14 @@ const PatternDetails = (props: PatternDetailsProps) => {
 							</object>
 						)}
 						<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>
-						<small key={`pattern-card-created-at-${pattern.id}`}>
-							{dayjs(pattern.created_at).format("MMMM D, YYYY")}
+						<small>Author: {author}</small>
+						<small
+							className="m-2"
+							key={`pattern-card-created-at-${pattern.id}`}
+						>
+							<i>
+								Submitted: {dayjs(pattern.created_at).format("MMMM D, YYYY")}
+							</i>
 						</small>
 						<br />
 						<div className="d-flex mb-3">

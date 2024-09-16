@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { IPattern } from "../utils/types";
+import { Pattern } from "../utils/types";
 import PatternCard from "../components/PatternCard";
 import Container from "../components/Container";
 import { Navigate, useLocation } from "react-router-dom";
 import AuthWrapper from "../components/AuthWrapper";
 
 const FavoritePatterns = () => {
-	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
+	const [patterns, setPatterns] = React.useState<Pattern[]>([]);
 	const location = useLocation();
 	/**
 	 * This fetches all the patterns on load once from the databse and sets them in state to display them

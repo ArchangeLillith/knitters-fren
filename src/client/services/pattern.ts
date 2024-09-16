@@ -1,3 +1,4 @@
+import type { ResultSetHeader } from "mysql2";
 import baseService from "./base";
 
 /**
@@ -40,6 +41,7 @@ const addNewPattern = async (payload: {
 	content: string;
 	author_id: string;
 	link: string;
+	paid: "true" | "false";
 }) => {
 	try {
 		console.log(`Adding pattern....`);
@@ -57,7 +59,11 @@ const addNewPattern = async (payload: {
  */
 const destroyPattern = async (id: string) => {
 	try {
-		await baseService.destroy(`/api/patterns/${id}`);
+		const result: ResultSetHeader = await baseService.destroy(
+			`/api/patterns/${id}`
+		);
+		console.log(`Result`, result);
+		return result;
 	} catch (error) {
 		throw error;
 	}

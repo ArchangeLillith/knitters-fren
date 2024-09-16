@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { IPattern } from "../utils/types";
+import { Pattern } from "../utils/types";
 import PatternCard from "../components/PatternCard";
 import patternService from "../services/pattern";
 import Container from "../components/Container";
 
 const Patterns = () => {
-	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
+	const [patterns, setPatterns] = React.useState<Pattern[]>([]);
 
 	/**
 	 * This fetches all the patterns on load once from the databse and sets them in state to display them

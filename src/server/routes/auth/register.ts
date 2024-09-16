@@ -42,8 +42,12 @@ router.post("/", async (req, res, next) => {
 		authorDTO.password = hash;
 		await db.authors.insert(authorDTO);
 		delete authorDTO.password;
-		const token = createJWT(authorDTO.id);
-		logActivity(authorDTO.id, "New user registered to site~", `Username: ${authorDTO.username}, Role: ${authorDTO.role}`)
+		const token = createJWT(authorDTO.id, authorDTO.role);
+		logActivity(
+			authorDTO.id,
+			"New user registered to site~",
+			`Username: ${authorDTO.username}, Role: ${authorDTO.role}`
+		);
 		res.json({ token });
 	} catch (error) {
 		next(error);

@@ -1,11 +1,9 @@
-export type objectType = { [key: string]: string };
-export type Tags = Tag[];
-export type Tag = { id: number; name: string };
+export type objectType = { [key: string]: string | boolean };
 
 /**
  * Pattern type declaration
  */
-export interface IPattern {
+export type Pattern = {
 	id: string;
 	link?: string;
 	author_id: string;
@@ -13,17 +11,30 @@ export interface IPattern {
 	content: string;
 	created_at: string;
 	tags?: string[];
-}
+	paid?: "true" | "false";
+};
 
-export interface ITag {
+export type Tags = Tag[];
+
+export type Tag = {
 	name: string;
 	id: number;
-}
+};
+
+export type AdminState = {
+	patterns: Pattern[];
+	tags: Tag[];
+	logs: Log[];
+	filteredLogs: Log[];
+	authors: Author[];
+	showModal: boolean;
+	banAuthor: { id: string; username: string };
+};
 
 /**
  *Author type declaration
  */
-export interface IAuthor {
+export type Author = {
 	id?: string;
 	username?: string;
 	email?: string;
@@ -31,7 +42,7 @@ export interface IAuthor {
 	patternsFavorited?: string[];
 	commentsAuthored?: string[];
 	role?: "user" | "admin";
-}
+};
 
 /**
  * Tying the url to a name

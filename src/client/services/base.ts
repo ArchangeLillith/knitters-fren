@@ -20,6 +20,7 @@ const json = async (url: string, method: string, body: objectType = {}) => {
 		"Content-Type": "application/json",
 	};
 
+
 	//If there's a token in storage, then we add it here to show that the user is either authorized by the token or is spoofing the token which will casue an error on the backend if so.
 	if (TOKEN) {
 		headers["Authorization"] = `Bearer ${TOKEN}`;

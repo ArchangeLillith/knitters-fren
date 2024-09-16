@@ -1,6 +1,6 @@
 import baseService from "./base";
 import storage from "../utils/storage";
-import { IAuthor } from "../utils/types";
+import { Author } from "../utils/types";
 import { jwtDecode } from "jwt-decode";
 
 /**
@@ -35,6 +35,7 @@ const registerUserAndStoreToken = async (payload: {
 	try {
 		console.log(`REGISTER AND STORE TOKEN`);
 		const { token } = await baseService.post("/auth/register/", payload);
+		console.log(`TOKEN`, token);
 		storage.setToken(token);
 		return token;
 	} catch (error) {
@@ -47,7 +48,7 @@ const registerUserAndStoreToken = async (payload: {
  * @param token - The JWT
  * @returns the user
  */
-const getUserFromToken = async (token: string): Promise<IAuthor> => {
+const getUserFromToken = async (token: string): Promise<Author> => {
 	try {
 		const validated = await baseService.get("/auth/validate/me");
 		if (validated?.message !== "success") {
@@ -57,7 +58,7 @@ const getUserFromToken = async (token: string): Promise<IAuthor> => {
 		}
 		const decoded: any = jwtDecode(token);
 		const userId: string = decoded.id;
-		const user: IAuthor = await baseService.get(`/api/authors/${userId}`);
+		const user: Author = await baseService.get(`/api/authors/${userId}`);
 		if (!user) throw new Error("user couldn't be fetched TT_TT");
 		return user;
 	} catch (error) {

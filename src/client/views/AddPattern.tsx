@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import patternService from "../services/pattern";
 import patternTags from "../services/pattern-tags";
-import { IPattern, Tag, Tags } from "../utils/types";
+import { Pattern, Tag, Tags } from "../utils/types";
 import AuthWrapper from "../components/AuthWrapper";
 import { AuthContext } from "../components/AuthProvider";
 import { v4 as uuidv4 } from "uuid";
@@ -12,6 +12,7 @@ const AddPattern = () => {
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
 	const [title, setTitle] = React.useState<string>("");
+	const [paid, setPaid] = React.useState<"true" | "false">("false");
 	const [content, setContent] = React.useState<string>("");
 	const [link, setLink] = React.useState<string>("");
 	const [selectedTags, setSelectedTags] = useState<Tags>([]);
@@ -22,13 +23,15 @@ const AddPattern = () => {
 		title: string;
 		content: string;
 		author_id: string;
-		link: string
+		link: string;
+		paid: "true" | "false";
 	} = {
 		id: uuidv4(),
 		title,
 		content,
 		author_id: authState.id!,
-		link
+		link,
+		paid,
 	};
 
 	/**
@@ -55,7 +58,7 @@ const AddPattern = () => {
 			newArr.push(selectedTags[i].id);
 		}
 		try {
-			const pattern: IPattern = await patternService.addNewPattern(
+			const pattern: Pattern = await patternService.addNewPattern(
 				newPatternDTO
 			);
 			console.log(`Pattern,`, pattern);
@@ -67,6 +70,14 @@ const AddPattern = () => {
 			navigate(`/patterns/${patternId}`);
 		} catch (error) {
 			alert(error);
+		}
+	};
+
+	const togglePaid = () => {
+		if (paid === "true") {
+			setPaid("false");
+		} else {
+			setPaid("true");
 		}
 	};
 
@@ -112,17 +123,44 @@ const AddPattern = () => {
 							id="pattern-title"
 							placeholder="Title..."
 						/>
-						<label htmlFor="pattern-link">Pattern Link</label>
-						<input
-							type="text"
-							required={true}
-							maxLength={100}
-							onChange={(e) => setLink(e.target.value)}
-							value={link}
-							className="form-control bg-soft"
-							id="pattern-link"
-							placeholder="Link..."
-						/>
+						<div className="d-flex flex-column justify-content-end mt-1 ">
+							<div className="d-flex flex-row justify-content-between align-items-center">
+								<label htmlFor="pattern-link">Pattern Link</label>
+								<div
+									style={{
+										display: "inline-block",
+										position: "relative",
+										marginRight: "30px",
+									}}
+								>
+									<label htmlFor="paid-input">Paid</label>
+									<span className="tooltip-icon">?</span>
+									<div className="tooltip-text">
+										Check if you purchased the pattern. You will be the only one
+										able to see and comment on it
+									</div>
+								</div>
+							</div>
+							<div className="d-flex flex-row justify-content-between">
+								<input
+									type="text"
+									required={true}
+									maxLength={100}
+									onChange={(e) => setLink(e.target.value)}
+									value={link}
+									className="form-control bg-soft"
+									id="pattern-link"
+									placeholder="Link..."
+									style={{ width: "90%" }}
+								/>
+								<input
+									type="checkbox"
+									style={{ marginRight: "55px" }}
+									id="paid-input"
+									onChange={togglePaid}
+								/>
+							</div>
+						</div>
 					</div>
 					<div className="form-group flex-grow-1 d-flex flex-column pt-4">
 						<label htmlFor="pattern-details">Pattern Details</label>
