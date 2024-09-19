@@ -7,6 +7,7 @@ import SearchPanel from "../components/SearchViewComponents/SearchPanel";
 import { SearchPageState as PageState } from "../utils/types";
 import NoPatternsFound from "../components/SearchViewComponents/NoPatternsFoud";
 import SearchResults from "../components/SearchViewComponents/SearchResults";
+import Container from "../components/Container";
 
 function SearchView() {
 	const { state } = useLocation();
@@ -20,7 +21,7 @@ function SearchView() {
 		suggestions: [],
 		strictComparison: false,
 		searchTriggered: false,
-		foundPatterns: []
+		foundPatterns: [],
 	});
 
 	type ResultType = {
@@ -30,6 +31,7 @@ function SearchView() {
 			tags: Tag[];
 		}[];
 	};
+	
 	/**
 	 *If the user has clicked on a tag anywhere else, it leads them here to the search and this scrapes the data from the state that came along with the navigate to set the value of the tag clicked on into the active tags (UI) and also adds it to the chosen tags that governs what will be searched for (backend)
 	 */
@@ -180,8 +182,8 @@ function SearchView() {
 	) : null;
 
 	return (
-		<div>
-			<div className="p-4 m-3 d-flex">
+		<Container>
+			<div className="p-2 m-3 d-flex">
 				<h3 className="text-soft">You are searching by:</h3>
 				<form className="d-flex">
 					<select
@@ -199,17 +201,15 @@ function SearchView() {
 				</form>
 			</div>
 			{pageState.searchType === "tag" ? (
-				<>
-					<h2 className="text-center mt-5 text-primary">
+				<div className="d-flex flex-column my-2 py-2">
+					<h2 className="text-center mt-2 text-primary">
 						Select tags to search by!
 					</h2>
 					<div>{JSON.stringify(pageState.selectedTags)}</div>
-					<div className="w-75 mx-auto mt-5">
-						<TagContainer
-							selectedTags={pageState.selectedTags}
-							setSelectedTags={setPageState}
-						/>
-					</div>
+					<TagContainer
+						selectedTags={pageState.selectedTags}
+						setSelectedTags={setPageState}
+					/>
 					<div className="d-flex center">
 						<input
 							type="checkbox"
@@ -244,12 +244,12 @@ function SearchView() {
 							Clear Tags
 						</button>
 					</div>
-				</>
+				</div>
 			) : (
 				<SearchPanel state={pageState} setState={setPageState} />
 			)}
 			<div className="w-75 d-flex flex-column mx-auto mt-5">{resultsHtml}</div>
-		</div>
+		</Container>
 	);
 }
 

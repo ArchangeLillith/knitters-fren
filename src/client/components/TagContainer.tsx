@@ -37,7 +37,10 @@ const TagContainer: React.FC<TagContainerProps> = ({
 	};
 
 	return (
-		<>
+		<div
+			id="tags-div"
+			className="form-control-lg form-control flex-grow-1 bg-soft"
+		>
 			{tags.map((tag: Tag) => (
 				<div
 					className="m-1 d-inline-flex btn-group"
@@ -52,7 +55,7 @@ const TagContainer: React.FC<TagContainerProps> = ({
 					/>
 				</div>
 			))}
-		</>
+		</div>
 	);
 };
 

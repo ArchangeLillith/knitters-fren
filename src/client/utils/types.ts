@@ -122,3 +122,12 @@ export type FormFields = {
 	password: string;
 	confirmPassword: string;
 };
+
+export type NewPattern ={
+	id: string;
+	title: string;
+	content: string;
+	author_id: string;
+	link: string;
+	paid: "true" | "false";
+}
