@@ -1,7 +1,18 @@
 import type { PatternTable } from "../../types";
 import { Query } from "../query";
 
-//Title query
+const findByAuthor = (author: string): Promise<PatternTable[]> =>
+	Query<PatternTable[]>(
+		`SELECT 
+			patterns.*,
+			authors.username  
+		FROM 
+			patterns
+		JOIN 
+			authors ON patterns.author_id = authors.id WHERE authors.username = ?;`,
+		[author]
+	);
+
 const findByTitle = (title: string): Promise<PatternTable[]> =>
 	Query<PatternTable[]>(
 		`SELECT * FROM patterns WHERE title LIKE concat('%', ?, '%')`,
@@ -50,4 +61,10 @@ const findByTagsStrict = (tags: number[]): Promise<PatternTable[]> =>
 //We think that this checks against the tags passed in and ensures that the returned patterns match those exaclty
 // HAVING COUNT(DISTINCT t.id) = ?;
 
-export default { findByTitle, findByTags, findByContent, findByTagsStrict };
+export default {
+	findByAuthor,
+	findByTitle,
+	findByTags,
+	findByContent,
+	findByTagsStrict,
+};

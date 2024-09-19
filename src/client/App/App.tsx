@@ -4,14 +4,11 @@
 
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import AuthProvider from "../components/AuthProvider";
-import { ToastContainer } from "react-toastify";
+import AuthProvider from "../components/AuthComponents/AuthProvider";
 import AppRoutes from "./AppRoutes";
-import Footer from "../components/Footer";
+import Footer from "../components/LayoutComponents/Footer";
 
-interface AppProps {}
-
-const App = (props: AppProps) => {
+const App = () => {
 	return (
 		<BrowserRouter>
 			<AuthProvider>

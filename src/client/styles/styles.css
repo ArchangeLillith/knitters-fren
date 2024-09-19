@@ -144,7 +144,27 @@ a {
 	margin-left: 5px;
 	position: relative;
 }
+.tooltip-icon-lock {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	color: black;
+	text-align: center;
+	border-radius: 50%;
+	font-size: 12px;
+	cursor: pointer;
+	margin-left: 5px;
+	position: relative;
+}
 
+.text-color-white {
+	color: white;
+}
+
+.selected-tag {
+	background: white;
+	color: pink;
+}
 .tooltip-text {
 	visibility: hidden;
 	width: 175px;
@@ -165,4 +185,14 @@ a {
 .tooltip-icon:hover + .tooltip-text {
 	visibility: visible;
 	opacity: 1;
+}
+.tooltip-icon-lock:hover + .tooltip-text {
+	visibility: visible;
+	opacity: 1;
+}
+
+.tag-tile {
+	background: #d88484;
+	color: white;
+	border-radius: 5px;
 }

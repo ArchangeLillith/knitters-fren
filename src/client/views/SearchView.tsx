@@ -1,176 +1,183 @@
 import React, { useEffect, useState } from "react";
-import { Pattern, Tag, Tags, objectType } from "../utils/types";
-import search from "../services/search";
-import SearchCard from "../components/SearchCard";
+import { Pattern, Tag } from "../utils/types";
+import searchService from "../services/search";
 import { useLocation } from "react-router-dom";
+import TagContainer from "../components/TagContainer";
+import SearchPanel from "../components/SearchViewComponents/SearchPanel";
+import { SearchPageState as PageState } from "../utils/types";
+import NoPatternsFound from "../components/SearchViewComponents/NoPatternsFoud";
+import SearchResults from "../components/SearchViewComponents/SearchResults";
 
 function SearchView() {
 	const { state } = useLocation();
 	const externallySelectedTag: { id: string; name: string } = state;
-	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
-	const [chosenTags, setChosenTags] = useState<objectType[]>([]);
-	const [searchType, setSearchType] = useState<string>("tag");
-	const [queryString, setQueryString] = useState<string>("");
-	const [tagsActive, setTagsActive] = useState<boolean>(false);
-	const [foundPatterns, setFoundPatterns] = React.useState<Pattern[]>([]);
-	const [strictComparison, setStrictComparison] = useState<boolean>(false);
-	const [searchTriggered, setSearchTriggered] = useState<boolean>(false);
 
+	const [pageState, setPageState] = useState<PageState>({
+		tagsActive: false,
+		selectedTags: [],
+		searchType: "tag",
+		queryString: "",
+		suggestions: [],
+		strictComparison: false,
+		searchTriggered: false,
+		foundPatterns: []
+	});
+
+	type ResultType = {
+		message: string;
+		patternObjects: {
+			pattern: Pattern;
+			tags: Tag[];
+		}[];
+	};
 	/**
 	 *If the user has clicked on a tag anywhere else, it leads them here to the search and this scrapes the data from the state that came along with the navigate to set the value of the tag clicked on into the active tags (UI) and also adds it to the chosen tags that governs what will be searched for (backend)
 	 */
 	useEffect(() => {
-		findAllTags();
-		if (externallySelectedTag) handleExternalTags();
+		if (externallySelectedTag) {
+			handleExternalTags();
+		}
 	}, []);
 
 	/**
 	 * Handles the setting of tags if the user came from an external page. It sets the visual tag to active in the UI, and adds the tag that was selected to the chosen tags array
 	 */
 	const handleExternalTags = () => {
-		setTagsActive(true);
-		setChosenTags([
-			{
-				id: externallySelectedTag.id.toString(),
-				name: externallySelectedTag.name,
-			},
-		]);
+		setPageState((prev) => ({
+			...prev,
+			tagsActive: true,
+			selectedTags: [
+				{
+					id: parseInt(externallySelectedTag.id, 10),
+					name: externallySelectedTag.name,
+				},
+			],
+		}));
 	};
 
 	/** 🌈⭐ The debouncer ⭐🌈
 	 * Delays the call to fetch until the user is done typing for the delay set in the inner setTimeout.
 	 */
 	useEffect(() => {
-		//Set the timeout that calls the fetch
-		const getData = setTimeout(() => {
-			//Is this going to be a problem later? It's to stop it from triggering immediatley
-			if (queryString === "") {
-				return;
-			}
-			switch (searchType) {
-				case "tag":
-					//Refactor we should maybe debounce the button? Does this make sense from a user standpoitn?
-					return;
-				//Isn't needed till author refactor
-				// case "author":
-				// 	search
-				// 		.findByTitle(queryString)
-				// 		.then((patterns) => setFoundPatterns(patterns));
-				// 	break;
-				case "content":
-					search
-						.findByContent(queryString)
-						.then((patterns) => setFoundPatterns(patterns));
-					break;
-				case "title":
-					search
-						.findByTitle(queryString)
-						.then((patterns) => setFoundPatterns(patterns));
-					break;
+		const timeoutId = setTimeout(() => {
+			if (pageState.queryString === "") return;
+
+			//Declaring what service we're going to call here based on what's chosen as search type
+			const searchFunctions: { [key: string]: Function } = {
+				tag: () => {},
+				author: searchService.findByAuthor,
+				content: searchService.findByContent,
+				title: searchService.findByTitle,
+			};
+
+			//Getting ahold of that service function here
+			const searchFunction = searchFunctions[pageState.searchType];
+
+			//Pull out repeated logic to a scoped util
+			const noPatternsFound = () => {
+				console.log(`scoped util triggered`);
+				setPageState((prev) => ({
+					...prev,
+					foundPatterns: [],
+					searchTriggered: true,
+				}));
+			};
+
+			if (searchFunction) {
+				//Triggering the service search function here based on type
+				searchFunction(pageState.queryString)
+					.then((result: ResultType) => {
+						console.log(`patterns in tsx`, result);
+						if (result.message === "patterns found") {
+							setPageState((prev) => ({
+								...prev,
+								foundPatterns: result.patternObjects,
+								searchTriggered: true,
+							}));
+						} else {
+							console.log(`no patterns found, triggering scoped util`);
+							noPatternsFound();
+						}
+					})
+					.catch(() => {
+						console.log(`CATCH`);
+						noPatternsFound();
+					});
 			}
 		}, 1000);
-		//Cleanup function that runs after a re-render and removes the old setTimeout
-		return () => clearTimeout(getData);
-		//What the useEffect re-triggers off of a change
-	}, [queryString]);
-
-	/**
-	 * The call to the api that gets the tags and sets them to the state to be rendered
-	 */
-	const findAllTags = () => {
-		fetch(process.env.ROOT_URL + "/api/tags")
-			.then((res) => res.json())
-			.then((data) => setTags(data))
-			.catch((e) => alert(e.message));
-	};
+		return () => clearTimeout(timeoutId);
+	}, [pageState.queryString, pageState.searchType]);
 
 	/**
 	 *
 	 * @param searchTypeDropdown - select dropdown that's value is what the user wants to search by
 	 * Sets the search type between the offered options, foundPatterns is reset on change of search type and the type of serach value is passed in on change of the select element which sets a state and has an effect on the search trigger function as well as UI elements
 	 */
-	const updateSearchType = (searchTypeDropdown: any) => {
-		setFoundPatterns([]);
-		setQueryString("");
-		setSearchType(searchTypeDropdown.target.value);
+	const updateSearchType = (
+		searchTypeDropdown: React.ChangeEvent<HTMLSelectElement>
+	) => {
+		setPageState((prev) => ({
+			...prev,
+			foundPatterns: [],
+			searchTriggered: false,
+			queryString: "",
+			searchType: searchTypeDropdown.target.value,
+		}));
 	};
 
 	/**
 	 * Handles the search by tags when the submit button is clicked
 	 */
 	const searchTrigger = () => {
-		setSearchTriggered(true);
-		setFoundPatterns([]);
-		const searchFunction = strictComparison
-			? search.findByTagsStrict
-			: search.findByTags;
+		setPageState((prev) => ({
+			...prev,
+			foundPatterns: [],
+			searchTriggered: true,
+		}));
 
-		searchFunction(chosenTags)
-			.then((res) => setFoundPatterns(res.finalPatterns))
-			.catch(() => setFoundPatterns([]));
+		const searchFunction = pageState.strictComparison
+			? searchService.findByTagsStrict
+			: searchService.findByTags;
+
+		searchFunction(pageState.selectedTags)
+			.then((data) =>
+				setPageState((prev) => ({ ...prev, foundPatterns: data }))
+			)
+			.catch(() =>
+				setPageState((prev) => ({
+					...prev,
+					foundPatterns: [],
+				}))
+			);
 	};
 
 	/**
 	 * Controls the toggle for the strict mode button
 	 */
-	const handleStrictMode = () => setStrictComparison((prev) => !prev);
+	const handleStrictMode = () =>
+		setPageState((prev) => ({
+			...prev,
+			strictComparison: !pageState.strictComparison,
+		}));
 
 	/**
 	 * Handles the reset button, clears out the chosen tags array and sets the tags to inactive as that state handles the buttons that should only be avaliable if there are tags chosen
 	 */
 	const clearSelection = () => {
-		setChosenTags([]);
-		setTagsActive(false);
-	};
-
-	/**
-	 * @param tagButton - The tag button that is clicked
-	 * Toggles the selected tags as the user clicks them 'on' and 'off', modifying the chosenTags state
-	 */
-
-	const tagToggle = (tagButton: React.ChangeEvent<HTMLInputElement>) => {
-		const { id, name } = tagButton.target;
-		console.log(`Tag button`, tagButton);
-
-		const updatedChosenTags = chosenTags.some((tag) => tag.id === id)
-			? chosenTags.filter((tag) => tag.id !== id)
-			: [...chosenTags, { id, name }];
-
-		setChosenTags(updatedChosenTags);
-		setTagsActive(updatedChosenTags.length > 0);
+		setPageState((prev) => ({ ...prev, selectedTags: [], tagsActive: false }));
 	};
 
 	/**
 	 * Takes the found patterns from any search and formats the results into React friendly card components or a no patterns found message
 	 * @returns an array of PatternCards, a React component, or a message saying there are no patterns with those params
 	 */
-	const resultsHtml =
-		foundPatterns.length >= 1 && searchTriggered
-			? foundPatterns.map((pattern, i) => (
-					<div
-						className="border rounded w-100 bg-soft m-2 border-pink"
-						key={`patternCard-${i}`}
-					>
-						<SearchCard pattern={pattern} />
-					</div>
-			  ))
-			: searchTriggered && (
-					<div className="d-flex flex-column m-auto align-items-center">
-						<p className="lead">
-							Sorry, Nanachi looked through the archives and no patterns exist
-							within those parameters. Please search for something else, she'd
-							be happy to assist!
-						</p>
-						<img
-							src="/images/book-nanachi.png"
-							alt="book-nanachi"
-							style={{
-								width: "300px",
-							}}
-							className=""
-						/>
-					</div>
-			  );
+	const resultsHtml = pageState.searchTriggered ? (
+		pageState.foundPatterns.length > 0 ? (
+			<SearchResults foundPatterns={pageState.foundPatterns} />
+		) : (
+			<NoPatternsFound />
+		)
+	) : null;
 
 	return (
 		<div>
@@ -186,43 +193,22 @@ function SearchView() {
 							Tag
 						</option>
 						<option value="title">Title</option>
-						{/* <option value="author">Author</option> */}
+						<option value="author">Author</option>
 						<option value="content">Content</option>
 					</select>
 				</form>
 			</div>
-			{searchType === "tag" ? (
+			{pageState.searchType === "tag" ? (
 				<>
 					<h2 className="text-center mt-5 text-primary">
 						Select tags to search by!
 					</h2>
+					<div>{JSON.stringify(pageState.selectedTags)}</div>
 					<div className="w-75 mx-auto mt-5">
-						{tags.map((tag: Tag) => (
-							<div
-								className="m-1 d-inline-flex btn-group bg-soft"
-								role="group"
-								aria-label="Basic checkbox toggle button group"
-								key={`${tag.id}-container`}
-							>
-								<input
-									type="checkbox"
-									className="btn-check"
-									id={`${tag.id}`}
-									autoComplete="off"
-									onChange={tagToggle}
-									name={tag.name}
-									checked={chosenTags.some(
-										(chosenTag) => chosenTag.id === tag.id.toString()
-									)}
-								/>
-								<label
-									className="btn btn-outline-primary"
-									htmlFor={`${tag.id}`}
-								>
-									{tag.name}
-								</label>
-							</div>
-						))}
+						<TagContainer
+							selectedTags={pageState.selectedTags}
+							setSelectedTags={setPageState}
+						/>
 					</div>
 					<div className="d-flex center">
 						<input
@@ -234,7 +220,7 @@ function SearchView() {
 						/>
 						<label
 							className={`${
-								tagsActive ? "visible" : "invisible"
+								pageState.tagsActive ? "visible" : "invisible"
 							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-outline-primary mx-auto`}
 							htmlFor="strictModeBtn"
 						>
@@ -243,7 +229,7 @@ function SearchView() {
 
 						<button
 							className={`${
-								tagsActive ? "visible" : "invisible"
+								pageState.tagsActive ? "visible" : "invisible"
 							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 							onClick={searchTrigger}
 						>
@@ -252,37 +238,17 @@ function SearchView() {
 						<button
 							onClick={clearSelection}
 							className={`${
-								tagsActive ? "visible" : "invisible"
+								pageState.tagsActive ? "visible" : "invisible"
 							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 						>
 							Clear Tags
 						</button>
 					</div>
-					<div className="w-75 d-flex flex-column mx-auto mt-5">
-						{resultsHtml}
-					</div>
 				</>
 			) : (
-				<>
-					<form>
-						<div className="d-flex flex-column justify-content-center align-items-center form-group">
-							<h1 className="text-center mt-5 text-primary">
-								What do you want to find?
-							</h1>
-							<input
-								className="w-25 form-control"
-								//We need to prevent default here too
-								onChange={(e) => setQueryString(e.target.value)}
-								value={queryString}
-								placeholder="Start typing!"
-							></input>
-						</div>
-					</form>
-					<div className="w-60 d-flex flex-column mx-auto mt-5">
-						{resultsHtml}
-					</div>
-				</>
+				<SearchPanel state={pageState} setState={setPageState} />
 			)}
+			<div className="w-75 d-flex flex-column mx-auto mt-5">{resultsHtml}</div>
 		</div>
 	);
 }

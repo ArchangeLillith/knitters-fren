@@ -13,6 +13,7 @@ FROM
 	tags
 		`
 	);
+
 //GET all tags by the pattern ID
 const allByPatternId = (id: string): Promise<PatternTags[]> =>
 	Query<PatternTags[]>(
@@ -25,21 +26,6 @@ FROM
 		JOIN 
 		pattern_tags ON tags.id = pattern_tags.tag_id
 	WHERE pattern_tags.pattern_id = ?`,
-		[id]
-	);
-
-//GET one pattern, joined to show the authors name
-const one = (id: string): Promise<(PatternTable & AuthorsTable)[]> =>
-	Query<(PatternTable & AuthorsTable)[]>(
-		`
-SELECT 
-  patterns.*,
-  authors.name 
-FROM 
-  patterns 
-      JOIN 
-			authors ON authors.id = patterns.author_id
-  WHERE patterns.id = ?;`,
 		[id]
 	);
 
@@ -79,7 +65,6 @@ const update = (values: {
 export default {
 	all,
 	allByPatternId,
-	one,
 	insert,
 	destroyAllBasedOnPatternId,
 	update,

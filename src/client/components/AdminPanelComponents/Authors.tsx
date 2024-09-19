@@ -4,15 +4,14 @@ import authorService from "../../services/author";
 import { GiThorHammer } from "react-icons/gi";
 import Modal from "../Modal";
 
-interface AdminAuthorsProps {
+//Refactor if I'm only using that banned author state internally, maybe we should pull it out of the admin state???
+
+interface AuthorsProps {
 	adminState: AdminState;
 	setAdminState: Dispatch<SetStateAction<AdminState>>;
 }
 
-const AdminAuthors: React.FC<AdminAuthorsProps> = ({
-	adminState,
-	setAdminState,
-}) => {
+const Authors: React.FC<AuthorsProps> = ({ adminState, setAdminState }) => {
 	const banHammer = (banButton: React.MouseEvent<HTMLButtonElement>) => {
 		const target = banButton.currentTarget; // Use currentTarget for better reliability
 		setAdminState((prev) => ({
@@ -78,7 +77,7 @@ const AdminAuthors: React.FC<AdminAuthorsProps> = ({
 						</div>
 					))}
 				</div>
-				{adminState.showModal && adminState.banAuthor && (
+				{adminState.showModal && adminState.banAuthor.id !== "" && (
 					<Modal>
 						<div className="align-self-center h3 text-color-light">
 							You've chosen to call upon Nanachi to ban...
@@ -116,4 +115,4 @@ const AdminAuthors: React.FC<AdminAuthorsProps> = ({
 	);
 };
 
-export default AdminAuthors;
+export default Authors;

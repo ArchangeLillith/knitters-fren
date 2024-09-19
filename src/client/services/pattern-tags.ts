@@ -19,7 +19,7 @@ const getAllTags = async () => {
  * @param id - the id of the pattern we want the tags for
  * @returns an array(?) of tags
  */
-const allByPatternId = async (id: string) => {
+const getByPatternId = async (id: string) => {
 	try {
 		const tags = await baseService.get(`/api/pattern_tags/${id}`);
 		return tags;
@@ -70,7 +70,7 @@ const destroyAllTagsBasedOnId = async (id: any) => {
 
 export default {
 	getAllTags,
-	allByPatternId,
+	getByPatternId,
 	addNewTags,
 	destroyAllTagsBasedOnId,
 };

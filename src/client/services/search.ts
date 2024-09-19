@@ -1,5 +1,24 @@
-import { objectType } from "../utils/types";
+import { Pattern, PatternObject, Tag } from "../utils/types";
 import baseService from "./base";
+import patternTagsService from "./pattern-tags";
+
+/**
+ * Searches the databse for ANY author that matches the searchString
+ * @param searchString - the string to search by
+ * @returns an array of patterns that match the search or an empty array
+ */
+const findByAuthor = async (searchString: string) => {
+	try {
+		const { message, patterns } = await baseService.get(
+			`/api/search/author/${searchString}`
+		);
+		const results = await handlePatternResults(message, patterns);
+		return results;
+	} catch (error) {
+		console.error("Error fetching patterns:", error);
+		throw error;
+	}
+};
 
 /**
  * Searches the databse for ANY title that matches the searchString
@@ -7,16 +26,15 @@ import baseService from "./base";
  * @returns an array of patterns that match the search or an empty array
  */
 const findByTitle = async (searchString: string) => {
-	console.log(`Search string`, searchString);
+	console.log(`find by title`);
 	try {
-		const response = await baseService.get(`/api/search/title/${searchString}`);
-		console.log(`response`, response);
-		if (response === undefined) {
-			return undefined;
-		}
-		return response.result;
+		const { message, patterns } = await baseService.get(
+			`/api/search/title/${searchString}`
+		);
+		const results = await handlePatternResults(message, patterns);
+		return results;
 	} catch (error) {
-		console.error("Error fetching patterns:", error);
+		console.log(`Error in findbytitle`);
 		throw error;
 	}
 };
@@ -27,18 +45,13 @@ const findByTitle = async (searchString: string) => {
  * @returns an array of patterns that have the search string in the content section
  */
 const findByContent = async (searchString: string) => {
-	console.log(`Search string`, searchString);
 	try {
-		const response = await baseService.get(
+		const { message, patterns } = await baseService.get(
 			`/api/search/content/${searchString}`
 		);
-		console.log(`response`, response);
-		if (response === undefined) {
-			return undefined;
-		}
-		return response.result;
+		const results = await handlePatternResults(message, patterns);
+		return results;
 	} catch (error) {
-		console.error("Error fetching patterns:", error);
 		throw error;
 	}
 };
@@ -48,12 +61,11 @@ const findByContent = async (searchString: string) => {
  * @param payload - an array of objects of type {id: number(?), name: string}
  * @returns
  */
-const findByTags = async (payload: objectType[]) => {
+const findByTags = async (payload: Tag[]) => {
 	try {
 		const response = await baseService.post(`/api/search/tag`, {
 			tagList: JSON.stringify(payload),
 		});
-		console.log(`response`, response);
 		if (response.finalPatterns.length === 0) {
 			throw new Error("No patterns found");
 		}
@@ -68,12 +80,11 @@ const findByTags = async (payload: objectType[]) => {
  * @param payload - an array of strings that are the names of tags to search by
  * @returns an array of patterns that has all the tags in the payload
  */
-const findByTagsStrict = async (payload: objectType[]) => {
+const findByTagsStrict = async (payload: Tag[]) => {
 	try {
 		const response = await baseService.post(`/api/search/tag/strict`, {
 			tagList: JSON.stringify(payload),
 		});
-		console.log(`response`, response);
 		if (response.finalPatterns.length === 0 || response === 404) {
 			return response.status(204).json({ message: "No patterns found" });
 		}
@@ -83,7 +94,22 @@ const findByTagsStrict = async (payload: objectType[]) => {
 	}
 };
 
+const handlePatternResults = async (message: string, patterns: Pattern[]) => {
+	const patternObjects: PatternObject[] = [];
+	if (message === "no pattern") {
+		return { message: "no patterns", data: [] };
+	}
+
+	for (const pattern of patterns) {
+		const tags = await patternTagsService.getByPatternId(pattern.id);
+		patternObjects.push({ pattern, tags });
+	}
+
+	return { patternObjects, message: "patterns found" };
+};
+
 export default {
+	findByAuthor,
 	findByTitle,
 	findByTags,
 	findByContent,

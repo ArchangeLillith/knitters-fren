@@ -1,53 +1,54 @@
-import React, { useEffect, useState } from "react";
-import authorService from "../services/author";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { Pattern, PatternComment, Tag } from "../utils/types";
+import { RiLockLine } from "react-icons/ri";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import { Pattern, Tags } from "../utils/types";
+import authorService from "../services/author";
 import patternService from "../services/pattern";
-import patternTags from "../services/pattern-tags";
+import patternTagsService from "../services/pattern-tags";
+import commentService from "../services/comments";
 import TagButton from "../components/TagButton";
+import { loadingPattern } from "../utils/patterns.utils";
+import CommentTile from "../components/CommentTile";
 
-interface PatternDetailsProps {}
-
-const PatternDetails = (props: PatternDetailsProps) => {
-	const navigate = useNavigate();
+const PatternDetails = () => {
+	const { authState } = useContext(AuthContext);
 	const { id } = useParams();
-	const [author, setAuthor] = React.useState<string>("");
-	const [pattern, setPattern] = React.useState<Pattern>({
-		id: "0",
-		author_id: "Loading...",
-		title: "Loading...",
-		content: "Loading...",
-		created_at: "Loading...",
-	});
-	const [tags, setTags] = React.useState<Tags | null>([]);
+	const navigate = useNavigate();
+	const [author, setAuthor] = useState<string>("");
+	const [tags, setTags] = useState<Tag[] | null>([]);
+	const [content, setContent] = useState<string>("");
+	const [comments, setComments] = useState<PatternComment[]>([]);
+	const [pattern, setPattern] = useState<Pattern>(loadingPattern);
 
-	//Refactor we should paginate this whole view
 	/**
 	 * Grabs the pattern that's indicated by the URL param from the database on load only to add them into a state to display all the patterns in the database
 	 */
 	useEffect(() => {
-		//Annoying to have this here, there's no way to access this page without an id in the url, but my linter/typescript doesn't know that so it throws a fit below that id can be undefined, but it can't if you reach this page...
 		if (!id) return;
-		const fetchPAtternandAuthor = async () => {
+		const fetchPatternandAuthor = async () => {
 			try {
 				const pattern: Pattern = await patternService.getOnePattern(id);
 				setPattern(pattern);
 
-				const author: string = await authorService.getUsernameById(
-					pattern.author_id
-				);
-				setAuthor(author);
+				const authorObj: {
+					id: string;
+					username: string;
+					role: "user" | "admin";
+				} = await authorService.getUsernameById(pattern.author_id);
+				setAuthor(authorObj.username);
 
-				const tags: Tags = await patternTags.allByPatternId(pattern.id);
+				const tags: Tag[] = await patternTagsService.getByPatternId(pattern.id);
 				setTags(tags);
 			} catch (error) {
 				alert(`Error: ${error}`);
 			}
 		};
-		fetchPAtternandAuthor();
+		fetchPatternandAuthor();
+		commentService
+			.getAllCommentsByPattern(id)
+			.then((data) => setComments(data));
 	}, []);
 
 	/**
@@ -61,69 +62,122 @@ const PatternDetails = (props: PatternDetailsProps) => {
 			.catch((e) => alert(e));
 	};
 
-	return (
-		<div className="container container-fliud mx-auto w-80 my-3 px-5 py-3 rounded bg-soft">
-			{pattern && (
-				<div
-					className="my-2 mx-4"
-					key={`pattern-card-outer-wrapper-${pattern.id}`}
-				>
-					<div className="m-2" key={`pattern-card-inner-${pattern.id}`}>
-						<div
-							className="display-4 my-3"
-							key={`pattern-card-h3-${pattern.id}`}
-						>
-							{pattern.title}
-						</div>
-						{pattern.link !== "" && (
-							<object
-								width="100%"
-								height="1000"
-								data={pattern.link}
-								type="application/pdf"
-							>
-								{" "}
-							</object>
-						)}
-						<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>
-						<small>Author: {author}</small>
-						<small
-							className="m-2"
-							key={`pattern-card-created-at-${pattern.id}`}
-						>
-							<i>
-								Submitted: {dayjs(pattern.created_at).format("MMMM D, YYYY")}
-							</i>
-						</small>
-						<br />
-						<div className="d-flex mb-3">
-							{tags && (
-								<div>
-									{tags.map((tag) => (
-										<TagButton tag={tag} key={tag.id} />
-									))}
-								</div>
-							)}
+	const handleCommentSubmit = (
+		submitButton: React.MouseEvent<HTMLButtonElement>
+	) => {
+		submitButton.preventDefault();
+		if (!authState.id || !id) return;
+		commentService.addNewComment(pattern.id, authState.id, content);
+		commentService
+			.getAllCommentsByPattern(id)
+			.then((data) => setComments(data));
+		setContent("");
+	};
 
-							<div className="ms-auto">
-								<button
-									onClick={handleDelete}
-									className="btn btn-outline-primary btn-border mx-3 p-2"
+	return (
+		<>
+			<div className="container container-fliud mx-auto w-80 my-3 px-5 py-3 rounded bg-soft">
+				{pattern && (
+					<div
+						className="my-2 mx-4"
+						key={`pattern-card-outer-wrapper-${pattern.id}`}
+					>
+						<div className="m-2" key={`pattern-card-inner-${pattern.id}`}>
+							<div className="d-flex flex-row justify-content-between align-items-center">
+								<div
+									className="display-4 my-3"
+									key={`pattern-card-h3-${pattern.id}`}
 								>
-									Delete
-								</button>
-								<Link
-									to={`/patterns/${id}/update`}
-									className="btn btn-outline-primary btn-border p-2"
+									{pattern.title}
+								</div>
+								{pattern.paid === "true" && (
+									<div
+										style={{
+											display: "inline-block",
+											position: "relative",
+											marginRight: "30px",
+										}}
+									>
+										<span className="tooltip-icon-lock">
+											<RiLockLine size={30} />
+										</span>
+										<div className="tooltip-text">
+											This pattern is a paid pattern, only you can see this!
+										</div>
+									</div>
+								)}
+							</div>
+							{pattern.link !== "" && (
+								<object
+									width="100%"
+									height="1000"
+									data={pattern.link}
+									type="application/pdf"
 								>
-									Update~
-								</Link>
+									{" "}
+								</object>
+							)}
+							<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>
+							<small>Author: {author}</small>
+							<small
+								className="m-2"
+								key={`pattern-card-created-at-${pattern.id}`}
+							>
+								<i>
+									Submitted: {dayjs(pattern.created_at).format("MMMM D, YYYY")}
+								</i>
+							</small>
+							<br />
+							<div className="d-flex mb-3">
+								{tags && (
+									<>
+										{tags.map((tag: Tag) => (
+											<div
+												className="m-1 d-inline-flex btn-group"
+												role="group"
+												aria-label="Basic checkbox toggle button group"
+												key={`${tag.id}-container`}
+											>
+												<TagButton tag={tag} />
+											</div>
+										))}
+									</>
+								)}
+
+								<div className="ms-auto">
+									<button
+										onClick={handleDelete}
+										className="btn btn-outline-primary btn-border mx-3 p-2"
+									>
+										Delete
+									</button>
+									<Link
+										to={`/patterns/${id}/update`}
+										className="btn btn-outline-primary btn-border p-2"
+									>
+										Update~
+									</Link>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			)}
-		</div>
+				)}
+			</div>
+			<div className="container container-fliud mx-auto w-80 my-3 px-5 py-3 rounded bg-soft">
+				<form>
+					<label htmlFor="comment-area">Comment:</label>
+					<textarea
+						value={content}
+						onChange={(event) => setContent(event.target.value)}
+						className="form-control"
+						id="comment-area"
+						rows={4}
+					/>
+					<button onClick={handleCommentSubmit}>Submit</button>
+				</form>
+			</div>
+			<CommentTile comments={comments} />
+		</>
 	);
 };
 

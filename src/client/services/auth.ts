@@ -2,6 +2,7 @@ import baseService from "./base";
 import storage from "../utils/storage";
 import { Author } from "../utils/types";
 import { jwtDecode } from "jwt-decode";
+import { error } from "console";
 
 /**
  * Called from login component, this calls to our api and attempts to return a token which then is set to the local storage
@@ -13,8 +14,8 @@ const authenticateUserAndStoreToken = async (payload: {
 	password: string;
 }) => {
 	try {
-		const { token } = await baseService.post("/auth/login", payload);
-		console.log(`TOKEN IN STORAGE`, token);
+		const token = await baseService.post("/auth/login", payload);
+		if (!token) return;
 		storage.setToken(token);
 		return token;
 	} catch (error) {
@@ -34,7 +35,8 @@ const registerUserAndStoreToken = async (payload: {
 }) => {
 	try {
 		console.log(`REGISTER AND STORE TOKEN`);
-		const { token } = await baseService.post("/auth/register/", payload);
+		const token = await baseService.post("/auth/register/", payload);
+		if (!token) return;
 		console.log(`TOKEN`, token);
 		storage.setToken(token);
 		return token;

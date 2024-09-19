@@ -67,8 +67,8 @@ FROM
 //TODO GET all patterns by _____ (tag, author, name)(do this by a checkbox on the front end so we don't have to join like three tables.... Or maybe that's okay?)
 
 //POST a pattern
-//! this does not include any tags, ensure tags are being set too
-const insert = async (values: PatternTable): Promise<any> => {
+// this does not include any tags, they're set elsewhere
+const insert = async (values: PatternTable): Promise<ResultSetHeader> => {
 	const { title, content, id, author_id, link, paid } = values;
 
 	try {
@@ -107,7 +107,24 @@ const updateAuthorToBanned = (id: string): Promise<ResultSetHeader> =>
 		[id]
 	);
 
+	//GET tags for one pattern, joined to show the authors name
+const one = (id: string): Promise<(PatternTable & AuthorsTable)[]> =>
+	Query<(PatternTable & AuthorsTable)[]>(
+		`
+SELECT 
+  patterns.*,
+  authors.name 
+FROM 
+  patterns 
+      JOIN 
+			authors ON authors.id = patterns.author_id
+  WHERE patterns.id = ?;`,
+		[id]
+	);
+
+
 export default {
+	one,
 	all,
 	allByAuthor,
 	oneById,

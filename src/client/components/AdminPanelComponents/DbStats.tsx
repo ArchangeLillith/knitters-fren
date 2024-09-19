@@ -1,7 +1,7 @@
 import React from "react";
 import { AdminState } from "../../utils/types";
 
-const AdminDbStats: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
+const DbStats: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 	return (
 		<>
 			<h2 className="accordion-header">
@@ -41,4 +41,4 @@ const AdminDbStats: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 	);
 };
 
-export default AdminDbStats;
+export default DbStats;

@@ -12,6 +12,15 @@ router.post("/", async (req, res, next) => {
 	console.log(`HIT /AUTH/REGISTER with body:`, req.body);
 	try {
 		const { email, password, username } = req.body;
+		const banned = await db.banned.findBannedByEmailOrUser(email, username);
+		if (banned.length > 0) {
+			return res
+				.status(403)
+				.json({
+					message:
+						"This email or username is associated with a banned account. Please choose another or contact support.",
+				});
+		}
 		if (!email || !isValidEmail(email)) {
 			const error = new Error("invalid email");
 			error["status"] = 400;

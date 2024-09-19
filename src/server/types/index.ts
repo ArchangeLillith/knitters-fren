@@ -6,7 +6,7 @@ declare global {
 		}
 	}
 }
-export type Tags = Tag[];
+
 export type Tag = { id: number; name: string };
 
 export interface PatternTable {
@@ -39,4 +39,13 @@ export type Log = {
 	action: string;
 	details: string;
 	created_at: string;
+};
+
+export type PatternComment = {
+	id: number;
+	author_id: string;
+	pattern_id: string;
+	content: string;
+	created_at: string;
+	username?: string;
 };

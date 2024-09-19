@@ -1,22 +1,22 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Pattern, Tag, Tags } from "../utils/types";
-import patternTags from "../services/pattern-tags";
-import TagButton from "./TagButton";
+import { Pattern, Tag } from "../../utils/types";
+import patternTags from "../../services/pattern-tags";
+import TagButton from "../TagButton";
 
 interface PatternCardProps {
 	pattern: Pattern;
 }
 
 const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {
-	const [tags, setTags] = React.useState<Tags>();
+	const [tags, setTags] = React.useState<Tag[]>();
 
 	/**
 	 * Fetches all pattern tags to set to state, displaying in the map
 	 */
 	useEffect(() => {
 		patternTags
-			.allByPatternId(pattern.id)
+			.getByPatternId(pattern.id)
 			.then((tagsReturned) => setTags(tagsReturned));
 	}, [pattern.id]);
 
@@ -32,11 +32,18 @@ const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {
 				<p className="small w-75">{pattern.content.slice(0, 150)}...</p>
 			</div>
 			{tags && (
-				<div key="tags-container">
+				<>
 					{tags.map((tag: Tag) => (
-						<TagButton tag={tag} key={tag.id} />
+						<div
+							className="m-1 d-inline-flex btn-group"
+							role="group"
+							aria-label="Basic checkbox toggle button group"
+							key={`${tag.id}-container`}
+						>
+							<TagButton tag={tag} />
+						</div>
 					))}
-				</div>
+				</>
 			)}
 			<hr />
 		</div>

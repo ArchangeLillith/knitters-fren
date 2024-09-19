@@ -2,7 +2,7 @@ import React from "react";
 import { AdminState } from "../../utils/types";
 import dayjs from "dayjs";
 
-const AdminLogs: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
+const Logs: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 	return (
 		<>
 			<h2 className="accordion-header">
@@ -22,19 +22,19 @@ const AdminLogs: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 				className="accordion-collapse collapse"
 			>
 				<div className="accordion-body">
-					<table>
+					<table className="table">
 						<thead>
 							<tr>
-								<th>Responsible Party</th>
-								<th>Action</th>
-								<th>Details</th>
-								<th>Date</th>
+								<th scope="col">Responsible Party</th>
+								<th scope="col">Action</th>
+								<th scope="col">Details</th>
+								<th scope="col">Date</th>
 							</tr>
 						</thead>
 						<tbody>
 							{adminState.filteredLogs?.map((log) => (
 								<tr key={log.id}>
-									<td>{log.user_id}</td>
+									<td scope="row">{log.user_id}</td>
 									<td>{log.action}</td>
 									<td>{log.details}</td>
 									<td>{dayjs(log.created_at).format("MMMM D, YYYY")}</td>
@@ -48,4 +48,4 @@ const AdminLogs: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 	);
 };
 
-export default AdminLogs;
+export default Logs;

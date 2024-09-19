@@ -1,43 +1,39 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Author, Pattern, Tag, Log } from "../utils/types";
-import patternService from "../services/pattern";
+import { Log, PatternComment, AdminPageState as PageState } from "../utils/types";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
+import { sortByDate } from "../utils/patterns.utils";
 import logService from "../services/logs";
 import authorService from "../services/author";
-import { Navigate } from "react-router-dom";
-import { AuthContext } from "../components/AuthProvider";
-
+import patternService from "../services/pattern";
+import commentService from "../services/comments";
+import patternTagsService from "../services/pattern-tags";
 import Container from "../components/Container";
-import patternTags from "../services/pattern-tags";
-import { sortByDate } from "../utils/patterns.utils";
 import {
-	AdminAuthors,
-	AdminLogs,
-	AdminDbStats,
-	AdminPatterns,
-	AdminTags,
-} from "../components/adminPanels";
+	Authors,
+	Logs,
+	DbStats,
+	Patterns,
+	Tags,
+	Comments,
+} from "../components/AdminPanelComponents";
 
-type AdminState = {
-	patterns: Pattern[];
-	tags: Tag[];
-	logs: Log[];
-	filteredLogs: Log[];
-	authors: Author[];
-	showModal: boolean;
-	banAuthor: { id: string; username: string };
-};
+
+
 const AdminPanel = () => {
 	const { authState } = useContext(AuthContext);
 	if (authState.role !== "admin") {
 		return <Navigate to="/" />;
 	}
 
-	const [adminState, setAdminState] = useState<AdminState>({
+	const [state, setState] = useState<PageState>({
 		patterns: [],
 		tags: [],
 		logs: [],
 		filteredLogs: [],
 		authors: [],
+		comments: [],
+		filteredComments: [],
 		showModal: false,
 		banAuthor: { id: "", username: "" },
 	});
@@ -47,7 +43,7 @@ const AdminPanel = () => {
 			.getAllLogs()
 			.then((data) => {
 				const filteredLogs: Log[] = sortByDate(data) as Log[];
-				setAdminState((prev) => ({
+				setState((prev) => ({
 					...prev,
 					logs: data,
 					filteredLogs: filteredLogs.slice(0, 15),
@@ -56,16 +52,26 @@ const AdminPanel = () => {
 			.catch((error) => console.error("Failed to load activity logs:", error));
 		patternService
 			.getAllPatterns()
-			.then((data) => setAdminState((prev) => ({ ...prev, patterns: data })))
+			.then((data) => setState((prev) => ({ ...prev, patterns: data })))
 			.catch((error) => alert(error));
-		patternTags
+		patternTagsService
 			.getAllTags()
-			.then((data) => setAdminState((prev) => ({ ...prev, tags: data })))
+			.then((data) => setState((prev) => ({ ...prev, tags: data })))
 			.catch((error) => console.error(error));
 		authorService
 			.getAllAuthors()
-			.then((data) => setAdminState((prev) => ({ ...prev, authors: data })))
+			.then((data) => setState((prev) => ({ ...prev, authors: data })))
 			.catch((error) => console.error(error));
+		commentService.getAllComments().then((data) => {
+			const filteredComments: PatternComment[] = sortByDate(
+				data
+			) as PatternComment[];
+			setState((prev) => ({
+				...prev,
+				comments: data,
+				filteredComments: filteredComments.slice(0, 15),
+			}));
+		});
 	}, []);
 
 	{
@@ -82,22 +88,22 @@ const AdminPanel = () => {
 		<Container>
 			<div className="accordion my-5">
 				<div className="accordion-item">
-					<AdminLogs adminState={adminState} />
+					<Logs adminState={state} />
 				</div>
 				<div className="accordion-item">
-					<AdminPatterns
-						adminState={adminState}
-						setAdminState={setAdminState}
-					/>
+					<Patterns adminState={state} setAdminState={setState} />
 				</div>
 				<div className="accordion-item">
-					<AdminTags adminState={adminState} />
+					<Tags adminState={state} />
 				</div>
 				<div className="accordion-item">
-					<AdminAuthors adminState={adminState} setAdminState={setAdminState} />
+					<Authors adminState={state} setAdminState={setState} />
 				</div>
 				<div className="accordion-item">
-					<AdminDbStats adminState={adminState} />
+					<DbStats adminState={state} />
+				</div>
+				<div className="accordion-item">
+					<Comments adminState={state} />
 				</div>
 			</div>
 		</Container>

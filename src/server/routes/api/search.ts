@@ -1,21 +1,33 @@
 import { Router } from "express";
 import db from "../../db";
-import patterns from "../../db/queries/patterns";
-import { PatternTable, Tag, Tags } from "../../types";
+import { PatternTable, Tag } from "../../types";
 
 const router = Router();
 
-//GET /api/search/title/:param
+//GET /api/search/author/:param
+router.get("/author/:queryString", async (req, res, next) => {
+	let author = req.params.queryString;
+	try {
+		const result = await db.search.findByAuthor(author);
+		if (result.length === 0) {
+			return res.json({ message: "no pattern" });
+		}
+		res.json({ patterns: result, message: "patterns found" });
+	} catch (error) {
+		next(error);
+	}
+});
+
+// GET /api/search/title/:queryString
 router.get("/title/:queryString", async (req, res, next) => {
 	let title = req.params.queryString;
 	try {
 		const result = await db.search.findByTitle(title);
 		if (result.length === 0) {
-			return res.status(404).json({ message: "No patterns found" });
+			return res.json({ message: "no pattern" });
 		}
-		res.json({ result, message: "Patterns found" });
+		res.json({ patterns: result, message: "patterns found" });
 	} catch (error) {
-		console.error("Error fetching patterns:", error);
 		next(error);
 	}
 });
@@ -28,9 +40,8 @@ router.get("/content/:queryString", async (req, res, next) => {
 		if (result.length === 0) {
 			return res.status(404).json({ message: "No patterns found" });
 		}
-		res.json({ result, message: "Patterns found" });
+		res.json({ patterns: result, message: "Patterns found" });
 	} catch (error) {
-		console.error("Error fetching patterns:", error);
 		next(error);
 	}
 });
@@ -39,7 +50,7 @@ router.get("/content/:queryString", async (req, res, next) => {
 router.post("/tag", async (req, res, next) => {
 	try {
 		const finalPatterns: PatternTable[] = [];
-		let tags: Tags;
+		let tags: Tag[];
 
 		try {
 			tags = JSON.parse(req.body.tagList);
@@ -73,7 +84,7 @@ router.post("/tag", async (req, res, next) => {
 				}
 			});
 		});
-		res.json({ finalPatterns, message: "Patterns found~" });
+		res.json({ patterns: finalPatterns, message: "Patterns found~" });
 	} catch (err) {
 		console.log(`ERROR`, err);
 		next(err);
@@ -84,7 +95,7 @@ router.post("/tag", async (req, res, next) => {
 router.post("/tag/strict", async (req, res, next) => {
 	try {
 		let finalPatterns: PatternTable[] = [];
-		let tags: Tags;
+		let tags: Tag[];
 
 		try {
 			tags = JSON.parse(req.body.tagList);

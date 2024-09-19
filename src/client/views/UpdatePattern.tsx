@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import noteService from "../services/pattern";
 import { useNavigate, useParams } from "react-router-dom";
 import patternService from "../services/pattern";
-import { Pattern, Tag, Tags } from "../utils/types";
+import { Pattern, Tag, } from "../utils/types";
 import patternTags from "../services/pattern-tags";
 
 const UpdatePattern = () => {
@@ -11,8 +11,8 @@ const UpdatePattern = () => {
 	const [pattern, setPattern] = useState<Pattern | undefined>(undefined);
 	const [title, setTitle] = useState<string>("");
 	const [content, setContent] = useState<string>("");
-	const [allTags, setAllTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
-	const [selectedTags, setSelectedTags] = useState<Tags>([]);
+	const [allTags, setAllTags] = useState<Tag[]>([{ id: 0, name: "Loading..." }]);
+	const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
 	useEffect(() => {
 		if (!id) return;

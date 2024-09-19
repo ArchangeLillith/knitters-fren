@@ -1,28 +1,23 @@
 import React, { useContext, useEffect } from "react";
-import Container from "../components/Container";
-import PatternCard from "../components/PatternCard";
 import { Pattern } from "../utils/types";
+import { loadingPattern, sortByDate } from "../utils/patterns.utils";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
+import Container from "../components/Container";
+import PatternCard from "../components/PatternComponents/PatternCard";
 import patternService from "../services/pattern";
-import { sortByDate } from "../utils/patterns.utils";
-import MostRecentRow from "../components/MostRecent";
-import { AuthContext } from "../components/AuthProvider";
+import MostRecentRow from "../components//PatternComponents/MostRecent";
 
 interface PatternProps {
 	fullList: Pattern[];
 	featured: Pattern;
 	mostRecent: Pattern[];
 }
+
 const Home = () => {
 	const { authState } = useContext(AuthContext);
 	const [patterns, setPatterns] = React.useState<PatternProps>({
 		fullList: [],
-		featured: {
-			id: "0",
-			author_id: "Loading...",
-			title: "Loading...",
-			content: "Loading...",
-			created_at: "Loading...",
-		},
+		featured: loadingPattern,
 		mostRecent: [],
 	});
 
@@ -31,7 +26,7 @@ const Home = () => {
 	 */
 	useEffect(() => {
 		try {
-			patternService.getAllPatterns().then((data) => {
+			patternService.getAllPatterns().then((data: Pattern[]) => {
 				const fullList = data;
 				const freePatterns = fullList.filter(
 					(pattern) => pattern.paid !== "true"

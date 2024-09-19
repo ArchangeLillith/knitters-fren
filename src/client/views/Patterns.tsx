@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Pattern } from "../utils/types";
-import PatternCard from "../components/PatternCard";
+import PatternCard from "../components/PatternComponents/PatternCard";
 import patternService from "../services/pattern";
 import Container from "../components/Container";
 

@@ -8,7 +8,7 @@ const router = Router();
 router.post("/", handleLogin, (req, res, next) => {
 	try {
 		const token = createJWT(req.currentUser.id, req.currentUser.role);
-		res.json({ token });
+		res.json(token);
 	} catch (error) {
 		next(error);
 	}

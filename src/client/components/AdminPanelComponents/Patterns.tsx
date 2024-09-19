@@ -1,22 +1,29 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import patternService from "../../services/pattern";
 import type { ResultSetHeader } from "mysql2";
 import { AdminState } from "../../utils/types";
 import { Link } from "react-router-dom";
-import PatternCard from "../PatternCard";
+import PatternCard from "../PatternComponents/PatternCard";
+import Modal from "../Modal";
 
-interface AdminTagsProps {
+interface PatternProps {
 	adminState: AdminState;
-	setAdminState: Dispatch<SetStateAction<AdminState>>;
+	setAdminState: React.Dispatch<React.SetStateAction<AdminState>>;
 }
 
-const AdminPatterns: React.FC<AdminTagsProps> = ({
-	adminState,
-	setAdminState,
-}) => {
+const Patterns: React.FC<PatternProps> = ({ adminState, setAdminState }) => {
 	const [toBeDeleted, setToBeDelted] = useState<string[]>([]);
 
-	const handleBatchDelete = async (
+	const modalConfirm = (deleteButton: React.MouseEvent<HTMLButtonElement>) => {
+		const target = deleteButton.currentTarget as HTMLButtonElement;
+		setToBeDelted([target.id]);
+		setAdminState((prev) => ({
+			...prev,
+			showModal: true,
+		}));
+	};
+
+	const handleDelete = async (
 		submitButton: React.MouseEvent<HTMLButtonElement>
 	) => {
 		submitButton.preventDefault();
@@ -26,13 +33,16 @@ const AdminPatterns: React.FC<AdminTagsProps> = ({
 
 		try {
 			const results: ResultSetHeader[] = await Promise.all(deletePromises);
-
 			const hasErrors = results.some((result) => result.affectedRows === 0);
 			if (hasErrors) {
 				alert("something went wrong, affectedRows === 0");
 			}
-			const updatedPatterns = await patternService.getAllPatterns();
-			setAdminState((prev) => ({ ...prev, patterns: updatedPatterns }));
+
+			const newPatterns = adminState.patterns.filter(
+				(pattern) => !toBeDeleted.includes(pattern.id)
+			);
+
+			setAdminState((prev) => ({ ...prev, patterns: newPatterns }));
 		} catch (error) {
 			console.error(
 				"Yo some stuff went wrong during deleting, this is that catch fr that"
@@ -49,11 +59,10 @@ const AdminPatterns: React.FC<AdminTagsProps> = ({
 		} else {
 			setToBeDelted((prev) => [...prev, id]);
 		}
-		console.log(`toBeDeleted`, toBeDeleted);
 	};
-	const handleDelete = (id: string) => {
-		//Refactor throw a "do you want to delete this?" here, a modal probs
-		patternService.destroyPattern(id).catch((error) => alert(error));
+
+	const closeModal = () => {
+		setAdminState((prev) => ({ ...prev, showModal: false }));
 	};
 
 	return (
@@ -76,7 +85,7 @@ const AdminPatterns: React.FC<AdminTagsProps> = ({
 			>
 				<div className="accordion-body align-items-center justify-content-center d-flex flex-column">
 					{toBeDeleted.length > 0 && (
-						<button onClick={handleBatchDelete}>Order 66</button>
+						<button onClick={handleDelete}>Order 66</button>
 					)}
 					{adminState.patterns?.map((pattern) => (
 						<div
@@ -86,22 +95,22 @@ const AdminPatterns: React.FC<AdminTagsProps> = ({
 							<input
 								type="checkbox"
 								onClick={addToDelete}
-								id={pattern.id}
+								id={`delete-checkbox`}
+								className="m-3"
 								key={`check-for-${pattern.id}`}
 							/>
+							<label htmlFor="delete-checkbox">Add to delete list</label>
 							<PatternCard
 								pattern={pattern}
 								key={`patterncard-for-${pattern.id}`}
 							/>
 							<button
 								id={pattern.id}
-								onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-									handleDelete((e.target as HTMLButtonElement).id)
-								}
+								onClick={modalConfirm}
 								className="btn btn-primary m-3"
 								key={`button-for-${pattern.id}`}
 							>
-								Delete
+								DELEEEETE
 							</button>
 							<Link
 								key={`update-button-for-${pattern.id}`}
@@ -113,9 +122,34 @@ const AdminPatterns: React.FC<AdminTagsProps> = ({
 						</div>
 					))}
 				</div>
+
+				{adminState.showModal && toBeDeleted.length > 0 && (
+					<Modal>
+						<div className="align-self-center h3 text-color-light">
+							Are you sure you want to ban these patterns?
+						</div>
+						<div className="d-flex flex-row align-items-center justify-content-center">
+							<div className="d-flex flex-column background-light">
+								{toBeDeleted}
+							</div>
+						</div>
+						<button
+							className="button btn-primary modal-button mb-3"
+							onClick={handleDelete}
+						>
+							Yes, delete that
+						</button>
+						<button
+							className="button btn-primary modal-button"
+							onClick={closeModal}
+						>
+							No, nvm
+						</button>
+					</Modal>
+				)}
 			</div>
 		</>
 	);
 };
 
-export default AdminPatterns;
+export default Patterns;

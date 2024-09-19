@@ -1,22 +1,25 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Container from "../components/Container";
-import patternService from "../services/pattern";
-import patternTags from "../services/pattern-tags";
-import { Pattern, Tag, Tags } from "../utils/types";
-import AuthWrapper from "../components/AuthWrapper";
-import { AuthContext } from "../components/AuthProvider";
 import { v4 as uuidv4 } from "uuid";
+import { Pattern, AddPatternPageState as PageState } from "../utils/types";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
+import Container from "../components/Container";
+import AuthWrapper from "../components/AuthComponents/AuthWrapper";
+import TagContainer from "../components/TagContainer";
+import patternTags from "../services/pattern-tags";
+import patternService from "../services/pattern";
 
 const AddPattern = () => {
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
-	const [title, setTitle] = React.useState<string>("");
-	const [paid, setPaid] = React.useState<"true" | "false">("false");
-	const [content, setContent] = React.useState<string>("");
-	const [link, setLink] = React.useState<string>("");
-	const [selectedTags, setSelectedTags] = useState<Tags>([]);
-	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
+
+	const [state, setState] = useState<PageState>({
+		title: "",
+		paid: "false",
+		content: "",
+		link: "",
+		selectedTags: [],
+	});
 
 	const newPatternDTO: {
 		id: string;
@@ -27,22 +30,12 @@ const AddPattern = () => {
 		paid: "true" | "false";
 	} = {
 		id: uuidv4(),
-		title,
-		content,
+		title: state.title,
+		content: state.content,
 		author_id: authState.id!,
-		link,
-		paid,
+		link: state.link,
+		paid: state.paid,
 	};
-
-	/**
-	 * Grabs all the tags on load to display to the user when creating their pattern so they can choose which ones they'd like to add
-	 */
-	useEffect(() => {
-		fetch(process.env.ROOT_URL + "/api/tags")
-			.then((res) => res.json())
-			.then((data) => setTags(data))
-			.catch((error) => alert(error));
-	}, []);
 
 	/**
 	 * @param submitButton - The submit button clicked to fire the submission of the pattern
@@ -54,8 +47,8 @@ const AddPattern = () => {
 		submitButton.preventDefault();
 		const newArr: number[] = [];
 		let patternId: string;
-		for (let i = 0; i < selectedTags.length; i++) {
-			newArr.push(selectedTags[i].id);
+		for (let i = 0; i < state.selectedTags.length; i++) {
+			newArr.push(state.selectedTags[i].id);
 		}
 		try {
 			const pattern: Pattern = await patternService.addNewPattern(
@@ -74,27 +67,11 @@ const AddPattern = () => {
 	};
 
 	const togglePaid = () => {
-		if (paid === "true") {
-			setPaid("false");
+		if (state.paid === "true") {
+			setState((prev) => ({ ...prev, paid: "false" }));
 		} else {
-			setPaid("true");
+			setState((prev) => ({ ...prev, paid: "true" }));
 		}
-	};
-
-	/**
-	 * @param tagButton - the specific button clicked with all the context such as the value of the tag desired
-	 * Takes in the tag and either adds it to the state of checked tags or filters it out if it exists within that array already
-	 */
-	const tagToggle = (tagButton: React.ChangeEvent<HTMLInputElement>) => {
-		const { id, name } = tagButton.target;
-		setSelectedTags((prevTags) => {
-			const tagIndex = prevTags.findIndex((tag) => tag.name === name);
-			if (tagIndex === -1) {
-				return [...prevTags, { id: parseInt(id), name }];
-			} else {
-				return prevTags.filter((tag) => tag.name !== name);
-			}
-		});
 	};
 
 	return (
@@ -117,8 +94,10 @@ const AddPattern = () => {
 							type="text"
 							required={true}
 							maxLength={100}
-							onChange={(e) => setTitle(e.target.value)}
-							value={title}
+							onChange={(e) =>
+								setState((prev) => ({ ...prev, title: e.target.value }))
+							}
+							value={state.title}
 							className="form-control bg-soft"
 							id="pattern-title"
 							placeholder="Title..."
@@ -146,8 +125,10 @@ const AddPattern = () => {
 									type="text"
 									required={true}
 									maxLength={100}
-									onChange={(e) => setLink(e.target.value)}
-									value={link}
+									onChange={(e) =>
+										setState((prev) => ({ ...prev, link: e.target.value }))
+									}
+									value={state.link}
 									className="form-control bg-soft"
 									id="pattern-link"
 									placeholder="Link..."
@@ -158,6 +139,7 @@ const AddPattern = () => {
 									style={{ marginRight: "55px" }}
 									id="paid-input"
 									onChange={togglePaid}
+									checked={state.paid === "true"}
 								/>
 							</div>
 						</div>
@@ -167,8 +149,10 @@ const AddPattern = () => {
 						<textarea
 							required={true}
 							maxLength={10000}
-							onChange={(e) => setContent(e.target.value)}
-							value={content}
+							onChange={(e) =>
+								setState((prev) => ({ ...prev, content: e.target.value }))
+							}
+							value={state.content}
 							className="form-control-lg form-control flex-grow-1 bg-soft"
 							id="pattern-details"
 							placeholder="Start writing..."
@@ -182,30 +166,10 @@ const AddPattern = () => {
 							id="tags-div"
 							className="form-control-lg form-control flex-grow-1 bg-soft"
 						>
-							{tags.map((tag: Tag) => (
-								<div
-									className="m-1 d-inline-flex btn-group"
-									role="group"
-									aria-label="Basic checkbox toggle button group"
-									key={`${tag.id}-container`}
-								>
-									<input
-										type="checkbox"
-										className="btn-check"
-										id={`${tag.id}`}
-										autoComplete="off"
-										onChange={tagToggle}
-										name={tag.name}
-										key={tag.name}
-									/>
-									<label
-										className="btn btn-outline-primary"
-										htmlFor={`${tag.id}`}
-									>
-										{tag.name}
-									</label>
-								</div>
-							))}
+							<TagContainer
+								selectedTags={state.selectedTags}
+								setSelectedTags={setState}
+							/>
 						</div>
 					</div>
 					<div className="d-flex justify-content-center align-items-center">
