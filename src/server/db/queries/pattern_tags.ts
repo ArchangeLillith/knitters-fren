@@ -1,10 +1,22 @@
 import type { ResultSetHeader } from "mysql2";
-import type { IAuthorsTable, IPatternTable, IPatternTags } from "../../types";
+import type { AuthorsTable, PatternTable, PatternTags } from "../../types";
 import { Query, QueryMetadata } from "../query";
 
+//GET all tags
+const all = (): Promise<PatternTags[]> =>
+	Query<PatternTags[]>(
+		`
+SELECT 
+	tags.id AS id, 
+	tags.name AS name
+FROM 
+	tags
+		`
+	);
+
 //GET all tags by the pattern ID
-const allByPatternId = (id: string): Promise<IPatternTags[]> =>
-	Query<IPatternTags[]>(
+const allByPatternId = (id: string): Promise<PatternTags[]> =>
+	Query<PatternTags[]>(
 		`
 SELECT 
 	tags.id AS id, 
@@ -14,21 +26,6 @@ FROM
 		JOIN 
 		pattern_tags ON tags.id = pattern_tags.tag_id
 	WHERE pattern_tags.pattern_id = ?`,
-		[id]
-	);
-
-//GET one pattern, joined to show the authors name
-const one = (id: string): Promise<(IPatternTable & IAuthorsTable)[]> =>
-	Query<(IPatternTable & IAuthorsTable)[]>(
-		`
-SELECT 
-  patterns.*,
-  authors.name 
-FROM 
-  patterns 
-      JOIN 
-			authors ON authors.id = patterns.author_id
-  WHERE patterns.id = ?;`,
 		[id]
 	);
 
@@ -66,8 +63,8 @@ const update = (values: {
 	]);
 
 export default {
+	all,
 	allByPatternId,
-	one,
 	insert,
 	destroyAllBasedOnPatternId,
 	update,

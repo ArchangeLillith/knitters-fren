@@ -5,6 +5,8 @@ import { verifyToken } from "../../middlewares/verifyToken.mw";
 import { verifyAuthor } from "../../middlewares/verifyAuthor.mw";
 import { logActivity } from "../../utils/logging";
 import patterns from "../../db/queries/patterns";
+import { ResultSetHeader } from "mysql2";
+import { verifyAdmin } from "../../middlewares/verifyAdmin.mw";
 
 const router = Router();
 //Run all these routes prepended with the method through this middle ware
@@ -59,33 +61,43 @@ router.post("/", async (req, res, next) => {
 });
 
 //DELETE api/patterns/:id
-router.delete("/:id", verifyToken, verifyAuthor, async (req, res, next) => {
-	try {
-		const id = req.params.id;
-		const { author_id, title, username } = await patterns.oneById(id);
-		await db.pattern_tags.destroyAllBasedOnPatternId(id);
-		const result = await db.patterns.destroy(id);
-		if (!result.affectedRows) {
-			throw new Error("No affected rows");
+router.delete(
+	"/:id",
+	verifyToken,
+	verifyAuthor,
+	verifyAdmin,
+	async (req, res, next) => {
+		try {
+			const id = req.params.id;
+			const { author_id, title, username } = await patterns.oneById(id);
+			await db.pattern_tags.destroyAllBasedOnPatternId(id);
+			const result: ResultSetHeader = await db.patterns.destroy(id);
+			if (!result.affectedRows) {
+				throw new Error("No affected rows");
+			}
+			logActivity(
+				req.currentUser.id,
+				"Pattern deleted",
+				`Pattern title: ${title}, Author: ${username}, Author ID: ${author_id}`
+			);
+			res.json(result);
+		} catch (error) {
+			next(error);
 		}
-		logActivity(
-			req.currentUser.id,
-			"Pattern deleted",
-			`Pattern title: ${title}, Author: ${username}, Author ID: ${author_id}`
-		);
-		res.json({ id, message: "Pattern deleted succesfully" });
-	} catch (error) {
-		next(error);
 	}
-});
+);
 
 //PUT /api/patterns/:id
 router.put("/:id", async (req, res, next) => {
 	const id: string = req.params.id;
 	try {
-		const patternDTO: { id: string; author_id: string; content: string } = {
+		const patternDTO: {
+			id: string;
+			content: string;
+			title: string;
+		} = {
 			id: req.body.id,
-			author_id: req.body.author_id,
+			title: req.body.title,
 			content: req.body.content,
 		};
 		console.log(`patternDTO`, patternDTO);

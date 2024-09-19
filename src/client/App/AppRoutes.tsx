@@ -1,6 +1,6 @@
 //This file governs how the routes work. We can wrap different routes in private tags here if we want to ensure they're kept safe
-import React, { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import Home from "../views/Home";
 import Patterns from "../views/Patterns";
 import PatternDetails from "../views/PatternDetails";
@@ -12,12 +12,10 @@ import Register from "../views/Register";
 import Login from "../views/Login";
 import SearchView from "../views/SearchView";
 
-import NavBar from "../components/NavBar";
+import NavBar from "../components/LayoutComponents/NavBar";
 import FavoritePatterns from "../views/FavoritePatterns";
 
-interface AppProps {}
-
-const App = (props: AppProps) => {
+const App = () => {
 	return (
 		<div>
 			<NavBar />

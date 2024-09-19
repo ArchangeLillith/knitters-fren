@@ -1,22 +1,33 @@
-import type { IPatternTable } from "../../types";
+import type { PatternTable } from "../../types";
 import { Query } from "../query";
 
-//Title query
-const findByTitle = (title: string): Promise<IPatternTable[]> =>
-	Query<IPatternTable[]>(
+const findByAuthor = (author: string): Promise<PatternTable[]> =>
+	Query<PatternTable[]>(
+		`SELECT 
+			patterns.*,
+			authors.username  
+		FROM 
+			patterns
+		JOIN 
+			authors ON patterns.author_id = authors.id WHERE authors.username = ?;`,
+		[author]
+	);
+
+const findByTitle = (title: string): Promise<PatternTable[]> =>
+	Query<PatternTable[]>(
 		`SELECT * FROM patterns WHERE title LIKE concat('%', ?, '%')`,
 		[title]
 	);
 
-const findByContent = (content: string): Promise<IPatternTable[]> =>
-	Query<IPatternTable[]>(
+const findByContent = (content: string): Promise<PatternTable[]> =>
+	Query<PatternTable[]>(
 		`SELECT * FROM patterns WHERE content LIKE concat('%', ?, '%')`,
 		[content]
 	);
 
 //Tags query
-const findByTags = (tag: number): Promise<IPatternTable[]> =>
-	Query<IPatternTable[]>(
+const findByTags = (tag: number): Promise<PatternTable[]> =>
+	Query<PatternTable[]>(
 		`SELECT p.id, p.author_id, p.title, p.content, p.created_at
 		FROM patterns p
 			JOIN pattern_tags pt ON p.id = pt.pattern_id
@@ -25,8 +36,8 @@ const findByTags = (tag: number): Promise<IPatternTable[]> =>
 		[tag]
 	);
 
-const findByTagsStrict = (tags: number[]): Promise<IPatternTable[]> =>
-	Query<IPatternTable[]>(
+const findByTagsStrict = (tags: number[]): Promise<PatternTable[]> =>
+	Query<PatternTable[]>(
 		`
 			SELECT p.id, p.author_id, p.title, p.content, p.created_at
 			FROM patterns p
@@ -50,4 +61,10 @@ const findByTagsStrict = (tags: number[]): Promise<IPatternTable[]> =>
 //We think that this checks against the tags passed in and ensures that the returned patterns match those exaclty
 // HAVING COUNT(DISTINCT t.id) = ?;
 
-export default { findByTitle, findByTags, findByContent, findByTagsStrict };
+export default {
+	findByAuthor,
+	findByTitle,
+	findByTags,
+	findByContent,
+	findByTagsStrict,
+};

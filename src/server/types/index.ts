@@ -1,23 +1,25 @@
 declare global {
 	namespace Express {
 		export interface Request {
-			currentUser?: IAuthorsTable;
+			currentUser?: AuthorsTable;
 			payload?: { id: string };
 		}
 	}
 }
-export type Tags = Tag[];
+
 export type Tag = { id: number; name: string };
 
-export interface IPatternTable {
+export interface PatternTable {
 	id?: string;
 	author_id?: string;
 	title?: string;
 	content?: string;
 	created_at?: string;
+	link?: string;
+	paid?: "true" | "false";
 }
 
-export interface IAuthorsTable {
+export interface AuthorsTable {
 	id?: string;
 	username?: string;
 	email?: string;
@@ -26,7 +28,7 @@ export interface IAuthorsTable {
 	role?: string;
 }
 
-export interface IPatternTags {
+export interface PatternTags {
 	name: string;
 	id: number;
 }
@@ -37,4 +39,13 @@ export type Log = {
 	action: string;
 	details: string;
 	created_at: string;
+};
+
+export type PatternComment = {
+	id: number;
+	author_id: string;
+	pattern_id: string;
+	content: string;
+	created_at: string;
+	username?: string;
 };

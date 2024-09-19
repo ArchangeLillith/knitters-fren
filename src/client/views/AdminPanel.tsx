@@ -1,97 +1,112 @@
 import React, { useContext, useEffect, useState } from "react";
-import { IPattern, Log } from "../utils/types";
-import patternService from "../services/pattern";
+import { Log, PatternComment, AdminPageState as PageState } from "../utils/types";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
+import { sortByDate } from "../utils/patterns.utils";
 import logService from "../services/logs";
-import PatternCard from "../components/PatternCard";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { AuthContext } from "../components/AuthProvider";
+import authorService from "../services/author";
+import patternService from "../services/pattern";
+import commentService from "../services/comments";
+import patternTagsService from "../services/pattern-tags";
+import Container from "../components/Container";
+import {
+	Authors,
+	Logs,
+	DbStats,
+	Patterns,
+	Tags,
+	Comments,
+} from "../components/AdminPanelComponents";
+
+
 
 const AdminPanel = () => {
 	const { authState } = useContext(AuthContext);
-	const navigate = useNavigate();
-	const [patterns, setPatterns] = useState<IPattern[]>([]);
-	const [logs, setLogs] = useState<Log[]>([]);
+	if (authState.role !== "admin") {
+		return <Navigate to="/" />;
+	}
 
-	const handleDelete = (id: string) => {
-		//Refactor throw a "do you want to delete this?" here, a modal probs
-		patternService
-			.destroyPattern(id)
-			.then(() => navigate("/patterns/admin"))
-			.catch((error) => alert(error));
-	};
+	const [state, setState] = useState<PageState>({
+		patterns: [],
+		tags: [],
+		logs: [],
+		filteredLogs: [],
+		authors: [],
+		comments: [],
+		filteredComments: [],
+		showModal: false,
+		banAuthor: { id: "", username: "" },
+	});
 
 	useEffect(() => {
 		logService
 			.getAllLogs()
-			.then((data) => setLogs(data))
+			.then((data) => {
+				const filteredLogs: Log[] = sortByDate(data) as Log[];
+				setState((prev) => ({
+					...prev,
+					logs: data,
+					filteredLogs: filteredLogs.slice(0, 15),
+				}));
+			})
 			.catch((error) => console.error("Failed to load activity logs:", error));
-	}, []);
-
-	useEffect(() => {
 		patternService
 			.getAllPatterns()
-			.then((data) => setPatterns(data))
+			.then((data) => setState((prev) => ({ ...prev, patterns: data })))
 			.catch((error) => alert(error));
+		patternTagsService
+			.getAllTags()
+			.then((data) => setState((prev) => ({ ...prev, tags: data })))
+			.catch((error) => console.error(error));
+		authorService
+			.getAllAuthors()
+			.then((data) => setState((prev) => ({ ...prev, authors: data })))
+			.catch((error) => console.error(error));
+		commentService.getAllComments().then((data) => {
+			const filteredComments: PatternComment[] = sortByDate(
+				data
+			) as PatternComment[];
+			setState((prev) => ({
+				...prev,
+				comments: data,
+				filteredComments: filteredComments.slice(0, 15),
+			}));
+		});
 	}, []);
 
-	if (authState.role !== "admin") {
-		return <Navigate to="/" />;
+	{
+		/* Please to make, delete and edit tags (pref in batch) */
 	}
-	return (
-		<div className="w-75 d-flex flex-column mx-auto mt-5">
-			<div className="activity-log">
-				<h2>Activity Log</h2>
-				<table>
-					<thead>
-						<tr>
-							<th>Responsible Party</th>
-							<th>Action</th>
-							<th>Details</th>
-							<th>Date</th>
-						</tr>
-					</thead>
-					<tbody>
-						{logs.map((log) => (
-							<tr key={log.id}>
-								<td>{log.user_id}</td>
-								<td>{log.action}</td>
-								<td>{log.details}</td>
-								<td>{log.created_at}</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-			{patterns.map((pattern) => (
-				<div key={pattern.id}>
-					{/* Place to delete a bunch of patterns */}
-					{/* Please to make, delete and edit tags (pref in batch) */}
-					{/* Place to delete users */}
-					{/* Place to display logging */}
-					{/* Ban user place */}
-					{/* Overview of my database, like how many users and patterns ect, cool stats */}
+	{
+		/* Place to display logging nicely*/
+	}
+	{
+		/* Overview of my database, like how many users and patterns ect, cool stats */
+	}
 
-					<div className="border rounded w-100 bg-soft m-2 border-pink">
-						<PatternCard pattern={pattern} />
-						<button
-							id={pattern.id}
-							onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-								handleDelete((e.target as HTMLButtonElement).id)
-							}
-							className="btn btn-primary m-3"
-						>
-							Delete
-						</button>
-						<Link
-							className="btn btn-primary m-3"
-							to={`/patterns/${pattern.id}/update`}
-						>
-							Edit
-						</Link>
-					</div>
+	return (
+		<Container>
+			<div className="accordion my-5">
+				<div className="accordion-item">
+					<Logs adminState={state} />
 				</div>
-			))}
-		</div>
+				<div className="accordion-item">
+					<Patterns adminState={state} setAdminState={setState} />
+				</div>
+				<div className="accordion-item">
+					<Tags adminState={state} />
+				</div>
+				<div className="accordion-item">
+					<Authors adminState={state} setAdminState={setState} />
+				</div>
+				<div className="accordion-item">
+					<DbStats adminState={state} />
+				</div>
+				<div className="accordion-item">
+					<Comments adminState={state} />
+				</div>
+			</div>
+		</Container>
 	);
 };
 

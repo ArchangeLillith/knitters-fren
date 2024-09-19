@@ -1,42 +1,45 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Container from "../components/Container";
-import patternService from "../services/pattern";
-import patternTags from "../services/pattern-tags";
-import { IPattern, Tag, Tags } from "../utils/types";
-import AuthWrapper from "../components/AuthWrapper";
-import { AuthContext } from "../components/AuthProvider";
 import { v4 as uuidv4 } from "uuid";
+import {
+	Pattern,
+	AddPatternPageState as PageState,
+	NewPattern,
+} from "../utils/types";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
+import Container from "../components/Container";
+import AuthWrapper from "../components/AuthComponents/AuthWrapper";
+import TagContainer from "../components/TagContainer";
+import patternTags from "../services/pattern-tags";
+import patternService from "../services/pattern";
+import PatternTitle from "../components/AddPatternComponents/PatternTitle";
+import PatternPaid from "../components/AddPatternComponents/PatternPaid";
+import PatternLink from "../components/AddPatternComponents/PatternLink";
+import PatternDetails from "../components/AddPatternComponents/PatternDetails";
 
+//Refactor we could add a loading state! Thisis nice in prod, we won't see it in dev prob, but it's good UX
 const AddPattern = () => {
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
-	const [title, setTitle] = React.useState<string>("");
-	const [content, setContent] = React.useState<string>("");
-	const [selectedTags, setSelectedTags] = useState<Tags>([]);
-	const [tags, setTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
 
-	const newPatternDTO: {
-		id: string;
-		title: string;
-		content: string;
-		author_id: string;
-	} = {
+	//Initialize state
+	const [state, setState] = useState<PageState>({
+		title: "",
+		paid: "false",
+		content: "",
+		link: "",
+		selectedTags: [],
+	});
+
+	//Create the DTO
+	const newPatternDTO: NewPattern = {
 		id: uuidv4(),
-		title,
-		content,
+		title: state.title,
+		content: state.content,
 		author_id: authState.id!,
+		link: state.link,
+		paid: state.paid,
 	};
-
-	/**
-	 * Grabs all the tags on load to display to the user when creating their pattern so they can choose which ones they'd like to add
-	 */
-	useEffect(() => {
-		fetch(process.env.ROOT_URL + "/api/tags")
-			.then((res) => res.json())
-			.then((data) => setTags(data))
-			.catch((error) => alert(error));
-	}, []);
 
 	/**
 	 * @param submitButton - The submit button clicked to fire the submission of the pattern
@@ -46,40 +49,22 @@ const AddPattern = () => {
 		submitButton: React.MouseEvent<HTMLButtonElement>
 	) => {
 		submitButton.preventDefault();
-		const newArr: number[] = [];
+		const newArr = state.selectedTags.map((tag) => tag.id)
 		let patternId: string;
-		for (let i = 0; i < selectedTags.length; i++) {
-			newArr.push(selectedTags[i].id);
-		}
 		try {
-			const pattern: IPattern = await patternService.addNewPattern(
+			const pattern: Pattern = await patternService.addNewPattern(
 				newPatternDTO
 			);
 			console.log(`Pattern,`, pattern);
 			patternId = pattern.id;
-			if (patternId && newArr) {
+			if (newArr.length > 0) {
+				console.log(`Adding tags because there are some:`, newArr);
 				patternTags.addNewTags({ pattern_id: patternId, tag_ids: newArr });
 			}
 			navigate(`/patterns/${patternId}`);
 		} catch (error) {
 			alert(error);
 		}
-	};
-
-	/**
-	 * @param tagButton - the specific button clicked with all the context such as the value of the tag desired
-	 * Takes in the tag and either adds it to the state of checked tags or filters it out if it exists within that array already
-	 */
-	const tagToggle = (tagButton: React.ChangeEvent<HTMLInputElement>) => {
-		const { id, name } = tagButton.target;
-		setSelectedTags((prevTags) => {
-			const tagIndex = prevTags.findIndex((tag) => tag.name === name);
-			if (tagIndex === -1) {
-				return [...prevTags, { id: parseInt(id), name }];
-			} else {
-				return prevTags.filter((tag) => tag.name !== name);
-			}
-		});
 	};
 
 	return (
@@ -97,63 +82,21 @@ const AddPattern = () => {
 				/>
 				<form className="d-flex flex-column my-4 py-4">
 					<div className="form-group flex-grow-1 d-flex flex-column">
-						<label htmlFor="pattern-title">Pattern Title</label>
-						<input
-							type="text"
-							required={true}
-							maxLength={100}
-							onChange={(e) => setTitle(e.target.value)}
-							value={title}
-							className="form-control bg-soft"
-							id="pattern-title"
-							placeholder="Title..."
-						/>
+						<PatternTitle state={state} setState={setState} />
+						<div className="d-flex flex-row w-100">
+							<PatternLink state={state} setState={setState} />
+							<PatternPaid state={state} setState={setState} />
+						</div>
 					</div>
-					<div className="form-group flex-grow-1 d-flex flex-column pt-4">
-						<label htmlFor="pattern-details">Pattern Details</label>
-						<textarea
-							required={true}
-							maxLength={10000}
-							onChange={(e) => setContent(e.target.value)}
-							value={content}
-							className="form-control-lg form-control flex-grow-1 bg-soft"
-							id="pattern-details"
-							placeholder="Start writing..."
-							name="body"
-							rows={10}
-						></textarea>
-					</div>
+					<PatternDetails state={state} setState={setState} />
 					<div>
 						<label htmlFor="tags">Choose your tags:</label>
-						<div
-							id="tags-div"
-							className="form-control-lg form-control flex-grow-1 bg-soft"
-						>
-							{tags.map((tag: Tag) => (
-								<div
-									className="m-1 d-inline-flex btn-group"
-									role="group"
-									aria-label="Basic checkbox toggle button group"
-									key={`${tag.id}-container`}
-								>
-									<input
-										type="checkbox"
-										className="btn-check"
-										id={`${tag.id}`}
-										autoComplete="off"
-										onChange={tagToggle}
-										name={tag.name}
-										key={tag.name}
-									/>
-									<label
-										className="btn btn-outline-primary"
-										htmlFor={`${tag.id}`}
-									>
-										{tag.name}
-									</label>
-								</div>
-							))}
-						</div>
+					
+							<TagContainer
+								selectedTags={state.selectedTags}
+								setSelectedTags={setState}
+							/>
+						
 					</div>
 					<div className="d-flex justify-content-center align-items-center">
 						<button

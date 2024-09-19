@@ -2,22 +2,23 @@ import React, { useEffect, useState } from "react";
 import noteService from "../services/pattern";
 import { useNavigate, useParams } from "react-router-dom";
 import patternService from "../services/pattern";
-import { IPattern, Tag, Tags } from "../utils/types";
+import { Pattern, Tag, } from "../utils/types";
 import patternTags from "../services/pattern-tags";
 
 const UpdatePattern = () => {
 	const { id } = useParams<string>();
 	const navigate = useNavigate();
-	const [pattern, setPattern] = useState<IPattern | undefined>(undefined);
+	const [pattern, setPattern] = useState<Pattern | undefined>(undefined);
 	const [title, setTitle] = useState<string>("");
 	const [content, setContent] = useState<string>("");
-	const [allTags, setAllTags] = useState<Tags>([{ id: 0, name: "Loading..." }]);
-	const [selectedTags, setSelectedTags] = useState<Tags>([]);
+	const [allTags, setAllTags] = useState<Tag[]>([{ id: 0, name: "Loading..." }]);
+	const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
 	useEffect(() => {
 		if (!id) return;
-		patternService.getOnePattern(id).then((fetchedPattern: IPattern) => {
+		patternService.getOnePattern(id).then((fetchedPattern: Pattern) => {
 			setPattern(fetchedPattern);
+			setTitle(fetchedPattern.title);
 			setContent(fetchedPattern.content);
 		});
 
@@ -34,29 +35,26 @@ const UpdatePattern = () => {
 			.catch((error) => alert(error));
 	}, [id]);
 
-	const handleChanges = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		const { name, value } = e.target;
-		setPattern((prevPattern) =>
-			prevPattern ? { ...prevPattern, [name]: value } : prevPattern
-		);
-	};
-
 	const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		if (!id || !pattern) return;
 
 		const patternDTO = {
-			content: pattern.content,
-			author_id: pattern.author_id,
 			id,
+			title,
+			content,
 		};
 
 		noteService.updatePattern(id, patternDTO);
 
 		const tagIds = selectedTags.map((tag) => tag.id);
-		patternTags
-			.addNewTags({ pattern_id: pattern.id, tag_ids: tagIds })
-			.then(() => navigate(`/patterns/${id}`));
+		if (tagIds.length > 0) {
+			console.log(`Adding new tags...`, tagIds);
+			patternTags
+				.addNewTags({ pattern_id: pattern.id, tag_ids: tagIds })
+				.then(() => navigate(`/patterns/${id}`));
+		}
+		navigate(`/patterns/${id}`);
 	};
 
 	const tagToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +91,7 @@ const UpdatePattern = () => {
 					required
 					maxLength={10000}
 					value={content}
-					onChange={handleChanges}
+					onChange={(e) => setContent(e.target.value)}
 				/>
 				<div>
 					<label htmlFor="tags">Choose your tags:</label>

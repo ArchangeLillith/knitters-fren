@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import config from "../config";
 
-export const createJWT = (id: string) => {
+export const createJWT = (id: string, role: string) => {
 	try {
-		const token = jwt.sign({ id }, config.jwt.secret, {
+		const token = jwt.sign({ id, role }, config.jwt.secret, {
 			expiresIn: config.jwt.expires,
 		});
 		return token;

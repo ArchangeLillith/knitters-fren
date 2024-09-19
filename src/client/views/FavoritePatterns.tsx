@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { IPattern } from "../utils/types";
-import PatternCard from "../components/PatternCard";
+import { Pattern } from "../utils/types";
+import PatternCard from "../components/PatternComponents/PatternCard";
 import Container from "../components/Container";
 import { Navigate, useLocation } from "react-router-dom";
-import AuthWrapper from "../components/AuthWrapper";
+import AuthWrapper from "../components/AuthComponents/AuthWrapper";
 
 const FavoritePatterns = () => {
-	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
+	const [patterns, setPatterns] = React.useState<Pattern[]>([]);
 	const location = useLocation();
 	/**
 	 * This fetches all the patterns on load once from the databse and sets them in state to display them
@@ -24,18 +24,18 @@ const FavoritePatterns = () => {
 	}
 	return (
 		<AuthWrapper>
-		<Container>
-			<div className="w-75 d-flex flex-column mx-auto mt-5">
-				{patterns.map((pattern) => (
-					<div
-						className="rounded w-100 bg-soft m-2 border-pink"
-						key={`${pattern.id}-container`}
-					>
-						<PatternCard pattern={pattern} />
-					</div>
-				))}
-			</div>
-		</Container>
+			<Container>
+				<div className="w-75 d-flex flex-column mx-auto mt-5">
+					{patterns.map((pattern) => (
+						<div
+							className="rounded w-100 bg-soft m-2 border-pink"
+							key={`${pattern.id}-container`}
+						>
+							<PatternCard pattern={pattern} />
+						</div>
+					))}
+				</div>
+			</Container>
 		</AuthWrapper>
 	);
 };

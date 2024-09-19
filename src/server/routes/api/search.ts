@@ -1,21 +1,33 @@
 import { Router } from "express";
 import db from "../../db";
-import patterns from "../../db/queries/patterns";
-import { IPatternTable, Tag, Tags } from "../../types";
+import { PatternTable, Tag } from "../../types";
 
 const router = Router();
 
-//GET /api/search/title/:param
+//GET /api/search/author/:param
+router.get("/author/:queryString", async (req, res, next) => {
+	let author = req.params.queryString;
+	try {
+		const result = await db.search.findByAuthor(author);
+		if (result.length === 0) {
+			return res.json({ message: "no pattern" });
+		}
+		res.json({ patterns: result, message: "patterns found" });
+	} catch (error) {
+		next(error);
+	}
+});
+
+// GET /api/search/title/:queryString
 router.get("/title/:queryString", async (req, res, next) => {
 	let title = req.params.queryString;
 	try {
 		const result = await db.search.findByTitle(title);
 		if (result.length === 0) {
-			return res.status(404).json({ message: "No patterns found" });
+			return res.json({ message: "no pattern" });
 		}
-		res.json({ result, message: "Patterns found" });
+		res.json({ patterns: result, message: "patterns found" });
 	} catch (error) {
-		console.error("Error fetching patterns:", error);
 		next(error);
 	}
 });
@@ -28,9 +40,8 @@ router.get("/content/:queryString", async (req, res, next) => {
 		if (result.length === 0) {
 			return res.status(404).json({ message: "No patterns found" });
 		}
-		res.json({ result, message: "Patterns found" });
+		res.json({ patterns: result, message: "Patterns found" });
 	} catch (error) {
-		console.error("Error fetching patterns:", error);
 		next(error);
 	}
 });
@@ -38,8 +49,8 @@ router.get("/content/:queryString", async (req, res, next) => {
 //POST /api/search/tag
 router.post("/tag", async (req, res, next) => {
 	try {
-		const finalPatterns: IPatternTable[] = [];
-		let tags: Tags;
+		const finalPatterns: PatternTable[] = [];
+		let tags: Tag[];
 
 		try {
 			tags = JSON.parse(req.body.tagList);
@@ -52,7 +63,7 @@ router.post("/tag", async (req, res, next) => {
 			return db.search.findByTags(id);
 		});
 
-		let result: IPatternTable[][];
+		let result: PatternTable[][];
 		try {
 			result = await Promise.all(patternPromises);
 		} catch (err) {
@@ -65,15 +76,15 @@ router.post("/tag", async (req, res, next) => {
 
 		//This Array could be a Set, however it's less performant because there's no deletion from the list. This is because the deletion of something from a set is faster than deletion from an array, but only if the data list is cresting 100k items. A small project like this website isn't effected by such a small change, however, and either could be used here with negligible affects on the user experiance, however array was chosen as it's a better use case even if the data gets very large seeing as there will be no deletion from this specific list.
 		const uniquePatterns = new Array();
-		result.forEach((patterns: IPatternTable[]) => {
-			patterns.forEach((pattern: IPatternTable) => {
+		result.forEach((patterns: PatternTable[]) => {
+			patterns.forEach((pattern: PatternTable) => {
 				if (!uniquePatterns.includes(pattern.id)) {
 					uniquePatterns.includes(pattern.id);
 					finalPatterns.push(pattern);
 				}
 			});
 		});
-		res.json({ finalPatterns, message: "Patterns found~" });
+		res.json({ patterns: finalPatterns, message: "Patterns found~" });
 	} catch (err) {
 		console.log(`ERROR`, err);
 		next(err);
@@ -83,8 +94,8 @@ router.post("/tag", async (req, res, next) => {
 //POST /api/search/tag/strict
 router.post("/tag/strict", async (req, res, next) => {
 	try {
-		let finalPatterns: IPatternTable[] = [];
-		let tags: Tags;
+		let finalPatterns: PatternTable[] = [];
+		let tags: Tag[];
 
 		try {
 			tags = JSON.parse(req.body.tagList);

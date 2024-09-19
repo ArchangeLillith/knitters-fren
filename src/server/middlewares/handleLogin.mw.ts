@@ -1,5 +1,7 @@
 import passport from "passport";
 import type { Request, Response, NextFunction } from "express";
+import db from "../db";
+import { AuthorsTable } from "../types";
 
 export const handleLogin = (
 	req: Request,
@@ -9,13 +11,26 @@ export const handleLogin = (
 	passport.authenticate(
 		"local",
 		{ session: false },
-		(error: Error, user, info) => {
+		async (error: Error, user, info) => {
 			if (error) {
 				return next(error);
 			}
 
 			if (info) {
 				return res.status(401).json({ message: info.message });
+			}
+			try {
+				const banned: AuthorsTable[] = await db.banned.findBannedById(user.id);
+				console.log(`Banned`, banned);
+				if (banned.length > 0)
+					return res
+						.status(403)
+						.json({
+							message:
+								"The email or username you provided is linked to a banned account. Please reach out to support for assistance.",
+						});
+			} catch (error) {
+				next(error);
 			}
 
 			req.currentUser = user;
@@ -24,5 +39,3 @@ export const handleLogin = (
 		}
 	)(req, res, next);
 };
-
-

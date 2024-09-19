@@ -16,7 +16,6 @@ export const verifyToken = (
 			}
 
 			if (info) {
-				console.log(`Info:`, info);
 				return res.status(401).json({ message: info.message });
 			}
 

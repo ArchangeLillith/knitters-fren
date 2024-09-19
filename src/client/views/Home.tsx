@@ -1,26 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
+import { Pattern } from "../utils/types";
+import { loadingPattern, sortByDate } from "../utils/patterns.utils";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
 import Container from "../components/Container";
-import PatternCard from "../components/PatternCard";
-import { IPattern } from "../utils/types";
+import PatternCard from "../components/PatternComponents/PatternCard";
 import patternService from "../services/pattern";
-import { sortPatterns } from "../utils/patterns.utils";
-import MostRecentRow from "../components/MostRecent";
+import MostRecentRow from "../components//PatternComponents/MostRecent";
 
 interface PatternProps {
-	fullList: IPattern[];
-	featured: IPattern;
-	mostRecent: IPattern[];
+	fullList: Pattern[];
+	featured: Pattern;
+	mostRecent: Pattern[];
 }
+
 const Home = () => {
+	const { authState } = useContext(AuthContext);
 	const [patterns, setPatterns] = React.useState<PatternProps>({
 		fullList: [],
-		featured: {
-			id: "0",
-			author_id: "Loading...",
-			title: "Loading...",
-			content: "Loading...",
-			created_at: "Loading...",
-		},
+		featured: loadingPattern,
 		mostRecent: [],
 	});
 
@@ -29,15 +26,19 @@ const Home = () => {
 	 */
 	useEffect(() => {
 		try {
-			patternService.getAllPatterns().then((data) => {
+			patternService.getAllPatterns().then((data: Pattern[]) => {
 				const fullList = data;
-				const sortedPatterns: IPattern[] = sortPatterns(data, "date");
-				const randomNumber = getRandomInt(data.length - 1);
+				const freePatterns = fullList.filter(
+					(pattern) => pattern.paid !== "true"
+				);
+				const sortedPatterns: Pattern[] = sortByDate(freePatterns) as Pattern[];
+				let randomNumber = getRandomInt(data.length - 1);
 				setPatterns({
 					fullList: fullList,
-					featured: fullList[randomNumber],
-					mostRecent: sortedPatterns.splice(0, 3),
+					featured: freePatterns[randomNumber],
+					mostRecent: sortedPatterns.slice(0, 3),
 				});
+				console.log(`patterns`, data);
 			});
 		} catch {
 			(e) => alert(e);
@@ -98,12 +99,23 @@ const Home = () => {
 							key={`all-pattern-outer-wrapper-${pattern.title}`}
 							className="my-2 w-75 m-auto"
 						>
-							<div
-								key={`all-pattern-inner-wrapper-${pattern.title}`}
-								className="border my-2 border-black rounded"
-							>
-								<PatternCard pattern={pattern} />
-							</div>
+							{pattern.paid === "true" &&
+								pattern.author_id === authState.id && (
+									<div
+										key={`all-pattern-inner-wrapper-${pattern.title}`}
+										className="border my-2 border-black rounded"
+									>
+										<PatternCard pattern={pattern} />
+									</div>
+								)}
+							{pattern.paid === "false" && (
+								<div
+									key={`all-pattern-inner-wrapper-${pattern.title}`}
+									className="border my-2 border-black rounded"
+								>
+									<PatternCard pattern={pattern} />
+								</div>
+							)}
 						</div>
 					))}
 				</div>

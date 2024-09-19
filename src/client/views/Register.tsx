@@ -1,50 +1,42 @@
-import React, {
-	FormEvent,
-	MouseEventHandler,
-	useContext,
-	useState,
-} from "react";
+import React, { FormEvent, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import authService from "../services/auth";
-import { AuthContext } from "../components/AuthProvider";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
+import { validateFields } from "../utils/functions.utils";
+import { FormFields } from "../utils/types";
 
 const Register = () => {
 	const { loginToAuthState } = useContext(AuthContext);
 	const navigate = useNavigate();
-	const [email, setEmail] = useState<string>("");
-	const [username, setUsername] = useState<string>("");
-	const [password, setPassword] = useState<string>("");
-	const [confirmPassword, setConfirmPassword] = useState<string>("");
-
-	const validateFields = (
-		email: string,
-		password: string,
-		confirmPassword: string,
-		username: string
-	) => {
-		const errors: string[] = [];
-		if (!isValidEmail(email)) errors.push("invalid email");
-		if (password !== confirmPassword) errors.push("passwords don't match");
-		if (!password || !username || !email)
-			errors.push("all fields are required");
-		return errors;
-	};
+	const [formFields, setFormFields] = useState<FormFields>({
+		email: "",
+		username: "",
+		password: "",
+		confirmPassword: "",
+	});
 
 	const registerUser = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
-		const errors = validateFields(email, password, confirmPassword, username);
+		const errors = validateFields(formFields);
 
 		if (errors.length > 0) {
 			console.log(errors.join(", "));
 			return;
 		}
+
+		const { email, password, username } = formFields;
 		const authorDTO = { email, password, username };
-		const token = await authService.registerUserAndStoreToken(authorDTO);
-		loginToAuthState(token);
-		//Go home!
-		navigate(`/`);
+
+		try {
+			const token = await authService.registerUserAndStoreToken(authorDTO);
+			if (token) {
+				loginToAuthState(token);
+				navigate(`/`);
+			}
+		} catch (error) {
+			console.error("Error logging in:", error);
+		}
 	};
 
 	return (
@@ -67,7 +59,9 @@ const Register = () => {
 								className="form-control"
 								id="emailInput"
 								aria-describedby="emailHelp"
-								onChange={(e) => setEmail(e.target.value)}
+								onChange={(e) =>
+									setFormFields((prev) => ({ ...prev, email: e.target.value }))
+								}
 							/>
 						</div>
 						<div className="form-group">
@@ -77,7 +71,12 @@ const Register = () => {
 								className="form-control"
 								id="usernameInput"
 								aria-describedby="username"
-								onChange={(e) => setUsername(e.target.value)}
+								onChange={(e) =>
+									setFormFields((prev) => ({
+										...prev,
+										username: e.target.value,
+									}))
+								}
 							/>
 						</div>
 						<div className="form-group mb-2">
@@ -86,7 +85,12 @@ const Register = () => {
 								type="password"
 								className="form-control"
 								id="passwordInput"
-								onChange={(e) => setPassword(e.target.value)}
+								onChange={(e) =>
+									setFormFields((prev) => ({
+										...prev,
+										password: e.target.value,
+									}))
+								}
 							/>
 						</div>
 						<div className="form-group">
@@ -96,7 +100,12 @@ const Register = () => {
 								className="form-control"
 								id="confirmPassword"
 								aria-describedby="password"
-								onChange={(e) => setConfirmPassword(e.target.value)}
+								onChange={(e) =>
+									setFormFields((prev) => ({
+										...prev,
+										confirmPassword: e.target.value,
+									}))
+								}
 							/>
 						</div>
 						<button type="submit" className="btn btn-primary mb-2">
@@ -116,9 +125,3 @@ const Register = () => {
 };
 
 export default Register;
-
-function isValidEmail(email: string) {
-	return email.match(
-		/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-	);
-}

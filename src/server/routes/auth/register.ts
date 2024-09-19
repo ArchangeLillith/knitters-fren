@@ -12,6 +12,15 @@ router.post("/", async (req, res, next) => {
 	console.log(`HIT /AUTH/REGISTER with body:`, req.body);
 	try {
 		const { email, password, username } = req.body;
+		const banned = await db.banned.findBannedByEmailOrUser(email, username);
+		if (banned.length > 0) {
+			return res
+				.status(403)
+				.json({
+					message:
+						"This email or username is associated with a banned account. Please choose another or contact support.",
+				});
+		}
 		if (!email || !isValidEmail(email)) {
 			const error = new Error("invalid email");
 			error["status"] = 400;
@@ -42,8 +51,12 @@ router.post("/", async (req, res, next) => {
 		authorDTO.password = hash;
 		await db.authors.insert(authorDTO);
 		delete authorDTO.password;
-		const token = createJWT(authorDTO.id);
-		logActivity(authorDTO.id, "New user registered to site~", `Username: ${authorDTO.username}, Role: ${authorDTO.role}`)
+		const token = createJWT(authorDTO.id, authorDTO.role);
+		logActivity(
+			authorDTO.id,
+			"New user registered to site~",
+			`Username: ${authorDTO.username}, Role: ${authorDTO.role}`
+		);
 		res.json({ token });
 	} catch (error) {
 		next(error);

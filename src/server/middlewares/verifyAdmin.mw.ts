@@ -7,7 +7,7 @@ export const verifyAdmin = (
 	next: NextFunction
 ) => {
 	passport.authenticate(
-		"local",
+		"jwt",
 		{ session: false },
 		(error: Error, user, info) => {
 			if (error) {

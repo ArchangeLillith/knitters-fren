@@ -1,28 +1,45 @@
-import React, { FormEvent, useContext, useState } from "react";
+import React, {
+	FormEvent,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import Container from "../components/Container";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginService from "../services/auth";
-import { AuthContext } from "../components/AuthProvider";
+import { AuthContext } from "../components/AuthComponents/AuthProvider";
 import { locationStrings } from "../utils/types";
 
 const Login = () => {
-	const { loginToAuthState } = useContext(AuthContext);
-	const { state } = useLocation();
-	const fromLocation = state?.from;
-	const navigate = useNavigate();
 	const [password, setPassword] = useState<string>("");
 	const [username, setUsername] = useState<string>("");
+	const inputRef = useRef<HTMLInputElement>(null);
+	const { loginToAuthState } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const { state } = useLocation();
+	const fromLocation = state?.from;
 
 	const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		try {
-			const token = await loginService.authenticateUserAndStoreToken({ username, password });
+			const token = await loginService.authenticateUserAndStoreToken({
+				username,
+				password,
+			});
+			if (!token) return;
 			loginToAuthState(token);
 			navigate(`/`);
 		} catch (error) {
 			console.error("Error logging in:", error);
 		}
 	};
+
+	useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, []);
 
 	return (
 		<Container>
@@ -48,11 +65,12 @@ const Login = () => {
 						<div className="form-group">
 							<label htmlFor="emailInput">Email or username</label>
 							<input
+								ref={inputRef}
 								onChange={(e) => setUsername(e.target.value)}
 								type="email"
 								className="form-control"
 								id="emailInput"
-								aria-describedby="emailHelp"
+								aria-describedby="email auto-focus"
 							/>
 						</div>
 						<div className="form-group mb-2">

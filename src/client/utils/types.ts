@@ -1,23 +1,59 @@
-export type objectType = { [key: string]: string };
-export type Tags = Tag[];
-export type Tag = { id: number; name: string };
+export type objectType = { [key: string]: string | boolean };
 
 /**
  * Pattern type declaration
  */
-export interface IPattern {
+export type Pattern = {
 	id: string;
+	link?: string;
 	author_id: string;
+	username: string;
 	title: string;
 	content: string;
 	created_at: string;
 	tags?: string[];
+	paid?: "true" | "false";
+};
+
+declare module "react-router-dom" {
+	interface Location {
+		state: {
+			from: any;
+			id: string;
+			name: string;
+		};
+	}
 }
+
+export type Tag = {
+	name: string;
+	id: number;
+};
+
+export type AdminPageState = {
+	patterns: Pattern[];
+	tags: Tag[];
+	logs: Log[];
+	filteredLogs: Log[];
+	authors: Author[];
+	comments: PatternComment[];
+	filteredComments: PatternComment[];
+	showModal: boolean;
+	banAuthor: { id: string; username: string };
+};
+
+export type AddPatternPageState = {
+	title: string;
+	paid: "true" | "false";
+	content: string;
+	link: string;
+	selectedTags: Tag[];
+};
 
 /**
  *Author type declaration
  */
-export interface IAuthor {
+export type Author = {
 	id?: string;
 	username?: string;
 	email?: string;
@@ -25,7 +61,7 @@ export interface IAuthor {
 	patternsFavorited?: string[];
 	commentsAuthored?: string[];
 	role?: "user" | "admin";
-}
+};
 
 /**
  * Tying the url to a name
@@ -53,3 +89,45 @@ export type Log = {
 	details: string;
 	created_at: string;
 };
+
+export type PatternComment = {
+	id: number;
+	author_id: string;
+	pattern_id: string;
+	content: string;
+	created_at: string;
+	username?: string;
+};
+
+//Type for Search page
+export type SearchPageState = {
+	tagsActive: boolean;
+	selectedTags: Tag[];
+	searchType: string;
+	queryString: string;
+	suggestions: string[];
+	strictComparison: boolean;
+	searchTriggered: boolean;
+	foundPatterns: PatternObject[];
+};
+
+export type PatternObject = {
+	pattern: Pattern;
+	tags: Tag[];
+};
+
+export type FormFields = {
+	email: string;
+	username: string;
+	password: string;
+	confirmPassword: string;
+};
+
+export type NewPattern ={
+	id: string;
+	title: string;
+	content: string;
+	author_id: string;
+	link: string;
+	paid: "true" | "false";
+}
