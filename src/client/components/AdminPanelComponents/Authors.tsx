@@ -1,44 +1,58 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { AdminState } from "../../utils/types";
-import authorService from "../../services/author";
-import { GiThorHammer } from "react-icons/gi";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Modal from "../Modal";
-
-//Refactor if I'm only using that banned author state internally, maybe we should pull it out of the admin state???
+import authorService from "../../services/author";
+import { AdminPageState } from "../../utils/types";
+import { GiThorHammer } from "react-icons/gi";
 
 interface AuthorsProps {
-	adminState: AdminState;
-	setAdminState: Dispatch<SetStateAction<AdminState>>;
+	adminPageState: AdminPageState;
+	setAdminPageState: Dispatch<SetStateAction<AdminPageState>>;
 }
 
-const Authors: React.FC<AuthorsProps> = ({ adminState, setAdminState }) => {
+const Authors: React.FC<AuthorsProps> = ({
+	adminPageState: adminState,
+	setAdminPageState,
+}) => {
+	const [banTarget, setBanTarget] = useState<{
+		id: string;
+		username: string;
+	}>({ id: "", username: "" });
+
+	/**
+	 *
+	 * @param banButton - ban button next to author
+	 * Grabs user from button context and adds to the state, then calls to parent state to change visibility of modal
+	 */
 	const banHammer = (banButton: React.MouseEvent<HTMLButtonElement>) => {
-		const target = banButton.currentTarget; // Use currentTarget for better reliability
-		setAdminState((prev) => ({
-			...prev,
-			showModal: true,
-			banAuthor: {
-				id: target.id,
-				username: target.name,
-			},
-		}));
-	};
-	const closeModal = () => {
-		setAdminState((prev) => ({ ...prev, showModal: false }));
+		const { id, name } = banButton.currentTarget;
+		setBanTarget({ id, username: name });
+		setAdminPageState((prev) => ({ ...prev, showModal: true }));
 	};
 
+	const closeModal = () => {
+		setAdminPageState((prev) => ({ ...prev, showModal: false }));
+	};
+
+	/**
+	 * On confirm of ban, awaits the database call to do backend ban author stuff (reassigns their patterns to a "BannedAuthor" profile and then populates a banned table with their information). If sucessful, alerts that the author has been banned and closes the modal
+	 */
 	const banAuthor = async () => {
-		const banned = await authorService.banAuthor(adminState.banAuthor.id);
-		console.log(`BANND`, banned);
-		if (banned.affectedRows > 0) {
-			alert(adminState.banAuthor.username + " has been BANNED");
-			setAdminState((prev) => ({
-				...prev,
-				banAuthor: { id: "", username: "" },
-				showModal: false,
-			}));
+		if (!banTarget) return;
+		try {
+			const banned = await authorService.banAuthor(banTarget.id);
+			if (banned.affectedRows > 0) {
+				alert(banTarget.username + " has been BANNED");
+				setBanTarget({ id: "", username: "" });
+				setAdminPageState((prev) => ({
+					...prev,
+					showModal: false,
+				}));
+			}
+		} catch (error) {
+			console.error("Failed to ban author:", error);
 		}
 	};
+
 	return (
 		<>
 			<h2 className="accordion-header">
@@ -77,7 +91,7 @@ const Authors: React.FC<AuthorsProps> = ({ adminState, setAdminState }) => {
 						</div>
 					))}
 				</div>
-				{adminState.showModal && adminState.banAuthor.id !== "" && (
+				{adminState.showModal && banTarget.id !== "" && (
 					<Modal>
 						<div className="align-self-center h3 text-color-light">
 							You've chosen to call upon Nanachi to ban...
@@ -85,7 +99,7 @@ const Authors: React.FC<AuthorsProps> = ({ adminState, setAdminState }) => {
 						<div className="d-flex flex-row align-items-center justify-content-center">
 							<div className="d-flex flex-column background-light">
 								<div className="align-self-end h4">
-									<i>{adminState.banAuthor.username}</i>
+									<i>{banTarget.username}</i>
 								</div>
 							</div>
 							<img

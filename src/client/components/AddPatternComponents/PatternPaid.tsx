@@ -2,6 +2,9 @@ import React from "react";
 
 const PatternPaid = ({ state, setState }) => {
 
+	/**
+	 * Toggle state as a string instead of boolean as that's the pattern for everything based on how communicating with our SQL goes
+	 */
 	const togglePaid = () => {
 		if (state.paid === "true") {
 			setState((prev) => ({ ...prev, paid: "false" }));

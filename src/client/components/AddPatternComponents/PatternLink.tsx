@@ -2,7 +2,6 @@ import React from "react";
 
 const PatternLink = ({ state, setState }) => {
 	return (
-		
 			<div className="flex-grow-1 me-3">
 								<label htmlFor="pattern-link">Pattern Link</label>
 								<input
@@ -18,7 +17,6 @@ const PatternLink = ({ state, setState }) => {
 									placeholder="Link..."
 								/>
 							</div>
-		
 	);
 };
 

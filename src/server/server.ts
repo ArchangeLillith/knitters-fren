@@ -12,6 +12,7 @@ import path from "path";
 
 const app = express();
 
+console.log(`Recomiled server.ts`);
 // Apply CORS middleware for all environments
 app.use(
 	cors({
@@ -21,6 +22,7 @@ app.use(
 	})
 );
 
+console.log(`Running Node.js version: ${process.version}`);
 configurePassport(app);
 app.use(express.static("public"));
 app.use(morgan("dev"));
@@ -46,7 +48,6 @@ app.get(
 if (process.env.NODE_ENV === "production") {
 	app.use(express.static("public"));
 }
-
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
 

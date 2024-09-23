@@ -1,7 +1,7 @@
 import React from "react";
-import { AdminState } from "../../utils/types";
+import { AdminPageState } from "../../utils/types";
 
-const DbStats: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
+const DbStats: React.FC<{ adminState: AdminPageState }> = ({ adminState }) => {
 	return (
 		<>
 			<h2 className="accordion-header">

@@ -1,7 +1,5 @@
 import React from "react";
 
-interface PatternDetailsProps {}
-
 const PatternDetails = ({ state, setState }) => {
 	return (
 		<div className="form-group flex-grow-1 d-flex flex-column pt-4">

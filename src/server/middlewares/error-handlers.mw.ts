@@ -16,6 +16,7 @@ export const globalErrorHandler = (
 	res: Response,
 	next: NextFunction
 ) => {
+	//Thios is a test
 	console.log(error);
 	res.status(error["status"] || 500);
 	res.json({ error: error.message });

@@ -1,8 +1,8 @@
 import React from "react";
-import { AdminState } from "../../utils/types";
+import { AdminPageState } from "../../utils/types";
 import dayjs from "dayjs";
 
-const Logs: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
+const Logs: React.FC<{ adminState: AdminPageState }> = ({ adminState }) => {
 	return (
 		<>
 			<h2 className="accordion-header">

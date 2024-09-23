@@ -1,5 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Log, PatternComment, AdminPageState as PageState } from "../utils/types";
+import {
+	Log,
+	PatternComment,
+	AdminPageState as PageState,
+} from "../utils/types";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthComponents/AuthProvider";
 import { sortByDate } from "../utils/patterns.utils";
@@ -18,8 +22,6 @@ import {
 	Comments,
 } from "../components/AdminPanelComponents";
 
-
-
 const AdminPanel = () => {
 	const { authState } = useContext(AuthContext);
 	if (authState.role !== "admin") {
@@ -35,7 +37,6 @@ const AdminPanel = () => {
 		comments: [],
 		filteredComments: [],
 		showModal: false,
-		banAuthor: { id: "", username: "" },
 	});
 
 	useEffect(() => {
@@ -74,16 +75,6 @@ const AdminPanel = () => {
 		});
 	}, []);
 
-	{
-		/* Please to make, delete and edit tags (pref in batch) */
-	}
-	{
-		/* Place to display logging nicely*/
-	}
-	{
-		/* Overview of my database, like how many users and patterns ect, cool stats */
-	}
-
 	return (
 		<Container>
 			<div className="accordion my-5">
@@ -97,7 +88,7 @@ const AdminPanel = () => {
 					<Tags adminState={state} />
 				</div>
 				<div className="accordion-item">
-					<Authors adminState={state} setAdminState={setState} />
+					<Authors adminPageState={state} setAdminPageState={setState} />
 				</div>
 				<div className="accordion-item">
 					<DbStats adminState={state} />

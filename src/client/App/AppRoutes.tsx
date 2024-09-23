@@ -8,12 +8,12 @@ import AddPattern from "../views/AddPattern";
 import UpdatePattern from "../views/UpdatePattern";
 import NotFound from "../views/NotFound";
 import AdminPanel from "../views/AdminPanel";
-import Register from "../views/Register";
 import Login from "../views/Login";
+import Register from "../views/Register";
 import SearchView from "../views/SearchView";
-
-import NavBar from "../components/LayoutComponents/NavBar";
 import FavoritePatterns from "../views/FavoritePatterns";
+import NavBar from "../components/LayoutComponents/NavBar";
+import Footer from "../components/LayoutComponents/Footer";
 
 const App = () => {
 	return (
@@ -33,6 +33,7 @@ const App = () => {
 				<Route path="/patterns/:id/update" element={<UpdatePattern />}></Route>
 				<Route path="/*" element={<NotFound />}></Route>
 			</Routes>
+			<Footer />
 		</div>
 	);
 };

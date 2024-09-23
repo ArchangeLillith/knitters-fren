@@ -28,7 +28,7 @@ const UpdatePattern = () => {
 			.catch((error) => alert(error));
 
 		patternTags
-			.allByPatternId(id)
+			.getByPatternId(id)
 			.then((data) => {
 				setSelectedTags(data);
 			})

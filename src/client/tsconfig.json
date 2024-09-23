@@ -3,8 +3,9 @@
 	"compilerOptions": {
 		"outDir": "./public/js",
 		"module": "ES6",
+		"sourceMap": true,
 		"allowJs": true,
-		"target": "ES5",
+		"target": "ES6",
 		"moduleResolution": "node",
 		"esModuleInterop": true,
 		"noFallthroughCasesInSwitch": true,

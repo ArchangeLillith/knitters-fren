@@ -33,5 +33,6 @@ pids
 XCF
 .xcf
 
-# Notes that are local only because they're sensitive/only for me
+# Notes that are local only because they're for me to remember more complicated logic that I've spent time on already
 login-stream.txt
+project-scripts-guide.txt

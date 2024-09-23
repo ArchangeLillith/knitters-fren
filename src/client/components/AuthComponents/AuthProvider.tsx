@@ -1,11 +1,9 @@
 import React, { createContext, useState, useEffect } from "react";
 import authService from "../../services/auth";
 import storage from "../../utils/storage";
-import { Author } from "../../utils/types";
+import { Author, AuthState } from "../../utils/types";
 
-interface AuthState extends Author {
-	authenticated: boolean;
-}
+
 /**
  * Typing for the auth state
  */

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import patternService from "../../services/pattern";
 import type { ResultSetHeader } from "mysql2";
-import { AdminState } from "../../utils/types";
+import { AdminPageState } from "../../utils/types";
 import { Link } from "react-router-dom";
 import PatternCard from "../PatternComponents/PatternCard";
 import Modal from "../Modal";
 
 interface PatternProps {
-	adminState: AdminState;
-	setAdminState: React.Dispatch<React.SetStateAction<AdminState>>;
+	adminState: AdminPageState;
+	setAdminState: React.Dispatch<React.SetStateAction<AdminPageState>>;
 }
 
 const Patterns: React.FC<PatternProps> = ({ adminState, setAdminState }) => {

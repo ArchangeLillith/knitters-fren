@@ -6,6 +6,7 @@ export const verifyAuthor = async (
 	res: Response,
 	next: NextFunction
 ) => {
+
 	try {
 		const patternId = req.params.id;
 		const currentUserId = req.currentUser.id;

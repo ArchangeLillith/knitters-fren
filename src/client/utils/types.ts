@@ -39,7 +39,6 @@ export type AdminPageState = {
 	comments: PatternComment[];
 	filteredComments: PatternComment[];
 	showModal: boolean;
-	banAuthor: { id: string; username: string };
 };
 
 export type AddPatternPageState = {
@@ -62,6 +61,10 @@ export type Author = {
 	commentsAuthored?: string[];
 	role?: "user" | "admin";
 };
+
+export interface AuthState extends Author {
+	authenticated: boolean;
+}
 
 /**
  * Tying the url to a name
@@ -123,11 +126,11 @@ export type FormFields = {
 	confirmPassword: string;
 };
 
-export type NewPattern ={
+export type NewPattern = {
 	id: string;
 	title: string;
 	content: string;
 	author_id: string;
 	link: string;
 	paid: "true" | "false";
-}
+};
