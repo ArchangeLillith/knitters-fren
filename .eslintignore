@@ -1,0 +1,8 @@
+node_modules
+build
+dist
+
+# Ignore the public folder
+public/
+# Ignore the dist folder within src/server
+src/server/dist/
