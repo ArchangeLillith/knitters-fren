@@ -1,6 +1,7 @@
-import type { ResultSetHeader, RowDataPacket } from "mysql2";
-import type { AuthorsTable, PatternTable } from "../../types";
-import { Query, QueryMetadata } from "../query";
+import type { ResultSetHeader } from 'mysql2';
+
+import type { AuthorsTable, PatternTable } from '../../types';
+import { Query, QueryMetadata } from '../query';
 
 //GET all patterns, joined to show the name of the author
 const all = (): Promise<(PatternTable & AuthorsTable)[]> =>
@@ -74,20 +75,20 @@ const insert = async (values: PatternTable): Promise<ResultSetHeader> => {
 	try {
 		const sanitizedValues = [title, content, id, author_id, link, paid];
 		const returnedHeaders = await QueryMetadata(
-			"INSERT INTO patterns (title, content, id, author_id, link, paid) VALUES (?, ?, ?, ?, ?, ?)",
+			'INSERT INTO patterns (title, content, id, author_id, link, paid) VALUES (?, ?, ?, ?, ?, ?)',
 			sanitizedValues
 		);
 		return returnedHeaders;
 	} catch (error) {
 		// Handle any errors that may occur
-		console.error("Error executing query:", error);
+		console.error('Error executing query:', error);
 		throw error;
 	}
 };
 
 //DELETE a pattern
 const destroy = (id: string): Promise<ResultSetHeader> =>
-	QueryMetadata("DELETE FROM patterns WHERE id = ?", [id]);
+	QueryMetadata('DELETE FROM patterns WHERE id = ?', [id]);
 
 //PATCH a pattern
 const update = (patternDTO: {
@@ -95,7 +96,7 @@ const update = (patternDTO: {
 	title: string;
 	content: string;
 }): Promise<ResultSetHeader> =>
-	QueryMetadata("UPDATE patterns SET content = ?, title = ? WHERE id = ?", [
+	QueryMetadata('UPDATE patterns SET content = ?, title = ? WHERE id = ?', [
 		patternDTO.content,
 		patternDTO.title,
 		patternDTO.id,
@@ -107,7 +108,7 @@ const updateAuthorToBanned = (id: string): Promise<ResultSetHeader> =>
 		[id]
 	);
 
-	//GET tags for one pattern, joined to show the authors name
+//GET tags for one pattern, joined to show the authors name
 const one = (id: string): Promise<(PatternTable & AuthorsTable)[]> =>
 	Query<(PatternTable & AuthorsTable)[]>(
 		`
@@ -121,7 +122,6 @@ FROM
   WHERE patterns.id = ?;`,
 		[id]
 	);
-
 
 export default {
 	one,

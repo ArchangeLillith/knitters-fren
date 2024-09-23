@@ -1,4 +1,4 @@
-import { Log, Pattern, PatternComment } from "./types";
+import { Log, Pattern, PatternComment } from './types';
 
 //Zach
 //Fix typings plsssss
@@ -25,10 +25,10 @@ export function sortByDate(
 }
 
 export const loadingPattern = {
-	id: "0",
-	author_id: "Loading...",
-	username: "",
-	title: "Loading...",
-	content: "Loading...",
-	created_at: "Loading...",
+	id: '0',
+	author_id: 'Loading...',
+	username: '',
+	title: 'Loading...',
+	content: 'Loading...',
+	created_at: 'Loading...',
 };

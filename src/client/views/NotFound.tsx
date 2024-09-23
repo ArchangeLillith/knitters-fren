@@ -1,8 +1,6 @@
-import React from "react";
+import React from 'react';
 
-interface NotFoundProps {}
-
-const NotFound = (props: NotFoundProps) => {
+const NotFound = () => {
 	return (
 		<div
 			className="container mx-auto w-50 bg-white rounded my-5"
@@ -15,9 +13,10 @@ const NotFound = (props: NotFoundProps) => {
 				data-bs-toggle="tooltip"
 				data-bs-placement="top"
 				title="Meet the artist!"
+				rel="noreferrer"
 			>
 				<img
-					style={{ width: "250px" }}
+					style={{ width: '250px' }}
 					src="/images/404.gif"
 					alt="loading..."
 					className="404-nanachi "

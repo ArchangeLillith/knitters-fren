@@ -1,14 +1,15 @@
-import { Router } from "express";
-import { createJWT } from "../../utils/tokens";
-import db from "../../db";
-import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
-import { logActivity } from "../../utils/logging";
+import bcrypt from 'bcrypt';
+import { Router } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+
+import db from '../../db';
+import { logActivity } from '../../utils/logging';
+import { createJWT } from '../../utils/tokens';
 
 const router = Router();
 
 //POST /auth/register
-router.post("/", async (req, res, next) => {
+router.post('/', async (req, res, next) => {
 	console.log(`HIT /AUTH/REGISTER with body:`, req.body);
 	try {
 		const { email, password, username } = req.body;
@@ -18,19 +19,19 @@ router.post("/", async (req, res, next) => {
 				.status(403)
 				.json({
 					message:
-						"This email or username is associated with a banned account. Please choose another or contact support.",
+						'This email or username is associated with a banned account. Please choose another or contact support.',
 				});
 		}
 		if (!email || !isValidEmail(email)) {
-			const error = new Error("invalid email");
-			error["status"] = 400;
+			const error = new Error('invalid email');
+			error['status'] = 400;
 			console.log(`invalid email`);
 			throw error;
 		}
 		const [emailFound] = await db.authors.find(email);
 		if (emailFound) {
-			const error = new Error("email already registered");
-			error["status"] = 400;
+			const error = new Error('email already registered');
+			error['status'] = 400;
 			console.log(`email registered already`);
 			throw error;
 		}
@@ -42,7 +43,7 @@ router.post("/", async (req, res, next) => {
 			password,
 			username,
 			email,
-			role: "user",
+			role: 'user',
 		};
 
 		const salt = await bcrypt.genSalt(12);
@@ -54,7 +55,7 @@ router.post("/", async (req, res, next) => {
 		const token = createJWT(authorDTO.id, authorDTO.role);
 		logActivity(
 			authorDTO.id,
-			"New user registered to site~",
+			'New user registered to site~',
 			`Username: ${authorDTO.username}, Role: ${authorDTO.role}`
 		);
 		res.json({ token });
@@ -65,7 +66,7 @@ router.post("/", async (req, res, next) => {
 
 function isValidEmail(email: string) {
 	return email.match(
-		/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		/^(([^<>()[\]\\.,;:\s@\']+(\.[^<>()[\]\\.,;:\s@\']+)*)|(\'.+\'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 	);
 }
 

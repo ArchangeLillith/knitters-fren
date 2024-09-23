@@ -1,6 +1,7 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Tag } from "../utils/types";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { Tag } from '../utils/types';
 
 type TagButtonProps = {
 	tag: Tag;
@@ -30,15 +31,15 @@ const TagButton: React.FC<TagButtonProps> = ({
 	);
 
 	const buttonClass = isSelected
-		? "selected-tag btn btn-secondary"
-		: "btn btn-primary";
+		? 'selected-tag btn btn-secondary'
+		: 'btn btn-primary';
 
 	return (
 		<button
 			className={buttonClass}
 			value={tag.name}
 			id={tag.id.toString()}
-			onClick={(e) => (tagToggle ? tagToggle(e) : tagReroute(e))}
+			onClick={e => (tagToggle ? tagToggle(e) : tagReroute(e))}
 		>
 			{tag.name}
 		</button>

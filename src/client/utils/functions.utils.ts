@@ -1,4 +1,4 @@
-import { FormFields } from "./types";
+import { FormFields } from './types';
 
 export function isValidEmail(email: string) {
 	return email.match(

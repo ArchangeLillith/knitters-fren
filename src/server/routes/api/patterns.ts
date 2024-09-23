@@ -1,19 +1,19 @@
-import { Router } from "express";
+import { Router } from 'express';
+import { ResultSetHeader } from 'mysql2';
 
-import db from "../../db";
-import { verifyToken } from "../../middlewares/verifyToken.mw";
-import { verifyAuthor } from "../../middlewares/verifyAuthor.mw";
-import { logActivity } from "../../utils/logging";
-import patterns from "../../db/queries/patterns";
-import { ResultSetHeader } from "mysql2";
-import { verifyAdmin } from "../../middlewares/verifyAdmin.mw";
+import db from '../../db';
+import patterns from '../../db/queries/patterns';
+import { verifyAdmin } from '../../middlewares/verifyAdmin.mw';
+import { verifyAuthor } from '../../middlewares/verifyAuthor.mw';
+import { verifyToken } from '../../middlewares/verifyToken.mw';
+import { logActivity } from '../../utils/logging';
 
 const router = Router();
 //Run all these routes prepended with the method through this middle ware
-// router.route("*").post(checkToken).put(checkToken).delete(checkToken);
+// router.route('*').post(checkToken).put(checkToken).delete(checkToken);
 
 //GET api/patterns/:id
-router.get("/:id", async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
 	try {
 		const id = req.params.id;
 		//The one pattern comes back in an array and this destructures it to only the pattern
@@ -26,7 +26,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //GET /api/patterns
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
 	try {
 		const result = await db.patterns.all();
 		res.json(result);
@@ -37,7 +37,7 @@ router.get("/", async (req, res, next) => {
 });
 
 //POST api/patterns
-router.post("/", async (req, res, next) => {
+router.post('/', async (req, res, next) => {
 	try {
 		const patternDTO = { ...req.body };
 		//The insert
@@ -47,12 +47,12 @@ router.post("/", async (req, res, next) => {
 			const pattern = await db.patterns.oneById(patternDTO.id);
 			logActivity(
 				pattern.author_id,
-				"New pattern created!",
+				'New pattern created!',
 				`Pattern title: ${pattern.title}, Author: ${pattern.username}`
 			);
-			res.json({ pattern, message: "New pattern created" });
+			res.json({ pattern, message: 'New pattern created' });
 		} else {
-			const error = new Error("Pattern not addded");
+			const error = new Error('Pattern not addded');
 			next(error);
 		}
 	} catch (error) {
@@ -62,7 +62,7 @@ router.post("/", async (req, res, next) => {
 
 //DELETE api/patterns/:id
 router.delete(
-	"/:id",
+	'/:id',
 	verifyToken,
 	verifyAuthor,
 	verifyAdmin,
@@ -73,11 +73,11 @@ router.delete(
 			await db.pattern_tags.destroyAllBasedOnPatternId(id);
 			const result: ResultSetHeader = await db.patterns.destroy(id);
 			if (!result.affectedRows) {
-				throw new Error("No affected rows");
+				throw new Error('No affected rows');
 			}
 			logActivity(
 				req.currentUser.id,
-				"Pattern deleted",
+				'Pattern deleted',
 				`Pattern title: ${title}, Author: ${username}, Author ID: ${author_id}`
 			);
 			res.json(result);
@@ -88,7 +88,7 @@ router.delete(
 );
 
 //PUT /api/patterns/:id
-router.put("/:id", async (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
 	const id: string = req.params.id;
 	try {
 		const patternDTO: {
@@ -102,7 +102,7 @@ router.put("/:id", async (req, res, next) => {
 		};
 		console.log(`patternDTO`, patternDTO);
 		await db.patterns.update(patternDTO);
-		res.json({ id, message: "Pattern updated~!" });
+		res.json({ id, message: 'Pattern updated~!' });
 	} catch (error) {
 		next(error);
 	}

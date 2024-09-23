@@ -1,21 +1,22 @@
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+
+import PatternDetails from '../components/AddPatternComponents/PatternDetails';
+import PatternLink from '../components/AddPatternComponents/PatternLink';
+import PatternPaid from '../components/AddPatternComponents/PatternPaid';
+import PatternTitle from '../components/AddPatternComponents/PatternTitle';
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import AuthWrapper from '../components/AuthComponents/AuthWrapper';
+import Container from '../components/Container';
+import TagContainer from '../components/TagContainer';
+import patternService from '../services/pattern';
+import patternTags from '../services/pattern-tags';
 import {
 	Pattern,
 	AddPatternPageState as PageState,
 	NewPattern,
-} from "../utils/types";
-import { AuthContext } from "../components/AuthComponents/AuthProvider";
-import Container from "../components/Container";
-import AuthWrapper from "../components/AuthComponents/AuthWrapper";
-import TagContainer from "../components/TagContainer";
-import patternTags from "../services/pattern-tags";
-import patternService from "../services/pattern";
-import PatternTitle from "../components/AddPatternComponents/PatternTitle";
-import PatternPaid from "../components/AddPatternComponents/PatternPaid";
-import PatternLink from "../components/AddPatternComponents/PatternLink";
-import PatternDetails from "../components/AddPatternComponents/PatternDetails";
+} from '../utils/types';
 
 //Refactor we could add a loading state! Thisis nice in prod, we won't see it in dev prob, but it's good UX
 const AddPattern = () => {
@@ -24,10 +25,10 @@ const AddPattern = () => {
 
 	//Initialize state
 	const [state, setState] = useState<PageState>({
-		title: "",
-		paid: "false",
-		content: "",
-		link: "",
+		title: '',
+		paid: 'false',
+		content: '',
+		link: '',
 		selectedTags: [],
 	});
 
@@ -49,12 +50,11 @@ const AddPattern = () => {
 		submitButton: React.MouseEvent<HTMLButtonElement>
 	) => {
 		submitButton.preventDefault();
-		const newArr = state.selectedTags.map((tag) => tag.id)
+		const newArr = state.selectedTags.map(tag => tag.id);
 		let patternId: string;
 		try {
-			const pattern: Pattern = await patternService.addNewPattern(
-				newPatternDTO
-			);
+			const pattern: Pattern =
+				await patternService.addNewPattern(newPatternDTO);
 			console.log(`Pattern,`, pattern);
 			patternId = pattern.id;
 			if (newArr.length > 0) {
@@ -74,10 +74,10 @@ const AddPattern = () => {
 					src="/images/teacup-nanachi.png"
 					alt="teacup-nanachi"
 					style={{
-						width: "250px",
-						position: "absolute",
-						right: "1%",
-						top: "12%",
+						width: '250px',
+						position: 'absolute',
+						right: '1%',
+						top: '12%',
 					}}
 				/>
 				<form className="d-flex flex-column my-4 py-4">
@@ -91,12 +91,11 @@ const AddPattern = () => {
 					<PatternDetails state={state} setState={setState} />
 					<div>
 						<label htmlFor="tags">Choose your tags:</label>
-					
-							<TagContainer
-								selectedTags={state.selectedTags}
-								setSelectedTags={setState}
-							/>
-						
+
+						<TagContainer
+							selectedTags={state.selectedTags}
+							setSelectedTags={setState}
+						/>
 					</div>
 					<div className="d-flex justify-content-center align-items-center">
 						<button

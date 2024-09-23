@@ -1,11 +1,12 @@
-import React, { useContext, useEffect } from "react";
-import { Pattern } from "../utils/types";
-import { loadingPattern, sortByDate } from "../utils/patterns.utils";
-import { AuthContext } from "../components/AuthComponents/AuthProvider";
-import Container from "../components/Container";
-import PatternCard from "../components/PatternComponents/PatternCard";
-import patternService from "../services/pattern";
-import MostRecentRow from "../components//PatternComponents/MostRecent";
+import React, { useContext, useEffect } from 'react';
+
+import MostRecentRow from '../components//PatternComponents/MostRecent';
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import Container from '../components/Container';
+import PatternCard from '../components/PatternComponents/PatternCard';
+import patternService from '../services/pattern';
+import { loadingPattern, sortByDate } from '../utils/patterns.utils';
+import { Pattern } from '../utils/types';
 
 interface PatternProps {
 	fullList: Pattern[];
@@ -32,7 +33,7 @@ const Home = () => {
 					(pattern) => pattern.paid !== "true"
 				);
 				const sortedPatterns: Pattern[] = sortByDate(freePatterns) as Pattern[];
-				let randomNumber = getRandomInt(data.length - 1);
+				const randomNumber = getRandomInt(data.length - 1);
 				setPatterns({
 					fullList: fullList,
 					featured: freePatterns[randomNumber],

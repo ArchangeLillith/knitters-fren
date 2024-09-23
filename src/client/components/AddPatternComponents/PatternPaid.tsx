@@ -1,15 +1,16 @@
-import React from "react";
+import React from 'react';
 
-const PatternPaid = ({ state, setState }) => {
+import { AddPatternPageProps } from '../../utils/types';
 
+const PatternPaid: React.FC<AddPatternPageProps> = ({ state, setState }) => {
 	/**
 	 * Toggle state as a string instead of boolean as that's the pattern for everything based on how communicating with our SQL goes
 	 */
 	const togglePaid = () => {
-		if (state.paid === "true") {
-			setState((prev) => ({ ...prev, paid: "false" }));
+		if (state.paid === 'true') {
+			setState(prev => ({ ...prev, paid: 'false' }));
 		} else {
-			setState((prev) => ({ ...prev, paid: "true" }));
+			setState(prev => ({ ...prev, paid: 'true' }));
 		}
 	};
 
@@ -29,7 +30,7 @@ const PatternPaid = ({ state, setState }) => {
 				type="checkbox"
 				id="paid-input"
 				onChange={togglePaid}
-				checked={state.paid === "true"}
+				checked={state.paid === 'true'}
 			/>
 		</div>
 	);

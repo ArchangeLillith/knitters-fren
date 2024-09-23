@@ -1,4 +1,4 @@
-import baseService from "./base";
+import baseService from './base';
 
 /**
  * Gets all the tags for the pattern id passed in
@@ -6,12 +6,8 @@ import baseService from "./base";
  * @returns an array(?) of tags
  */
 const getAllTags = async () => {
-	try {
-		const tags = await baseService.get(`/api/pattern_tags/`);
-		return tags;
-	} catch (error) {
-		throw error;
-	}
+	const tags = await baseService.get(`/api/pattern_tags/`);
+	return tags;
 };
 
 /**
@@ -20,12 +16,8 @@ const getAllTags = async () => {
  * @returns an array(?) of tags
  */
 const getByPatternId = async (id: string) => {
-	try {
-		const tags = await baseService.get(`/api/pattern_tags/${id}`);
-		return tags;
-	} catch (error) {
-		throw error;
-	}
+	const tags = await baseService.get(`/api/pattern_tags/${id}`);
+	return tags;
 };
 
 /**
@@ -38,7 +30,9 @@ const addNewTags = async (payload: {
 	pattern_id: string;
 	tag_ids: number[];
 }) => {
-	if (payload.tag_ids.length < 0) return;
+	if (payload.tag_ids.length < 0) {
+		return;
+	}
 
 	try {
 		console.log(`Adding tags to joint table....`);
@@ -60,12 +54,8 @@ const addNewTags = async (payload: {
  * Removes all tag association from pattern_tags table based on the patternId
  * @param id - id of pattern we want to remove patterns from
  */
-const destroyAllTagsBasedOnId = async (id: any) => {
-	try {
-		await baseService.destroy(`/api/pattern_tags/delete/${id}`);
-	} catch (error) {
-		throw error;
-	}
+const destroyAllTagsBasedOnId = async (id: string) => {
+	await baseService.destroy(`/api/pattern_tags/delete/${id}`);
 };
 
 export default {

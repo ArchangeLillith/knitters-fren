@@ -1,16 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
-import { Pattern, PatternComment, Tag } from "../utils/types";
-import { RiLockLine } from "react-icons/ri";
-import { AuthContext } from "../components/AuthComponents/AuthProvider";
-import dayjs from "dayjs";
-import authorService from "../services/author";
-import patternService from "../services/pattern";
-import patternTagsService from "../services/pattern-tags";
-import commentService from "../services/comments";
-import TagButton from "../components/TagButton";
-import { loadingPattern } from "../utils/patterns.utils";
-import CommentTile from "../components/CommentTile";
+import dayjs from 'dayjs';
+import React, { useContext, useEffect, useState } from 'react';
+import { RiLockLine } from 'react-icons/ri';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import CommentTile from '../components/CommentTile';
+import TagButton from '../components/TagButton';
+import authorService from '../services/author';
+import commentService from '../services/comments';
+import patternService from '../services/pattern';
+import patternTagsService from '../services/pattern-tags';
+import { loadingPattern } from '../utils/patterns.utils';
+import { Pattern, PatternComment, Tag } from '../utils/types';
 
 const PatternDetails = () => {
 	const { authState } = useContext(AuthContext);

@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export type objectType = { [key: string]: string | boolean };
 
 /**
@@ -12,10 +14,10 @@ export type Pattern = {
 	content: string;
 	created_at: string;
 	tags?: string[];
-	paid?: "true" | "false";
+	paid?: 'true' | 'false';
 };
 
-declare module "react-router-dom" {
+declare module 'react-router-dom' {
 	interface Location {
 		state: {
 			from: any;
@@ -41,12 +43,22 @@ export type AdminPageState = {
 	showModal: boolean;
 };
 
+export type AdminPageProps = {
+	state: AdminPageState;
+	setState: Dispatch<SetStateAction<AdminPageState>>;
+};
+
 export type AddPatternPageState = {
 	title: string;
-	paid: "true" | "false";
+	paid: 'true' | 'false';
 	content: string;
 	link: string;
 	selectedTags: Tag[];
+};
+
+export type AddPatternPageProps = {
+	state: AddPatternPageState;
+	setState: React.Dispatch<React.SetStateAction<AddPatternPageState>>;
 };
 
 /**
@@ -59,7 +71,7 @@ export type Author = {
 	patternsAuthored?: string[];
 	patternsFavorited?: string[];
 	commentsAuthored?: string[];
-	role?: "user" | "admin";
+	role?: 'user' | 'admin';
 };
 
 export interface AuthState extends Author {
@@ -70,16 +82,16 @@ export interface AuthState extends Author {
  * Tying the url to a name
  */
 export enum ELocations {
-	CreatePattern = "/patterns/new",
-	FavoritePatterns = "/patterns/favorites",
+	CreatePattern = '/patterns/new',
+	FavoritePatterns = '/patterns/favorites',
 }
 
 /**
  * Using that location and tying it to a string value based on url
  */
 export const locationStrings: Record<string, string> = {
-	[ELocations.CreatePattern]: "new pattern ",
-	[ELocations.FavoritePatterns]: "favorite patterns ",
+	[ELocations.CreatePattern]: 'new pattern ',
+	[ELocations.FavoritePatterns]: 'favorite patterns ',
 };
 
 /**
@@ -132,5 +144,5 @@ export type NewPattern = {
 	content: string;
 	author_id: string;
 	link: string;
-	paid: "true" | "false";
+	paid: 'true' | 'false';
 };

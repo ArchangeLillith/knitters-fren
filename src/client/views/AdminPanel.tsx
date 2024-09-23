@@ -1,18 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-	Log,
-	PatternComment,
-	AdminPageState as PageState,
-} from "../utils/types";
-import { Navigate } from "react-router-dom";
-import { AuthContext } from "../components/AuthComponents/AuthProvider";
-import { sortByDate } from "../utils/patterns.utils";
-import logService from "../services/logs";
-import authorService from "../services/author";
-import patternService from "../services/pattern";
-import commentService from "../services/comments";
-import patternTagsService from "../services/pattern-tags";
-import Container from "../components/Container";
+import React, { useContext, useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+
 import {
 	Authors,
 	Logs,
@@ -20,13 +8,23 @@ import {
 	Patterns,
 	Tags,
 	Comments,
-} from "../components/AdminPanelComponents";
+} from '../components/AdminPanelComponents';
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import Container from '../components/Container';
+import authorService from '../services/author';
+import commentService from '../services/comments';
+import logService from '../services/logs';
+import patternService from '../services/pattern';
+import patternTagsService from '../services/pattern-tags';
+import { sortByDate } from '../utils/patterns.utils';
+import {
+	Log,
+	PatternComment,
+	AdminPageState as PageState,
+} from '../utils/types';
 
 const AdminPanel = () => {
 	const { authState } = useContext(AuthContext);
-	if (authState.role !== "admin") {
-		return <Navigate to="/" />;
-	}
 
 	const [state, setState] = useState<PageState>({
 		patterns: [],
@@ -40,61 +38,61 @@ const AdminPanel = () => {
 	});
 
 	useEffect(() => {
-		logService
-			.getAllLogs()
-			.then((data) => {
-				const filteredLogs: Log[] = sortByDate(data) as Log[];
-				setState((prev) => ({
+		const fetchData = async () => {
+			try {
+				const [logs, patterns, tags, authors, comments] = await Promise.all([
+					logService.getAllLogs(),
+					patternService.getAllPatterns(),
+					patternTagsService.getAllTags(),
+					authorService.getAllAuthors(),
+					commentService.getAllComments(),
+				]);
+
+				const filteredLogs: Log[] = sortByDate(logs) as Log[];
+				const filteredComments: PatternComment[] = sortByDate(
+					comments
+				) as PatternComment[];
+
+				setState(prev => ({
 					...prev,
-					logs: data,
+					logs,
 					filteredLogs: filteredLogs.slice(0, 15),
+					patterns,
+					tags,
+					authors,
+					comments,
+					filteredComments: filteredComments.slice(0, 15),
 				}));
-			})
-			.catch((error) => console.error("Failed to load activity logs:", error));
-		patternService
-			.getAllPatterns()
-			.then((data) => setState((prev) => ({ ...prev, patterns: data })))
-			.catch((error) => alert(error));
-		patternTagsService
-			.getAllTags()
-			.then((data) => setState((prev) => ({ ...prev, tags: data })))
-			.catch((error) => console.error(error));
-		authorService
-			.getAllAuthors()
-			.then((data) => setState((prev) => ({ ...prev, authors: data })))
-			.catch((error) => console.error(error));
-		commentService.getAllComments().then((data) => {
-			const filteredComments: PatternComment[] = sortByDate(
-				data
-			) as PatternComment[];
-			setState((prev) => ({
-				...prev,
-				comments: data,
-				filteredComments: filteredComments.slice(0, 15),
-			}));
-		});
+			} catch (error) {
+				console.error('Failed to load data:', error);
+			}
+		};
+		fetchData();
 	}, []);
 
+	if (authState.role !== 'admin') {
+		return <Navigate to="/" />;
+	}
 	return (
 		<Container>
 			<div className="accordion my-5">
 				<div className="accordion-item">
-					<Logs adminState={state} />
+					<Logs state={state} />
 				</div>
 				<div className="accordion-item">
-					<Patterns adminState={state} setAdminState={setState} />
+					<Patterns state={state} setState={setState} />
 				</div>
 				<div className="accordion-item">
-					<Tags adminState={state} />
+					<Tags state={state} />
 				</div>
 				<div className="accordion-item">
-					<Authors adminPageState={state} setAdminPageState={setState} />
+					<Authors state={state} setState={setState} />
 				</div>
 				<div className="accordion-item">
-					<DbStats adminState={state} />
+					<DbStats state={state} />
 				</div>
 				<div className="accordion-item">
-					<Comments adminState={state} />
+					<Comments state={state} />
 				</div>
 			</div>
 		</Container>

@@ -1,8 +1,8 @@
-import React, { createContext, useState, useEffect } from "react";
-import authService from "../../services/auth";
-import storage from "../../utils/storage";
-import { Author, AuthState } from "../../utils/types";
+import React, { createContext, useState, useEffect } from 'react';
 
+import authService from '../../services/auth';
+import storage from '../../utils/storage';
+import { Author, AuthState } from '../../utils/types';
 
 /**
  * Typing for the auth state
@@ -34,8 +34,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [authState, setAuthState] = useState<AuthState>({
 		authenticated: false,
 		id: undefined,
-		username: "",
-		role: "user",
+		username: '',
+		role: 'user',
 	});
 
 	/**
@@ -64,7 +64,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	 * @param userData - The user data to be set in state
 	 */
 	const updateUserData = (userData: Partial<Author>) => {
-		setAuthState((prevState) => ({
+		setAuthState(prevState => ({
 			...prevState,
 			...userData,
 		}));
@@ -74,22 +74,27 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	 * Ensures that there's a valid token and sets the user to state if the token checks out
 	 */
 	useEffect(() => {
-		const token = storage.getToken();
-		if (!token) {
-			setAuthState({ authenticated: false });
-			return;
-		}
-		authService
-			.getUserFromToken(token)
-			.then((userData) => {
+		const checkUser = async () => {
+			const token = storage.getToken();
+			if (!token) {
+				setAuthState({ authenticated: false });
+				return;
+			}
+
+			try {
+				const userData = await authService.getUserFromToken(token);
 				setAuthState({
 					authenticated: true,
 					id: userData.id,
 					username: userData.username,
 					role: userData.role,
 				});
-			})
-			.catch(() => setAuthState({ authenticated: false }));
+			} catch (error) {
+				setAuthState({ authenticated: false });
+				return error; 
+			}
+		};
+		checkUser();
 	}, []);
 
 	return (

@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
-import { Pattern } from "../utils/types";
-import PatternCard from "../components/PatternComponents/PatternCard";
-import Container from "../components/Container";
-import { Navigate, useLocation } from "react-router-dom";
-import AuthWrapper from "../components/AuthComponents/AuthWrapper";
+import React, { useEffect } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+
+import AuthWrapper from '../components/AuthComponents/AuthWrapper';
+import Container from '../components/Container';
+import PatternCard from '../components/PatternComponents/PatternCard';
+import { Pattern } from '../utils/types';
 
 const FavoritePatterns = () => {
 	const [patterns, setPatterns] = React.useState<Pattern[]>([]);

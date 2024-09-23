@@ -1,5 +1,6 @@
-import type { Request, Response, NextFunction } from "express";
-import db from "../db";
+import type { Request, Response, NextFunction } from 'express';
+
+import db from '../db';
 
 export const verifyAuthor = async (
 	req: Request,
@@ -13,7 +14,7 @@ export const verifyAuthor = async (
 		const pattern = await db.patterns.oneById(patternId);
 
 		if (!pattern) {
-			return res.status(404).json({ message: "Pattern not found" });
+			return res.status(404).json({ message: 'Pattern not found' });
 		}
 
 		//If the user is the author, this return will skip the next middle ware and return into the route to delete the pattern

@@ -1,7 +1,8 @@
-import passport from "passport";
-import type { Request, Response, NextFunction } from "express";
-import db from "../db";
-import { AuthorsTable } from "../types";
+import type { Request, Response, NextFunction } from 'express';
+import passport from 'passport';
+
+import db from '../db';
+import { AuthorsTable } from '../types';
 
 export const handleLogin = (
 	req: Request,
@@ -9,7 +10,7 @@ export const handleLogin = (
 	next: NextFunction
 ) => {
 	passport.authenticate(
-		"local",
+		'local',
 		{ session: false },
 		async (error: Error, user, info) => {
 			if (error) {
@@ -26,7 +27,7 @@ export const handleLogin = (
 				if (banned.length > 0)
 					return res.status(403).json({
 						message:
-							"The email or username you provided is linked to a banned account. Please reach out to support for assistance.",
+							'The email or username you provided is linked to a banned account. Please reach out to support for assistance.',
 					});
 			} catch (error) {
 				next(error);

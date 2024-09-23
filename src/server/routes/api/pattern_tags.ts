@@ -1,12 +1,13 @@
-import { Router } from "express";
-import db from "../../db";
+import { Router } from 'express';
+
+import db from '../../db';
 
 const router = Router();
 
 export default router;
 
 //GET /api/pattern_tags/
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
 	try {
 		const result = await db.pattern_tags.all();
 		res.json(result);
@@ -15,7 +16,7 @@ router.get("/", async (req, res, next) => {
 	}
 });
 //GET /api/pattern_tags/id
-router.get("/:id", async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
 	try {
 		const id = req.params.id;
 		const result = await db.pattern_tags.allByPatternId(id);
@@ -27,7 +28,7 @@ router.get("/:id", async (req, res, next) => {
 
 // //*If something throws a fit it's prob this
 // //POST /api/pattern_tags/delete/id
-// router.post("/delete/:id", async (req, res, next) => {
+// router.post('/delete/:id', async (req, res, next) => {
 // 	//Input to insert: values: { pattern_id: number; tag_ids: number[] }
 // 	const pattern_id = req.params.id;
 // 	const idArray = JSON.parse(req.body.tagList).tag_ids;
@@ -50,7 +51,7 @@ router.get("/:id", async (req, res, next) => {
 // });
 
 //POST /api/pattern_tags/pattern_id
-router.post("/:id", async (req, res, next) => {
+router.post('/:id', async (req, res, next) => {
 	//Input to insert: values: { pattern_id: number; tag_id: number }[]
 	const pattern_id = req.params.id;
 	console.log(`Pattern ID:`, pattern_id);

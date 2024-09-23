@@ -1,22 +1,15 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import Modal from "../Modal";
-import authorService from "../../services/author";
-import { AdminPageState } from "../../utils/types";
-import { GiThorHammer } from "react-icons/gi";
+import React, { useState } from 'react';
+import { GiThorHammer } from 'react-icons/gi';
 
-interface AuthorsProps {
-	adminPageState: AdminPageState;
-	setAdminPageState: Dispatch<SetStateAction<AdminPageState>>;
-}
+import authorService from '../../services/author';
+import { AdminPageProps } from '../../utils/types';
+import Modal from '../Modal';
 
-const Authors: React.FC<AuthorsProps> = ({
-	adminPageState: adminState,
-	setAdminPageState,
-}) => {
+const Authors: React.FC<AdminPageProps> = ({ state, setState }) => {
 	const [banTarget, setBanTarget] = useState<{
 		id: string;
 		username: string;
-	}>({ id: "", username: "" });
+	}>({ id: '', username: '' });
 
 	/**
 	 *
@@ -26,30 +19,32 @@ const Authors: React.FC<AuthorsProps> = ({
 	const banHammer = (banButton: React.MouseEvent<HTMLButtonElement>) => {
 		const { id, name } = banButton.currentTarget;
 		setBanTarget({ id, username: name });
-		setAdminPageState((prev) => ({ ...prev, showModal: true }));
+		setState(prev => ({ ...prev, showModal: true }));
 	};
 
 	const closeModal = () => {
-		setAdminPageState((prev) => ({ ...prev, showModal: false }));
+		setState(prev => ({ ...prev, showModal: false }));
 	};
 
 	/**
-	 * On confirm of ban, awaits the database call to do backend ban author stuff (reassigns their patterns to a "BannedAuthor" profile and then populates a banned table with their information). If sucessful, alerts that the author has been banned and closes the modal
+	 * On confirm of ban, awaits the database call to do backend ban author stuff (reassigns their patterns to a 'BannedAuthor' profile and then populates a banned table with their information). If sucessful, alerts that the author has been banned and closes the modal
 	 */
 	const banAuthor = async () => {
-		if (!banTarget) return;
+		if (!banTarget) {
+			return;
+		}
 		try {
 			const banned = await authorService.banAuthor(banTarget.id);
 			if (banned.affectedRows > 0) {
-				alert(banTarget.username + " has been BANNED");
-				setBanTarget({ id: "", username: "" });
-				setAdminPageState((prev) => ({
+				alert(`${banTarget.username} has been BANNED`);
+				setBanTarget({ id: '', username: '' });
+				setState(prev => ({
 					...prev,
 					showModal: false,
 				}));
 			}
 		} catch (error) {
-			console.error("Failed to ban author:", error);
+			console.error('Failed to ban author:', error);
 		}
 	};
 
@@ -72,7 +67,7 @@ const Authors: React.FC<AuthorsProps> = ({
 				className="accordion-collapse collapse"
 			>
 				<div className="accordion-body">
-					{adminState.authors?.map((author) => (
+					{state.authors?.map(author => (
 						<div
 							key={`wrapper-for-${author.id}`}
 							className="d-flex flex-row align-items-center justify-content-center"
@@ -91,7 +86,7 @@ const Authors: React.FC<AuthorsProps> = ({
 						</div>
 					))}
 				</div>
-				{adminState.showModal && banTarget.id !== "" && (
+				{state.showModal && banTarget.id !== '' && (
 					<Modal>
 						<div className="align-self-center h3 text-color-light">
 							You've chosen to call upon Nanachi to ban...
@@ -103,7 +98,7 @@ const Authors: React.FC<AuthorsProps> = ({
 								</div>
 							</div>
 							<img
-								style={{ width: "300px", marginRight: "0px" }}
+								style={{ width: '300px', marginRight: '0px' }}
 								src="/images/nanachi-ban-hammer.png"
 								alt="banning!"
 								className="ban-hammer-nanachi "

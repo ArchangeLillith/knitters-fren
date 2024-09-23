@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Pattern, Tag } from "../utils/types";
-import searchService from "../services/search";
-import { useLocation } from "react-router-dom";
-import TagContainer from "../components/TagContainer";
-import SearchPanel from "../components/SearchViewComponents/SearchPanel";
-import { SearchPageState as PageState } from "../utils/types";
-import NoPatternsFound from "../components/SearchViewComponents/NoPatternsFoud";
-import SearchResults from "../components/SearchViewComponents/SearchResults";
-import Container from "../components/Container";
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+
+import Container from '../components/Container';
+import NoPatternsFound from '../components/SearchViewComponents/NoPatternsFoud';
+import SearchPanel from '../components/SearchViewComponents/SearchPanel';
+import SearchResults from '../components/SearchViewComponents/SearchResults';
+import TagContainer from '../components/TagContainer';
+import searchService from '../services/search';
+import { Pattern, Tag, SearchPageState as PageState } from '../utils/types';
 
 function SearchView() {
 	const { state } = useLocation();
@@ -16,8 +16,8 @@ function SearchView() {
 	const [pageState, setPageState] = useState<PageState>({
 		tagsActive: false,
 		selectedTags: [],
-		searchType: "tag",
-		queryString: "",
+		searchType: 'tag',
+		queryString: '',
 		suggestions: [],
 		strictComparison: false,
 		searchTriggered: false,
@@ -31,7 +31,7 @@ function SearchView() {
 			tags: Tag[];
 		}[];
 	};
-	
+
 	/**
 	 *If the user has clicked on a tag anywhere else, it leads them here to the search and this scrapes the data from the state that came along with the navigate to set the value of the tag clicked on into the active tags (UI) and also adds it to the chosen tags that governs what will be searched for (backend)
 	 */
@@ -45,7 +45,7 @@ function SearchView() {
 	 * Handles the setting of tags if the user came from an external page. It sets the visual tag to active in the UI, and adds the tag that was selected to the chosen tags array
 	 */
 	const handleExternalTags = () => {
-		setPageState((prev) => ({
+		setPageState(prev => ({
 			...prev,
 			tagsActive: true,
 			selectedTags: [
@@ -62,7 +62,9 @@ function SearchView() {
 	 */
 	useEffect(() => {
 		const timeoutId = setTimeout(() => {
-			if (pageState.queryString === "") return;
+			if (pageState.queryString === '') {
+				return;
+			}
 
 			//Declaring what service we're going to call here based on what's chosen as search type
 			const searchFunctions: { [key: string]: Function } = {
@@ -78,7 +80,7 @@ function SearchView() {
 			//Pull out repeated logic to a scoped util
 			const noPatternsFound = () => {
 				console.log(`scoped util triggered`);
-				setPageState((prev) => ({
+				setPageState(prev => ({
 					...prev,
 					foundPatterns: [],
 					searchTriggered: true,
@@ -90,8 +92,8 @@ function SearchView() {
 				searchFunction(pageState.queryString)
 					.then((result: ResultType) => {
 						console.log(`patterns in tsx`, result);
-						if (result.message === "patterns found") {
-							setPageState((prev) => ({
+						if (result.message === 'patterns found') {
+							setPageState(prev => ({
 								...prev,
 								foundPatterns: result.patternObjects,
 								searchTriggered: true,
@@ -118,11 +120,11 @@ function SearchView() {
 	const updateSearchType = (
 		searchTypeDropdown: React.ChangeEvent<HTMLSelectElement>
 	) => {
-		setPageState((prev) => ({
+		setPageState(prev => ({
 			...prev,
 			foundPatterns: [],
 			searchTriggered: false,
-			queryString: "",
+			queryString: '',
 			searchType: searchTypeDropdown.target.value,
 		}));
 	};
@@ -131,7 +133,7 @@ function SearchView() {
 	 * Handles the search by tags when the submit button is clicked
 	 */
 	const searchTrigger = () => {
-		setPageState((prev) => ({
+		setPageState(prev => ({
 			...prev,
 			foundPatterns: [],
 			searchTriggered: true,
@@ -142,11 +144,9 @@ function SearchView() {
 			: searchService.findByTags;
 
 		searchFunction(pageState.selectedTags)
-			.then((data) =>
-				setPageState((prev) => ({ ...prev, foundPatterns: data }))
-			)
+			.then(data => setPageState(prev => ({ ...prev, foundPatterns: data })))
 			.catch(() =>
-				setPageState((prev) => ({
+				setPageState(prev => ({
 					...prev,
 					foundPatterns: [],
 				}))
@@ -157,7 +157,7 @@ function SearchView() {
 	 * Controls the toggle for the strict mode button
 	 */
 	const handleStrictMode = () =>
-		setPageState((prev) => ({
+		setPageState(prev => ({
 			...prev,
 			strictComparison: !pageState.strictComparison,
 		}));
@@ -166,7 +166,7 @@ function SearchView() {
 	 * Handles the reset button, clears out the chosen tags array and sets the tags to inactive as that state handles the buttons that should only be avaliable if there are tags chosen
 	 */
 	const clearSelection = () => {
-		setPageState((prev) => ({ ...prev, selectedTags: [], tagsActive: false }));
+		setPageState(prev => ({ ...prev, selectedTags: [], tagsActive: false }));
 	};
 
 	/**
@@ -200,7 +200,7 @@ function SearchView() {
 					</select>
 				</form>
 			</div>
-			{pageState.searchType === "tag" ? (
+			{pageState.searchType === 'tag' ? (
 				<div className="d-flex flex-column my-2 py-2">
 					<h2 className="text-center mt-2 text-primary">
 						Select tags to search by!
@@ -220,7 +220,7 @@ function SearchView() {
 						/>
 						<label
 							className={`${
-								pageState.tagsActive ? "visible" : "invisible"
+								pageState.tagsActive ? 'visible' : 'invisible'
 							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-outline-primary mx-auto`}
 							htmlFor="strictModeBtn"
 						>
@@ -229,7 +229,7 @@ function SearchView() {
 
 						<button
 							className={`${
-								pageState.tagsActive ? "visible" : "invisible"
+								pageState.tagsActive ? 'visible' : 'invisible'
 							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 							onClick={searchTrigger}
 						>
@@ -238,7 +238,7 @@ function SearchView() {
 						<button
 							onClick={clearSelection}
 							className={`${
-								pageState.tagsActive ? "visible" : "invisible"
+								pageState.tagsActive ? 'visible' : 'invisible'
 							}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 						>
 							Clear Tags

@@ -4,5 +4,7 @@ dist
 
 # Ignore the public folder
 public/
+# Ignore esbuild
+esbuild-config
 # Ignore the dist folder within src/server
 src/server/dist/

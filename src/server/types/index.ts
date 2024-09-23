@@ -16,7 +16,7 @@ export interface PatternTable {
 	content?: string;
 	created_at?: string;
 	link?: string;
-	paid?: "true" | "false";
+	paid?: 'true' | 'false';
 }
 
 export interface AuthorsTable {

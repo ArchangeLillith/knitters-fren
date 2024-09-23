@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from "react";
-import noteService from "../services/pattern";
-import { useNavigate, useParams } from "react-router-dom";
-import patternService from "../services/pattern";
-import { Pattern, Tag, } from "../utils/types";
-import patternTags from "../services/pattern-tags";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import patternService from '../services/pattern';
+import patternTags from '../services/pattern-tags';
+import { Pattern, Tag } from '../utils/types';
 
 const UpdatePattern = () => {
 	const { id } = useParams<string>();
 	const navigate = useNavigate();
 	const [pattern, setPattern] = useState<Pattern | undefined>(undefined);
-	const [title, setTitle] = useState<string>("");
-	const [content, setContent] = useState<string>("");
-	const [allTags, setAllTags] = useState<Tag[]>([{ id: 0, name: "Loading..." }]);
+	const [title, setTitle] = useState<string>('');
+	const [content, setContent] = useState<string>('');
+	const [allTags, setAllTags] = useState<Tag[]>([
+		{ id: 0, name: 'Loading...' },
+	]);
 	const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
 	useEffect(() => {
-		if (!id) return;
+		if (!id) {
+			return;
+		}
 		patternService.getOnePattern(id).then((fetchedPattern: Pattern) => {
 			setPattern(fetchedPattern);
 			setTitle(fetchedPattern.title);
@@ -23,16 +27,16 @@ const UpdatePattern = () => {
 		});
 
 		fetch(`${process.env.ROOT_URL}/api/tags`)
-			.then((res) => res.json())
-			.then((data) => setAllTags(data))
-			.catch((error) => alert(error));
+			.then(res => res.json())
+			.then(data => setAllTags(data))
+			.catch(error => alert(error));
 
 		patternTags
 			.getByPatternId(id)
-			.then((data) => {
+			.then(data => {
 				setSelectedTags(data);
 			})
-			.catch((error) => alert(error));
+			.catch(error => alert(error));
 	}, [id]);
 
 	const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -47,7 +51,7 @@ const UpdatePattern = () => {
 
 		noteService.updatePattern(id, patternDTO);
 
-		const tagIds = selectedTags.map((tag) => tag.id);
+		const tagIds = selectedTags.map(tag => tag.id);
 		if (tagIds.length > 0) {
 			console.log(`Adding new tags...`, tagIds);
 			patternTags
@@ -59,12 +63,12 @@ const UpdatePattern = () => {
 
 	const tagToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { id, name } = e.target;
-		setSelectedTags((prevTags) => {
-			const tagIndex = prevTags.findIndex((tag) => tag.name === name);
+		setSelectedTags(prevTags => {
+			const tagIndex = prevTags.findIndex(tag => tag.name === name);
 			if (tagIndex === -1) {
 				return [...prevTags, { id: parseInt(id), name }];
 			} else {
-				return prevTags.filter((tag) => tag.name !== name);
+				return prevTags.filter(tag => tag.name !== name);
 			}
 		});
 	};
@@ -78,7 +82,7 @@ const UpdatePattern = () => {
 						required
 						maxLength={100}
 						value={title}
-						onChange={(e) => setTitle(e.target.value)}
+						onChange={e => setTitle(e.target.value)}
 						className="w-100 rounded my-2 py-1 text-large"
 						id="pattern-title"
 						placeholder="Title..."
@@ -91,7 +95,7 @@ const UpdatePattern = () => {
 					required
 					maxLength={10000}
 					value={content}
-					onChange={(e) => setContent(e.target.value)}
+					onChange={e => setContent(e.target.value)}
 				/>
 				<div>
 					<label htmlFor="tags">Choose your tags:</label>
@@ -110,7 +114,7 @@ const UpdatePattern = () => {
 									<input
 										type="checkbox"
 										checked={selectedTags.some(
-											(selectedTag) => selectedTag.name === tag.name
+											selectedTag => selectedTag.name === tag.name
 										)}
 										className="btn-check"
 										id={`${tag.id}`}
@@ -136,10 +140,10 @@ const UpdatePattern = () => {
 			<img
 				src="/images/drawing-nanachi.png"
 				style={{
-					position: "absolute",
-					top: "70%",
-					right: "4%",
-					width: "250px",
+					position: 'absolute',
+					top: '70%',
+					right: '4%',
+					width: '250px',
 				}}
 				alt="Nanachi"
 			/>

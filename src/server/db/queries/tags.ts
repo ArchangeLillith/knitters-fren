@@ -1,5 +1,5 @@
-import type { PatternTags } from "../../types";
-import { Query } from "../query";
+import type { PatternTags } from '../../types';
+import { Query } from '../query';
 
 //API calls
 const all = (): Promise<PatternTags[]> =>

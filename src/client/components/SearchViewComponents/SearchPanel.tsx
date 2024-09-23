@@ -1,5 +1,6 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { SearchPageState as PageState } from "../../utils/types";
+import React, { Dispatch, SetStateAction } from 'react';
+
+import { SearchPageState as PageState } from '../../utils/types';
 
 interface SearchPanelProps {
 	state: PageState;

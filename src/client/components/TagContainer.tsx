@@ -1,35 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { Tag } from "../utils/types";
-import TagButton from "./TagButton";
+import React from 'react';
+
+import TagButton from './TagButton';
+import useFetchData from '../hooks/useFetchData';
+import { SearchPageState, AddPatternPageState, Tag } from '../utils/types';
 
 type TagContainerProps = {
 	selectedTags: Tag[];
-	setSelectedTags: React.Dispatch<React.SetStateAction<any>>;
+	setSelectedTags:
+		| React.Dispatch<React.SetStateAction<SearchPageState>>
+		| React.Dispatch<React.SetStateAction<AddPatternPageState>>;
 };
 
 const TagContainer: React.FC<TagContainerProps> = ({
 	selectedTags,
 	setSelectedTags,
 }) => {
-	const [tags, setTags] = useState<Tag[]>([]);
+	const { data, loading, error } = useFetchData<{ tags: Tag[] }>([
+		{ key: 'tags', url: '/api/tags' },
+	]);
 
-	useEffect(() => {
-		//Refactor to see if this can grab from cached data rather than the fetched
-		fetch(process.env.ROOT_URL + "/api/tags")
-			.then((res) => res.json())
-			.then((data) => setTags(data))
-			.catch((error) => alert(error));
-	}, []);
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+	if (error) {
+		return <div>Error</div>;
+	}
 
 	const tagToggle = (tagButton: React.MouseEvent<HTMLButtonElement>) => {
-		console.log(`Tag togle trigger`);
 		const { id, value } = tagButton.currentTarget;
 		const numericId = parseInt(id, 10);
-		const updatedSelectedTags = selectedTags.some((tag) => tag.id === numericId)
-			? selectedTags.filter((tag) => tag.id !== numericId)
+		const updatedSelectedTags = selectedTags.some(tag => tag.id === numericId)
+			? selectedTags.filter(tag => tag.id !== numericId)
 			: [...selectedTags, { id: numericId, name: value }];
 		//Yeah i could type this but it's a HUGE pain and prob not worth it
-		setSelectedTags((prev) => ({
+		setSelectedTags(prev => ({
 			...prev,
 			selectedTags: updatedSelectedTags,
 			tagsActive: updatedSelectedTags.length > 0,
@@ -41,7 +45,7 @@ const TagContainer: React.FC<TagContainerProps> = ({
 			id="tags-div"
 			className="form-control-lg form-control flex-grow-1 bg-soft"
 		>
-			{tags.map((tag: Tag) => (
+			{data.tags.map((tag: Tag) => (
 				<div
 					className="m-1 d-inline-flex btn-group"
 					role="group"

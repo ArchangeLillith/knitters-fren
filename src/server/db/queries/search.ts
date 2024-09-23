@@ -1,5 +1,5 @@
-import type { PatternTable } from "../../types";
-import { Query } from "../query";
+import type { PatternTable } from '../../types';
+import { Query } from '../query';
 
 const findByAuthor = (author: string): Promise<PatternTable[]> =>
 	Query<PatternTable[]>(
@@ -43,7 +43,7 @@ const findByTagsStrict = (tags: number[]): Promise<PatternTable[]> =>
 			FROM patterns p
 				JOIN pattern_tags pt ON p.id = pt.pattern_id
 				JOIN tags t ON pt.tag_id = t.id 
-			WHERE t.id IN (${tags.map(() => "?").join(", ")})
+			WHERE t.id IN (${tags.map(() => '?').join(', ')})
 			GROUP BY p.id
 			HAVING COUNT(DISTINCT t.id) = ?;
 			`,

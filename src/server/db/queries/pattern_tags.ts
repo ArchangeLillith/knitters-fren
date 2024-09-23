@@ -1,6 +1,7 @@
-import type { ResultSetHeader } from "mysql2";
-import type { AuthorsTable, PatternTable, PatternTags } from "../../types";
-import { Query, QueryMetadata } from "../query";
+import type { ResultSetHeader } from 'mysql2';
+
+import type { PatternTags } from '../../types';
+import { Query, QueryMetadata } from '../query';
 
 //GET all tags
 const all = (): Promise<PatternTags[]> =>
@@ -32,7 +33,7 @@ FROM
 //POST the original tags to the pattern
 const insert = (values: [string, number][]): Promise<ResultSetHeader> => {
 	// Dynamically create placeholders for however many pairs of numbers are in the array
-	const placeholders = values.map(() => `(?, ?)`).join(", ");
+	const placeholders = values.map(() => `(?, ?)`).join(', ');
 
 	// Flatten the values array, [[1, 2], [3, 4]] becomes [1, 2, 3, 4]
 	const flattenedValues = values.flat();
@@ -48,7 +49,7 @@ const insert = (values: [string, number][]): Promise<ResultSetHeader> => {
 
 //DELETE all tags from one pattern
 const destroyAllBasedOnPatternId = (id: string): Promise<ResultSetHeader> =>
-	QueryMetadata("DELETE FROM pattern_tags WHERE pattern_id = ?", [id]);
+	QueryMetadata('DELETE FROM pattern_tags WHERE pattern_id = ?', [id]);
 
 //PATCH a tag
 //This will only be used by the admin side, there's no reason for people to have access to this
@@ -57,7 +58,7 @@ const update = (values: {
 	name: string;
 	id: number;
 }): Promise<ResultSetHeader> =>
-	QueryMetadata("UPDATE pattern_tags SET name = ? WHERE id = ?", [
+	QueryMetadata('UPDATE pattern_tags SET name = ? WHERE id = ?', [
 		values.name,
 		values.id,
 	]);

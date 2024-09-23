@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
-import { AuthContext } from "./AuthProvider";
-import { Navigate } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
+
+import { AuthContext } from './AuthProvider';
 
 interface AuthWrapperProps {
 	children: React.ReactNode;

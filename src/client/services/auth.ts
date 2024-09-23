@@ -1,8 +1,8 @@
-import baseService from "./base";
-import storage from "../utils/storage";
-import { Author } from "../utils/types";
-import { jwtDecode } from "jwt-decode";
-import { error } from "console";
+import { jwtDecode } from 'jwt-decode';
+
+import baseService from './base';
+import storage from '../utils/storage';
+import { Author } from '../utils/types';
 
 /**
  * Called from login component, this calls to our api and attempts to return a token which then is set to the local storage

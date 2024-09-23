@@ -1,6 +1,7 @@
-import dayjs from "dayjs";
-import React from "react";
-import { PatternComment } from "../utils/types";
+import dayjs from 'dayjs';
+import React from 'react';
+
+import { PatternComment } from '../utils/types';
 
 const CommentTile = ({ comments }: { comments: PatternComment[] }) => {
 	return (

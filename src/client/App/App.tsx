@@ -2,10 +2,11 @@
 //frontend on 8000
 //server on 3000
 
-import React from "react";
-import AppRoutes from "./AppRoutes";
-import AuthProvider from "../components/AuthComponents/AuthProvider";
-import { BrowserRouter } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+
+import AppRoutes from './AppRoutes';
+import AuthProvider from '../components/AuthComponents/AuthProvider';
 
 const App = () => {
 	return (

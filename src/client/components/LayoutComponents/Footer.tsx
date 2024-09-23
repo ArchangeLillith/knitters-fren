@@ -1,7 +1,7 @@
-import React from "react";
-import { FaHeart } from "react-icons/fa";
-import { PiYarnLight } from "react-icons/pi";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { FaHeart } from 'react-icons/fa';
+import { PiYarnLight } from 'react-icons/pi';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
 	return (
@@ -11,7 +11,7 @@ const Footer = () => {
 				target="_blank"
 				data-bs-toggle="tooltip"
 				data-bs-placement="top"
-				title="Meet the artist!"
+				title="Meet the artist!" rel="noreferrer"
 			>
 				<img
 					src="/images/nanachi-footer-hang.png"
@@ -62,7 +62,7 @@ const Footer = () => {
 					<a
 						target="_blank"
 						className="link"
-						href="https://www.pixiv.net/en/users/13981606/illustrations"
+						href="https://www.pixiv.net/en/users/13981606/illustrations" rel="noreferrer"
 					>
 						this creator
 					</a>

@@ -1,19 +1,20 @@
 //This file governs how the routes work. We can wrap different routes in private tags here if we want to ensure they're kept safe
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Home from "../views/Home";
-import Patterns from "../views/Patterns";
-import PatternDetails from "../views/PatternDetails";
-import AddPattern from "../views/AddPattern";
-import UpdatePattern from "../views/UpdatePattern";
-import NotFound from "../views/NotFound";
-import AdminPanel from "../views/AdminPanel";
-import Login from "../views/Login";
-import Register from "../views/Register";
-import SearchView from "../views/SearchView";
-import FavoritePatterns from "../views/FavoritePatterns";
-import NavBar from "../components/LayoutComponents/NavBar";
-import Footer from "../components/LayoutComponents/Footer";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+
+import Footer from '../components/LayoutComponents/Footer';
+import NavBar from '../components/LayoutComponents/NavBar';
+import AddPattern from '../views/AddPattern';
+import AdminPanel from '../views/AdminPanel';
+import FavoritePatterns from '../views/FavoritePatterns';
+import Home from '../views/Home';
+import Login from '../views/Login';
+import NotFound from '../views/NotFound';
+import PatternDetails from '../views/PatternDetails';
+import Patterns from '../views/Patterns';
+import Register from '../views/Register';
+import SearchView from '../views/SearchView';
+import UpdatePattern from '../views/UpdatePattern';
 
 const App = () => {
 	return (

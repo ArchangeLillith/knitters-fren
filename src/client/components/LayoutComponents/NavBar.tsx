@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthComponents/AuthProvider";
-import storage from "../../utils/storage";
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+import storage from '../../utils/storage';
+import { AuthContext } from '../AuthComponents/AuthProvider';
 
 const NavBar = () => {
 	const { logoutFromAuthState } = useContext(AuthContext);

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { PatternObject, Tag } from "../../utils/types";
-import dayjs from "dayjs";
-import TagButton from "../TagButton";
+import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import { PatternObject, Tag } from '../../utils/types';
+import TagButton from '../TagButton';
 
 interface SearchResultsProps {
 	foundPatterns: PatternObject[];

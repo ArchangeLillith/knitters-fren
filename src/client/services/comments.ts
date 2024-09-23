@@ -1,5 +1,5 @@
-import { PatternComment } from "../utils/types";
-import baseService from "./base";
+import baseService from './base';
+import { PatternComment } from '../utils/types';
 
 /**
  * Gets all the comments for the pattern id passed in
@@ -7,14 +7,8 @@ import baseService from "./base";
  * @returns an array of comments
  */
 const getAllComments = async () => {
-	try {
-		const comments: PatternComment[] = await baseService.get(
-			`/api/comments/`
-		);
-		return comments;
-	} catch (error) {
-		throw error;
-	}
+	const comments: PatternComment[] = await baseService.get(`/api/comments/`);
+	return comments;
 };
 
 /**
@@ -23,14 +17,10 @@ const getAllComments = async () => {
  * @returns an array of comments
  */
 const getAllCommentsByPattern = async (patternId: string) => {
-	try {
-		const comments: PatternComment[] = await baseService.get(
-			`/api/comments/${patternId}`
-		);
-		return comments;
-	} catch (error) {
-		throw error;
-	}
+	const comments: PatternComment[] = await baseService.get(
+		`/api/comments/${patternId}`
+	);
+	return comments;
 };
 
 /**

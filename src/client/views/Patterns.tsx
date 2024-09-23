@@ -1,26 +1,33 @@
-import React, { useEffect } from "react";
-import { Pattern } from "../utils/types";
-import PatternCard from "../components/PatternComponents/PatternCard";
-import patternService from "../services/pattern";
-import Container from "../components/Container";
+import React, { useMemo } from 'react';
+
+import Container from '../components/Container';
+import PatternCard from '../components/PatternComponents/PatternCard';
+import useFetchData from '../hooks/useFetchData';
+import { Pattern } from '../utils/types';
 
 const Patterns = () => {
-	const [patterns, setPatterns] = React.useState<Pattern[]>([]);
+	// Memoize the fetch configuration to prevent re-renders causing unnecessary re-fetches
+	const fetchConfigs = useMemo(
+		() => [{ key: 'patterns', url: '/api/patterns' }],
+		[]
+	);
 
-	/**
-	 * This fetches all the patterns on load once from the databse and sets them in state to display them
-	 */
-	useEffect(() => {
-		patternService
-			.getAllPatterns()
-			.then((data) => setPatterns(data))
-			.catch((e) => alert(e));
-	}, []);
+	const { data, loading, error } = useFetchData<{ patterns: Pattern[] }>(
+		fetchConfigs
+	);
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+
+	if (error) {
+		return <div>Error: {error}</div>; // Display error message from the hook
+	}
 
 	return (
 		<Container>
 			<div className="w-75 d-flex flex-column mx-auto mt-5">
-				{patterns.map((pattern) => (
+				{data.patterns.map(pattern => (
 					<div
 						className="rounded w-100 bg-soft m-2 border-pink"
 						key={`${pattern.id}-container`}

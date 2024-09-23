@@ -1,6 +1,6 @@
-import { Pattern, PatternObject, Tag } from "../utils/types";
-import baseService from "./base";
-import patternTagsService from "./pattern-tags";
+import baseService from './base';
+import patternTagsService from './pattern-tags';
+import { Pattern, PatternObject, Tag } from '../utils/types';
 
 /**
  * Searches the databse for ANY author that matches the searchString
@@ -15,7 +15,7 @@ const findByAuthor = async (searchString: string) => {
 		const results = await handlePatternResults(message, patterns);
 		return results;
 	} catch (error) {
-		console.error("Error fetching patterns:", error);
+		console.error('Error fetching patterns:', error);
 		throw error;
 	}
 };
@@ -45,15 +45,11 @@ const findByTitle = async (searchString: string) => {
  * @returns an array of patterns that have the search string in the content section
  */
 const findByContent = async (searchString: string) => {
-	try {
-		const { message, patterns } = await baseService.get(
-			`/api/search/content/${searchString}`
-		);
-		const results = await handlePatternResults(message, patterns);
-		return results;
-	} catch (error) {
-		throw error;
-	}
+	const { message, patterns } = await baseService.get(
+		`/api/search/content/${searchString}`
+	);
+	const results = await handlePatternResults(message, patterns);
+	return results;
 };
 
 /**
@@ -62,17 +58,13 @@ const findByContent = async (searchString: string) => {
  * @returns
  */
 const findByTags = async (payload: Tag[]) => {
-	try {
-		const response = await baseService.post(`/api/search/tag`, {
-			tagList: JSON.stringify(payload),
-		});
-		if (response.finalPatterns.length === 0) {
-			throw new Error("No patterns found");
-		}
-		return response;
-	} catch (error) {
-		throw error;
+	const response = await baseService.post(`/api/search/tag`, {
+		tagList: JSON.stringify(payload),
+	});
+	if (response.finalPatterns.length === 0) {
+		throw new Error('No patterns found');
 	}
+	return response;
 };
 
 /**
@@ -81,23 +73,19 @@ const findByTags = async (payload: Tag[]) => {
  * @returns an array of patterns that has all the tags in the payload
  */
 const findByTagsStrict = async (payload: Tag[]) => {
-	try {
-		const response = await baseService.post(`/api/search/tag/strict`, {
-			tagList: JSON.stringify(payload),
-		});
-		if (response.finalPatterns.length === 0 || response === 404) {
-			return response.status(204).json({ message: "No patterns found" });
-		}
-		return response;
-	} catch (error) {
-		throw error;
+	const response = await baseService.post(`/api/search/tag/strict`, {
+		tagList: JSON.stringify(payload),
+	});
+	if (response.finalPatterns.length === 0 || response === 404) {
+		return response.status(204).json({ message: 'No patterns found' });
 	}
+	return response;
 };
 
 const handlePatternResults = async (message: string, patterns: Pattern[]) => {
 	const patternObjects: PatternObject[] = [];
-	if (message === "no pattern") {
-		return { message: "no patterns", data: [] };
+	if (message === 'no pattern') {
+		return { message: 'no patterns', data: [] };
 	}
 
 	for (const pattern of patterns) {
@@ -105,7 +93,7 @@ const handlePatternResults = async (message: string, patterns: Pattern[]) => {
 		patternObjects.push({ pattern, tags });
 	}
 
-	return { patternObjects, message: "patterns found" };
+	return { patternObjects, message: 'patterns found' };
 };
 
 export default {

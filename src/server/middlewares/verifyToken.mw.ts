@@ -1,5 +1,5 @@
-import passport from "passport";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from 'express';
+import passport from 'passport';
 
 export const verifyToken = (
 	req: Request,
@@ -7,7 +7,7 @@ export const verifyToken = (
 	next: NextFunction
 ) => {
 	passport.authenticate(
-		"jwt",
+		'jwt',
 		{ session: false },
 		(error: Error, user, info) => {
 			console.log(`Check token`);

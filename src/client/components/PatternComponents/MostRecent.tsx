@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Pattern, Tag } from "../../utils/types";
-import patternTags from "../../services/pattern-tags";
-import TagButton from "../TagButton";
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
+import patternTags from '../../services/pattern-tags';
+import { Pattern, Tag } from '../../utils/types';
+import TagButton from '../TagButton';
 
 interface PatternCardProps {
 	pattern: Pattern;
@@ -15,6 +16,11 @@ const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {
 	 * Fetches all pattern tags to set to state, displaying in the map
 	 */
 	useEffect(() => {
+ const fetchPatterns = async () => {
+	 const fetchedPatterns = await patternTags.getByPatternId(pattern.id);
+	 set 
+
+ }
 		patternTags
 			.getByPatternId(pattern.id)
 			.then((tagsReturned) => setTags(tagsReturned));
