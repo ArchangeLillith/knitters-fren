@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { TfiSearch } from 'react-icons/tfi';
 import { Link, useNavigate } from 'react-router-dom';
 
 import storage from '../../utils/storage';
@@ -18,13 +19,13 @@ const NavBar = () => {
 			logoutFromAuthState();
 			navigate(`/`);
 		} catch (error) {
-			console.error("Error logging out:", error);
+			console.error('Error logging out:', error);
 		}
 	};
 
 	return (
 		<nav
-			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
+			style={{ fontFamily: 'Garamond, serif', fontSize: '24px' }}
 			className="navbar sticky-top navbar-expand-lg navbar-light bg-navbar "
 		>
 			<div className="container-fluid">
@@ -33,7 +34,7 @@ const NavBar = () => {
 					to="/"
 					style={{
 						fontFamily: "'Brush Script MT', cursive",
-						fontSize: "30px",
+						fontSize: '30px',
 					}}
 				>
 					Knitters Fren
@@ -61,6 +62,13 @@ const NavBar = () => {
 								Patterns
 							</Link>
 						</li>
+						{authState.authenticated && (
+							<li className="nav-item text-soft">
+								<Link to="/favorites" className="nav-link">
+									Favorites
+								</Link>
+							</li>
+						)}
 						<li className="nav-item">
 							<Link to="/patterns/new" className="nav-link">
 								Create a Pattern
@@ -71,27 +79,26 @@ const NavBar = () => {
 								Gallery
 							</Link>
 						</li>
+
 						<li className="nav-item">
 							<Link to="/search" className="nav-link">
-								Search
+								<TfiSearch />
 							</Link>
 						</li>
 					</ul>
 					{authState.username && (
-						<div>
+						<div className="me-3 text-soft">
 							<div>Welcome back {authState.username}!</div>
 						</div>
 					)}
 					{authState.authenticated && (
-						<div>
-							<div>
-								<button onClick={logOut} className="nav-link">
-									Log out!
-								</button>
-							</div>
+						<div className="me-3">
+							<button onClick={logOut} className="nav-link">
+								Log out
+							</button>
 						</div>
 					)}
-					{authState.role === "admin" && (
+					{authState.role === 'admin' && (
 						<div>
 							<Link to="/admin">Admin Panel</Link>
 						</div>

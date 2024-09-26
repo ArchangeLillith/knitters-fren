@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import TagButton from './TagButton';
 import useFetchData from '../hooks/useFetchData';
@@ -15,9 +15,8 @@ const TagContainer: React.FC<TagContainerProps> = ({
 	selectedTags,
 	setSelectedTags,
 }) => {
-	const { data, loading, error } = useFetchData<{ tags: Tag[] }>([
-		{ key: 'tags', url: '/api/tags' },
-	]);
+	const fetchConfigs = useMemo(() => [{ key: 'tags', url: '/api/tags' }], []);
+	const { data, loading, error } = useFetchData<{ tags: Tag[] }>(fetchConfigs);
 
 	if (loading) {
 		return <div>Loading...</div>;

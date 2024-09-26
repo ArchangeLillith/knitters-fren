@@ -7,8 +7,6 @@ declare global {
 	}
 }
 
-export type Tag = { id: number; name: string };
-
 export interface PatternTable {
 	id?: string;
 	author_id?: string;
@@ -28,7 +26,7 @@ export interface AuthorsTable {
 	role?: string;
 }
 
-export interface PatternTags {
+export interface Tag {
 	name: string;
 	id: number;
 }
@@ -48,4 +46,16 @@ export type PatternComment = {
 	content: string;
 	created_at: string;
 	username?: string;
+};
+
+export type FavoriteTable = {
+	id: number;
+	author_id: string;
+	pattern_id: string;
+};
+
+export type PatternTag = {
+	pattern_id: string;
+	tag_id: number;
+	id: number;
 };

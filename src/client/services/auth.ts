@@ -13,14 +13,11 @@ const authenticateUserAndStoreToken = async (payload: {
 	username: string;
 	password: string;
 }) => {
-	try {
-		const token = await baseService.post("/auth/login", payload);
-		if (!token) return;
-		storage.setToken(token);
-		return token;
-	} catch (error) {
-		throw error;
-	}
+	const token = await baseService.post('/auth/login', payload);
+	if (!token) return;
+
+	storage.setToken(token);
+	return token;
 };
 
 /**
@@ -33,16 +30,12 @@ const registerUserAndStoreToken = async (payload: {
 	password: string;
 	username: string;
 }) => {
-	try {
-		console.log(`REGISTER AND STORE TOKEN`);
-		const token = await baseService.post("/auth/register/", payload);
-		if (!token) return;
-		console.log(`TOKEN`, token);
-		storage.setToken(token);
-		return token;
-	} catch (error) {
-		throw error;
-	}
+	console.log(`REGISTER AND STORE TOKEN`);
+	const token = await baseService.post('/auth/register/', payload);
+	if (!token) return;
+	console.log(`TOKEN`, token);
+	storage.setToken(token);
+	return token;
 };
 
 /**
@@ -52,10 +45,10 @@ const registerUserAndStoreToken = async (payload: {
  */
 const getUserFromToken = async (token: string): Promise<Author> => {
 	try {
-		const validated = await baseService.get("/auth/validate/me");
-		if (validated?.message !== "success") {
+		const validated = await baseService.get('/auth/validate/me');
+		if (validated?.message !== 'success') {
 			throw new Error(
-				"token bad, something went wrong with frontend check of token"
+				'token bad, something went wrong with frontend check of token'
 			);
 		}
 		const decoded: any = jwtDecode(token);

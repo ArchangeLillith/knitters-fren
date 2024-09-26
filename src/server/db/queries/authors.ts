@@ -31,7 +31,7 @@ const insert = (values: {
 }): Promise<ResultSetHeader> => {
 	const { id, email, username, password, role } = values;
 	return QueryMetadata(
-		'INSERT INTO authors (id, email, username, password, role) VALUES (?,?,?,?,?)',
+		'INSERT INTO authors (id, email, username, password, role) VALUES (?,?,?,?,?);',
 		[id, email, username, password, role]
 	);
 };
@@ -43,13 +43,13 @@ const ban = (
 ): Promise<ResultSetHeader> => {
 	console.log(`ID`, id, email, username);
 	return QueryMetadata(
-		'INSERT INTO banned_authors (id, email, username) VALUES (?,?,?)',
+		'INSERT INTO banned_authors (id, email, username) VALUES (?,?,?);',
 		[id, email, username]
 	);
 };
 
 //DELETE a pattern
 const destroy = (id: string): Promise<ResultSetHeader> =>
-	QueryMetadata('DELETE FROM authors WHERE id = ?', [id]);
+	QueryMetadata('DELETE FROM authors WHERE id = ?;', [id]);
 
 export default { all, one, find, insert, ban, destroy };

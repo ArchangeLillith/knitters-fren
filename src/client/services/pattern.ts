@@ -3,26 +3,6 @@ import type { ResultSetHeader } from 'mysql2';
 import baseService from './base';
 
 /**
- * Calls to backend and returns all patterns from database
- * @returns an array of patterns
- */
-const getAllPatterns = async () => {
-	const patterns = await baseService.get('/api/patterns');
-	return patterns;
-};
-
-/**
- *
- * Calls to the backend to grab the pattern based on the id passed in
- * @param id - the id of the requested pattern
- * @returns the pattern requested
- */
-const getOnePattern = async (id: string) => {
-	const Pattern = await baseService.get(`/api/patterns/${id}`);
-	return Pattern;
-};
-
-/**
  *
  * Calls to the backend and writes a new pattern to the database
  * @param payload - an object with the required parameters to write a pattern into the database
@@ -67,8 +47,6 @@ const updatePattern = async (
 };
 
 export default {
-	getAllPatterns,
-	getOnePattern,
 	addNewPattern,
 	destroyPattern,
 	updatePattern,

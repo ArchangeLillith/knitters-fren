@@ -1,0 +1,16 @@
+How the cache should look!!
+
+cache: {
+  allPatterns: {
+    [pattern_id] : {
+      {object of type Pattern}
+      }
+    ...
+  }
+  allTags: {
+    [tag_id] : {name: string} //we don't need id cause it's the key. This is scalable, so we don't need to redo things if we add something else to the tags
+  }
+  patternTags: {
+    [pattern_id]: tag_id(number)[]
+  }
+}

@@ -1,6 +1,7 @@
 import authors from './queries/authors';
 import banned from './queries/banned';
 import comments from './queries/comments';
+import favorite_patterns from './queries/favorite_patterns';
 import logs from './queries/logs';
 import pattern_tags from './queries/pattern_tags';
 import patterns from './queries/patterns';
@@ -11,9 +12,10 @@ export default {
 	authors,
 	banned,
 	comments,
-	patterns,
-	tags,
-	pattern_tags,
-	search,
+	favorite_patterns,
 	logs,
+	pattern_tags,
+	patterns,
+	search,
+	tags,
 };

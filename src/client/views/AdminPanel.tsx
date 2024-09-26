@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import {
@@ -11,16 +11,15 @@ import {
 } from '../components/AdminPanelComponents';
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import Container from '../components/Container';
-import authorService from '../services/author';
-import commentService from '../services/comments';
-import logService from '../services/logs';
-import patternService from '../services/pattern';
-import patternTagsService from '../services/pattern-tags';
+import useFetchData from '../hooks/useFetchData';
 import { sortByDate } from '../utils/patterns.utils';
 import {
 	Log,
 	PatternComment,
 	AdminPageState as PageState,
+	Tag,
+	Pattern,
+	Author,
 } from '../utils/types';
 
 const AdminPanel = () => {
@@ -37,42 +36,58 @@ const AdminPanel = () => {
 		showModal: false,
 	});
 
+	type FetchDataResponse = {
+		tags: Tag[];
+		patterns: Pattern[];
+		logs: Log[];
+		authors: Author[];
+		comments: PatternComment[];
+	};
+
+	const fetchConfigs = useMemo(
+		() => [
+			{ key: 'patterns', url: '/api/patterns' },
+			{ key: 'tags', url: '/api/tags' },
+			{ key: 'logs', url: '/api/logs' },
+			{ key: 'authors', url: '/api/authors' },
+			{ key: 'comments', url: '/api/comments' },
+		],
+		[]
+	);
+
+	const { data, loading, error } =
+		useFetchData<FetchDataResponse>(fetchConfigs);
+
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const [logs, patterns, tags, authors, comments] = await Promise.all([
-					logService.getAllLogs(),
-					patternService.getAllPatterns(),
-					patternTagsService.getAllTags(),
-					authorService.getAllAuthors(),
-					commentService.getAllComments(),
-				]);
+		if (!data || !data.patterns) return;
 
-				const filteredLogs: Log[] = sortByDate(logs) as Log[];
-				const filteredComments: PatternComment[] = sortByDate(
-					comments
-				) as PatternComment[];
+		const { tags, patterns, logs, authors, comments } = data;
 
-				setState(prev => ({
-					...prev,
-					logs,
-					filteredLogs: filteredLogs.slice(0, 15),
-					patterns,
-					tags,
-					authors,
-					comments,
-					filteredComments: filteredComments.slice(0, 15),
-				}));
-			} catch (error) {
-				console.error('Failed to load data:', error);
-			}
-		};
-		fetchData();
-	}, []);
+		const filteredLogs: Log[] = sortByDate(logs) as Log[];
+		const filteredComments: PatternComment[] = sortByDate(
+			comments
+		) as PatternComment[];
+
+		// Update state based on fetched data
+		setState(prev => ({
+			...prev,
+			logs,
+			filteredLogs: filteredLogs.slice(0, 15),
+			patterns,
+			tags,
+			authors,
+			comments,
+			filteredComments: filteredComments.slice(0, 15),
+		}));
+	}, [data]); // Run effect when data changes
+
+	if (loading) <p>Loadig....</p>;
+	if (error) <p>error....</p>;
 
 	if (authState.role !== 'admin') {
 		return <Navigate to="/" />;
 	}
+
 	return (
 		<Container>
 			<div className="accordion my-5">

@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-import patternTags from '../../services/pattern-tags';
+import useFetchData from '../../hooks/useFetchData';
 import { Pattern, Tag } from '../../utils/types';
 import TagButton from '../TagButton';
 
@@ -10,21 +10,20 @@ interface PatternCardProps {
 }
 
 const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {
-	const [tags, setTags] = React.useState<Tag[]>();
+	const fetchConfigs = useMemo(
+		() => [
+			{
+				key: 'tags',
+				url: `/api/pattern_tags/${pattern.id}`,
+			},
+		],
+		[]
+	);
 
-	/**
-	 * Fetches all pattern tags to set to state, displaying in the map
-	 */
-	useEffect(() => {
- const fetchPatterns = async () => {
-	 const fetchedPatterns = await patternTags.getByPatternId(pattern.id);
-	 set 
-
- }
-		patternTags
-			.getByPatternId(pattern.id)
-			.then((tagsReturned) => setTags(tagsReturned));
-	}, [pattern.id]);
+	const { data, loading, error } = useFetchData<{ tags: Tag[] }>(fetchConfigs);
+	const { tags } = data;
+	if (loading) <p>Loading....</p>;
+	if (error) <p>error....</p>;
 
 	return (
 		<div key={`${pattern.id}-wrapper-most-recent`}>

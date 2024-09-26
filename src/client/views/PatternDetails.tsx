@@ -1,15 +1,14 @@
 import dayjs from 'dayjs';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { RiLockLine } from 'react-icons/ri';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import CommentTile from '../components/CommentTile';
 import TagButton from '../components/TagButton';
-import authorService from '../services/author';
+import useFetchData from '../hooks/useFetchData';
 import commentService from '../services/comments';
 import patternService from '../services/pattern';
-import patternTagsService from '../services/pattern-tags';
 import { loadingPattern } from '../utils/patterns.utils';
 import { Pattern, PatternComment, Tag } from '../utils/types';
 
@@ -17,40 +16,39 @@ const PatternDetails = () => {
 	const { authState } = useContext(AuthContext);
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const [author, setAuthor] = useState<string>("");
+	const [author, setAuthor] = useState<string>('');
 	const [tags, setTags] = useState<Tag[] | null>([]);
-	const [content, setContent] = useState<string>("");
+	const [content, setContent] = useState<string>('');
 	const [comments, setComments] = useState<PatternComment[]>([]);
 	const [pattern, setPattern] = useState<Pattern>(loadingPattern);
 
-	/**
-	 * Grabs the pattern that's indicated by the URL param from the database on load only to add them into a state to display all the patterns in the database
-	 */
+	type FetchDataResponse = {
+		tags: Tag[];
+		pattern: Pattern;
+		comments: PatternComment[];
+	};
+
+	const fetchConfigs = useMemo(
+		() => [
+			{ key: 'tags', url: `/api/pattern_tags/${id}` },
+			{ key: 'pattern', url: `/api/patterns/${id}` },
+			{ key: 'comments', url: `/api/comments/${id}` },
+		],
+		[]
+	);
+
+	const { data, loading, error } =
+		useFetchData<FetchDataResponse>(fetchConfigs);
+
 	useEffect(() => {
-		if (!id) return;
-		const fetchPatternandAuthor = async () => {
-			try {
-				const pattern: Pattern = await patternService.getOnePattern(id);
-				setPattern(pattern);
+		if (!data || !data.pattern) return;
+		console.log(`data`, data);
 
-				const authorObj: {
-					id: string;
-					username: string;
-					role: "user" | "admin";
-				} = await authorService.getUsernameById(pattern.author_id);
-				setAuthor(authorObj.username);
-
-				const tags: Tag[] = await patternTagsService.getByPatternId(pattern.id);
-				setTags(tags);
-			} catch (error) {
-				alert(`Error: ${error}`);
-			}
-		};
-		fetchPatternandAuthor();
-		commentService
-			.getAllCommentsByPattern(id)
-			.then((data) => setComments(data));
-	}, []);
+		setPattern(data.pattern);
+		setAuthor(data.pattern.username);
+		setTags(data.tags);
+		setComments(data.comments);
+	}, [data]);
 
 	/**
 	 * This is a one stop shop for deletion of a pattern. It calls the delete function for the joint table as well, because you can't delete the pattern without first cleaing the joint table anyways
@@ -59,8 +57,8 @@ const PatternDetails = () => {
 		if (!id) return;
 		patternService
 			.destroyPattern(id)
-			.then(() => navigate("/patterns"))
-			.catch((e) => alert(e));
+			.then(() => navigate('/patterns'))
+			.catch(e => alert(e));
 	};
 
 	const handleCommentSubmit = (
@@ -69,11 +67,16 @@ const PatternDetails = () => {
 		submitButton.preventDefault();
 		if (!authState.id || !id) return;
 		commentService.addNewComment(pattern.id, authState.id, content);
+		//needed, we can't use a hook here so we have to use the comment service one
 		commentService
 			.getAllCommentsByPattern(id)
-			.then((data) => setComments(data));
-		setContent("");
+			.then(result => setComments(result))
+			.catch();
+		setContent('');
 	};
+
+	if (loading) <p>Loadig....</p>;
+	if (error) <p>error....</p>;
 
 	return (
 		<>
@@ -91,12 +94,12 @@ const PatternDetails = () => {
 								>
 									{pattern.title}
 								</div>
-								{pattern.paid === "true" && (
+								{pattern.paid === 'true' && (
 									<div
 										style={{
-											display: "inline-block",
-											position: "relative",
-											marginRight: "30px",
+											display: 'inline-block',
+											position: 'relative',
+											marginRight: '30px',
 										}}
 									>
 										<span className="tooltip-icon-lock">
@@ -108,14 +111,14 @@ const PatternDetails = () => {
 									</div>
 								)}
 							</div>
-							{pattern.link !== "" && (
+							{pattern.link !== '' && (
 								<object
 									width="100%"
 									height="1000"
 									data={pattern.link}
 									type="application/pdf"
 								>
-									{" "}
+									{' '}
 								</object>
 							)}
 							<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>
@@ -125,7 +128,7 @@ const PatternDetails = () => {
 								key={`pattern-card-created-at-${pattern.id}`}
 							>
 								<i>
-									Submitted: {dayjs(pattern.created_at).format("MMMM D, YYYY")}
+									Submitted: {dayjs(pattern.created_at).format('MMMM D, YYYY')}
 								</i>
 							</small>
 							<br />
@@ -169,7 +172,7 @@ const PatternDetails = () => {
 					<label htmlFor="comment-area">Comment:</label>
 					<textarea
 						value={content}
-						onChange={(event) => setContent(event.target.value)}
+						onChange={event => setContent(event.target.value)}
 						className="form-control"
 						id="comment-area"
 						rows={4}

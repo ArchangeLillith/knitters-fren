@@ -1,15 +1,15 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 
 import MostRecentRow from '../components//PatternComponents/MostRecent';
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import Container from '../components/Container';
 import PatternCard from '../components/PatternComponents/PatternCard';
-import patternService from '../services/pattern';
+import useFetchData from '../hooks/useFetchData';
 import { loadingPattern, sortByDate } from '../utils/patterns.utils';
 import { Pattern } from '../utils/types';
 
 interface PatternProps {
-	fullList: Pattern[];
+	allPatterns: Pattern[];
 	featured: Pattern;
 	mostRecent: Pattern[];
 }
@@ -17,34 +17,38 @@ interface PatternProps {
 const Home = () => {
 	const { authState } = useContext(AuthContext);
 	const [patterns, setPatterns] = React.useState<PatternProps>({
-		fullList: [],
+		allPatterns: [],
 		featured: loadingPattern,
 		mostRecent: [],
 	});
 
-	/**
-	 * Onload trigger, gets the patterns and sorts them, setting states for featured and most recent tiles
-	 */
+	const fetchConfigs = useMemo(
+		() => [{ key: 'allPatterns', url: `/api/patterns/` }],
+		[]
+	);
+
+	const { data, loading, error } = useFetchData<{ allPatterns: Pattern[] }>(
+		fetchConfigs
+	);
+
 	useEffect(() => {
-		try {
-			patternService.getAllPatterns().then((data: Pattern[]) => {
-				const fullList = data;
-				const freePatterns = fullList.filter(
-					(pattern) => pattern.paid !== "true"
-				);
-				const sortedPatterns: Pattern[] = sortByDate(freePatterns) as Pattern[];
-				const randomNumber = getRandomInt(data.length - 1);
-				setPatterns({
-					fullList: fullList,
-					featured: freePatterns[randomNumber],
-					mostRecent: sortedPatterns.slice(0, 3),
-				});
-				console.log(`patterns`, data);
-			});
-		} catch {
-			(e) => alert(e);
-		}
-	}, []);
+		if (!data || !data.allPatterns) return;
+
+		const { allPatterns } = data;
+
+		const freePatterns = allPatterns.filter(pattern => pattern.paid !== 'true');
+		const sortedPatterns: Pattern[] = sortByDate(freePatterns) as Pattern[];
+		const randomNumber = getRandomInt(allPatterns.length - 1);
+
+		setPatterns({
+			allPatterns,
+			featured: freePatterns[randomNumber],
+			mostRecent: sortedPatterns.slice(0, 3),
+		});
+	}, [data]);
+
+	if (loading) <p>Loading....</p>;
+	if (error) <p>error....</p>;
 
 	return (
 		<Container>
@@ -52,13 +56,13 @@ const Home = () => {
 				<div
 					id="featured-patterns"
 					className="mt-5 bg-bright rounded justify-content-center d-flex flex-column align-items-center "
-					style={{ maxWidth: "50%", paddingRight: "3%", paddingLeft: "3%" }}
+					style={{ maxWidth: '50%', paddingRight: '3%', paddingLeft: '3%' }}
 				>
 					<div
 						style={{
 							fontFamily: "'Brush Script MT', cursive",
-							fontSize: "35px",
-							paddingTop: "3%",
+							fontSize: '35px',
+							paddingTop: '3%',
 						}}
 					>
 						Featured Pattern:
@@ -72,7 +76,7 @@ const Home = () => {
 						alt="site-logo-sleeping-nanachi"
 						src="/images/Nanachi-logo.png"
 						className="py-4"
-						style={{ height: "130%" }}
+						style={{ height: '130%' }}
 					/>
 				</div>
 			</div>
@@ -84,7 +88,7 @@ const Home = () => {
 					<div>
 						<h4 className="text-soft">Most Recent Patterns</h4>
 					</div>
-					{patterns.mostRecent.map((pattern) => (
+					{patterns.mostRecent.map(pattern => (
 						<MostRecentRow
 							pattern={pattern}
 							key={`${pattern.id}-most-recent-row`}
@@ -95,12 +99,12 @@ const Home = () => {
 			<div className="container-fluid container">
 				<div className="bg-soft w-70 my-3 py-4 rounded">
 					<h3 className="mx-4">All Patterns:</h3>
-					{patterns.fullList.map((pattern) => (
+					{patterns.allPatterns.map(pattern => (
 						<div
 							key={`all-pattern-outer-wrapper-${pattern.title}`}
 							className="my-2 w-75 m-auto"
 						>
-							{pattern.paid === "true" &&
+							{pattern.paid === 'true' &&
 								pattern.author_id === authState.id && (
 									<div
 										key={`all-pattern-inner-wrapper-${pattern.title}`}
@@ -109,7 +113,7 @@ const Home = () => {
 										<PatternCard pattern={pattern} />
 									</div>
 								)}
-							{pattern.paid === "false" && (
+							{pattern.paid === 'false' && (
 								<div
 									key={`all-pattern-inner-wrapper-${pattern.title}`}
 									className="border my-2 border-black rounded"

@@ -3,22 +3,22 @@ import { promises as fs } from "fs";
 import path from "path";
 
 let ctx;
-const outputFilePath = path.resolve("/src/server/dist/server.js");
+const outputFilePath = path.resolve("src/server/dist/server.js");
 
 try {
 	ctx = await esbuild.context({
-		entryPoints: ["src/server/server.ts"],
-		bundle: true,
-		sourcemap: true,
-		minify: false,
-		platform: "node",
-		target: ["node20"],
-		packages: "external",
-		define: {
-			"process.env.NODE_ENV": "'development'",
-		},
-		outfile: outputFilePath,
-	});
+			entryPoints: ['src/server/server.ts'],
+			bundle: true,
+			sourcemap: true,
+			minify: false,
+			platform: 'node',
+			target: ['node20'], // Ensure your node version is compatible
+			packages: 'external',
+			define: {
+				'process.env.NODE_ENV': "'production'",
+			},
+			outfile: outputFilePath,
+		});
 
 	await ctx.watch();
 

@@ -1,23 +1,15 @@
 import type { ResultSetHeader } from 'mysql2';
 
-import type { PatternTags } from '../../types';
+import type { PatternTag, Tag } from '../../types';
 import { Query, QueryMetadata } from '../query';
 
-//GET all tags
-const all = (): Promise<PatternTags[]> =>
-	Query<PatternTags[]>(
-		`
-SELECT 
-	tags.id AS id, 
-	tags.name AS name
-FROM 
-	tags
-		`
-	);
+//get all the pattern tags
+const all = (): Promise<PatternTag[]> =>
+	Query<PatternTag[]>(` SELECT * FROM pattern_tags;`);
 
 //GET all tags by the pattern ID
-const allByPatternId = (id: string): Promise<PatternTags[]> =>
-	Query<PatternTags[]>(
+const allByPatternId = (id: string): Promise<Tag[]> =>
+	Query<Tag[]>(
 		`
 SELECT 
 	tags.id AS id, 

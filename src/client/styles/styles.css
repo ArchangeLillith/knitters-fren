@@ -13,10 +13,10 @@
 	color: rgb(255, 255, 255);
 }
 /* Colors */
+html,
 body,
 #root {
 	background-color: #f0c9c9;
-	padding-bottom: 40px;
 }
 
 .bg-bright {
@@ -38,9 +38,18 @@ body,
 .text-soft {
 	color: #fbe2e2;
 }
-
+.text-soft.nav-link {
+	color: #fbe2e2;
+}
+a.nav-link:hover {
+	color: #fbe2e2;
+}
 .bg-muted {
 	background-color: #d5a7a7;
+}
+
+.text-muted {
+	color: #d5a7a7;
 }
 
 .bg-navbar {

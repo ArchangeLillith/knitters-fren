@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { ResultSetHeader } from 'mysql2';
 
+import { getCache, markCacheAsDirty } from '../../cache';
+import { buildCache } from '../../cache/buildCache';
 import db from '../../db';
 import patterns from '../../db/queries/patterns';
 import { verifyAdmin } from '../../middlewares/verifyAdmin.mw';
@@ -12,27 +14,38 @@ const router = Router();
 //Run all these routes prepended with the method through this middle ware
 // router.route('*').post(checkToken).put(checkToken).delete(checkToken);
 
-//GET api/patterns/:id
-router.get('/:id', async (req, res, next) => {
-	try {
-		const id = req.params.id;
-		//The one pattern comes back in an array and this destructures it to only the pattern
-		const result = await db.patterns.oneById(id);
-		res.json(result);
-	} catch (error) {
-		//Goes to our global error handler
-		next(error);
+//GET /api/patterns
+router.get('/', async (req, res, next) => {
+	const cachedRes = getCache('allPatterns');
+	if (cachedRes !== null) {
+		res.json(cachedRes);
+	} else {
+		try {
+			const result = await db.patterns.all();
+			buildCache();
+			res.json(result);
+		} catch (error) {
+			//Goes to our global error handler
+			next(error);
+		}
 	}
 });
 
-//GET /api/patterns
-router.get('/', async (req, res, next) => {
-	try {
-		const result = await db.patterns.all();
-		res.json(result);
-	} catch (error) {
-		//Goes to our global error handler
-		next(error);
+//GET api/patterns/:id
+router.get('/:id', async (req, res, next) => {
+	const id = req.params.id;
+	const cachedRes = getCache(`allPatterns.${id}`);
+
+	if (cachedRes !== null) {
+		res.json(cachedRes);
+	} else {
+		try {
+			const result = await db.patterns.oneById(id);
+			res.json(result);
+		} catch (error) {
+			//Goes to our global error handler
+			next(error);
+		}
 	}
 });
 
@@ -50,6 +63,7 @@ router.post('/', async (req, res, next) => {
 				'New pattern created!',
 				`Pattern title: ${pattern.title}, Author: ${pattern.username}`
 			);
+			markCacheAsDirty('allPatterns');
 			res.json({ pattern, message: 'New pattern created' });
 		} else {
 			const error = new Error('Pattern not addded');
@@ -80,6 +94,7 @@ router.delete(
 				'Pattern deleted',
 				`Pattern title: ${title}, Author: ${username}, Author ID: ${author_id}`
 			);
+			markCacheAsDirty('allPatterns');
 			res.json(result);
 		} catch (error) {
 			next(error);
@@ -102,6 +117,7 @@ router.put('/:id', async (req, res, next) => {
 		};
 		console.log(`patternDTO`, patternDTO);
 		await db.patterns.update(patternDTO);
+		markCacheAsDirty('allPatterns');
 		res.json({ id, message: 'Pattern updated~!' });
 	} catch (error) {
 		next(error);

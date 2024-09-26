@@ -38,7 +38,7 @@
 		"no-console": "warn",
 		"prettier/prettier": "error", // Enforce Prettier rules as errors
 		"eqeqeq": ["error", "always"],
-		"curly": "error",
+		"curly": "off",
 		"no-unused-vars": ["error", { "args": "none" }],
 		"import/order": [
 			"error",
@@ -69,7 +69,6 @@
 		"security/detect-eval-with-expression": "error",
 		"jsx-a11y/anchor-is-valid": "warn",
 		"promise/catch-or-return": "error",
-		"promise/always-return": "warn",
 		"promise/no-return-wrap": "error",
 		"no-eval": "error",
 		"no-alert": "warn",
