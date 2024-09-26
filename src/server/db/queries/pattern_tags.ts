@@ -5,20 +5,26 @@ import { Query, QueryMetadata } from '../query';
 
 //get all the pattern tags
 const all = (): Promise<PatternTag[]> =>
-	Query<PatternTag[]>(` SELECT * FROM pattern_tags;`);
+	Query<PatternTag[]>(/* sql */ `
+		SELECT
+			*
+		FROM
+			pattern_tags;
+	`);
 
 //GET all tags by the pattern ID
 const allByPatternId = (id: string): Promise<Tag[]> =>
 	Query<Tag[]>(
-		`
-SELECT 
-	tags.id AS id, 
-	tags.name AS name
-FROM 
-	tags
-		JOIN 
-		pattern_tags ON tags.id = pattern_tags.tag_id
-	WHERE pattern_tags.pattern_id = ?`,
+		/* sql */ `
+			SELECT
+				tags.id AS id,
+				tags.name AS name
+			FROM
+				tags
+				JOIN pattern_tags ON tags.id = pattern_tags.tag_id
+			WHERE
+				pattern_tags.pattern_id = ?
+		`,
 		[id]
 	);
 
@@ -30,10 +36,12 @@ const insert = (values: [string, number][]): Promise<ResultSetHeader> => {
 	// Flatten the values array, [[1, 2], [3, 4]] becomes [1, 2, 3, 4]
 	const flattenedValues = values.flat();
 
-	const sql = `
-    INSERT INTO pattern_tags (pattern_id, tag_id)
-    VALUES ${placeholders};
-  `;
+	const sql = /* sql */ `
+		INSERT INTO
+			pattern_tags (pattern_id, tag_id)
+		VALUES
+			${placeholders};
+	`;
 
 	// Execute the query with the flattened values array
 	return QueryMetadata(sql, flattenedValues);
@@ -41,7 +49,9 @@ const insert = (values: [string, number][]): Promise<ResultSetHeader> => {
 
 //DELETE all tags from one pattern
 const destroyAllBasedOnPatternId = (id: string): Promise<ResultSetHeader> =>
-	QueryMetadata('DELETE FROM pattern_tags WHERE pattern_id = ?', [id]);
+	QueryMetadata(/* sql */ 'DELETE FROM pattern_tags WHERE pattern_id = ?', [
+		id,
+	]);
 
 //PATCH a tag
 //This will only be used by the admin side, there's no reason for people to have access to this
@@ -50,7 +60,7 @@ const update = (values: {
 	name: string;
 	id: number;
 }): Promise<ResultSetHeader> =>
-	QueryMetadata('UPDATE pattern_tags SET name = ? WHERE id = ?', [
+	QueryMetadata(/* sql */ 'UPDATE pattern_tags SET name = ? WHERE id = ?', [
 		values.name,
 		values.id,
 	]);

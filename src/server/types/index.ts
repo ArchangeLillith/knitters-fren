@@ -26,9 +26,15 @@ export interface AuthorsTable {
 	role?: string;
 }
 
+//The type that's used in sql queries because the tags are aggregated so slapping a TagsTable on it doens't work
+export interface PatternObjectQuery extends PatternTable, AuthorsTable {
+	tags: Tag[];
+	pattern: PatternTable;
+}
+
 export interface Tag {
-	name: string;
 	id: number;
+	name: string;
 }
 
 export type Log = {
@@ -58,4 +64,9 @@ export type PatternTag = {
 	pattern_id: string;
 	tag_id: number;
 	id: number;
+};
+
+export type PatternObject = {
+	pattern: PatternTable;
+	tags: Tag[];
 };

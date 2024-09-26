@@ -10,11 +10,15 @@ export default router;
 
 //GET /api/pattern_tags/id
 router.get('/:id', async (req, res, next) => {
+	console.log(`in tag route in backend`);
 	const id = req.params.id;
+	console.log(`pattern id`, id);
 	const tagArrayPerPattern: number[] = getCache(`patternTags.${id}`);
+	console.log(`tag array per pattern`, tagArrayPerPattern);
 	const allTagsFromCache = getCache('allTags');
 
 	if (tagArrayPerPattern !== null && allTagsFromCache !== null) {
+		console.log(`Cache is valid, proceeding with cached data`);
 		const associatedTags: Tag[] = [];
 		for (const tag_id of tagArrayPerPattern) {
 			allTagsFromCache[tag_id].push(associatedTags);

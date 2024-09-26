@@ -1,4 +1,5 @@
-import { FormFields } from './types';
+import { FormFields, Pattern, PatternObject } from './types';
+import baseService from '../services/base';
 
 export function isValidEmail(email: string) {
 	return email.match(
@@ -6,13 +7,15 @@ export function isValidEmail(email: string) {
 	);
 }
 
-export const validateFields = (
-	{ email, password, confirmPassword, username }: FormFields
-) => {
+export const validateFields = ({
+	email,
+	password,
+	confirmPassword,
+	username,
+}: FormFields) => {
 	const errors: string[] = [];
-	if (!isValidEmail(email)) errors.push("invalid email");
+	if (!isValidEmail(email)) errors.push('invalid email');
 	if (password !== confirmPassword) errors.push("passwords don't match");
-	if (!password || !username || !email)
-		errors.push("all fields are required");
+	if (!password || !username || !email) errors.push('all fields are required');
 	return errors;
 };

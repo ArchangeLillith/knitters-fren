@@ -1,9 +1,12 @@
 import { Router } from 'express';
 
 import db from '../../db';
-import { PatternTable, Tag } from '../../types';
+import { PatternObject, PatternTable, Tag } from '../../types';
+import { transformPatternObject } from '../../utils/functions';
 
 const router = Router();
+
+//* everything in this file should return a {patternObject: PaternObject[]}
 
 //GET /api/search/author/:param
 router.get('/author/:queryString', async (req, res, next) => {
@@ -11,9 +14,13 @@ router.get('/author/:queryString', async (req, res, next) => {
 	try {
 		const result = await db.search.findByAuthor(author);
 		if (result.length === 0) {
-			return res.json({ message: 'no pattern' });
+			return res.json({ results: [] });
 		}
-		res.json({ patterns: result, message: 'patterns found' });
+		const patternObjects: PatternObject[] = [];
+		for (const pattern of result) {
+			patternObjects.push(transformPatternObject(pattern));
+		}
+		res.json(patternObjects);
 	} catch (error) {
 		next(error);
 	}
@@ -27,7 +34,8 @@ router.get('/title/:queryString', async (req, res, next) => {
 		if (result.length === 0) {
 			return res.json({ message: 'no pattern' });
 		}
-		res.json({ patterns: result, message: 'patterns found' });
+		//!HERE
+		res.json({ patterns: result });
 	} catch (error) {
 		next(error);
 	}
@@ -41,7 +49,8 @@ router.get('/content/:queryString', async (req, res, next) => {
 		if (result.length === 0) {
 			return res.status(404).json({ message: 'No patterns found' });
 		}
-		res.json({ patterns: result, message: 'Patterns found' });
+		//!here
+		res.json({ patterns: result });
 	} catch (error) {
 		next(error);
 	}
@@ -50,23 +59,26 @@ router.get('/content/:queryString', async (req, res, next) => {
 //POST /api/search/tag
 router.post('/tag', async (req, res, next) => {
 	try {
+		console.log(`in tag search route`);
 		const finalPatterns: PatternTable[] = [];
 		let tags: Tag[];
 
 		try {
 			tags = JSON.parse(req.body.tagList);
+			console.log(`TAGS`, tags);
 		} catch (err) {
 			return res.status(400).json({ message: 'Invalid JSON format' });
 		}
-		const idArray: number[] = tags.map((tag: Tag) => tag.id);
+		const tagIds: number[] = tags.map((tag: Tag) => tag.id);
 
-		const patternPromises = idArray.map((id: number) => {
+		const patternPromises = tagIds.map((id: number) => {
 			return db.search.findByTags(id);
 		});
 
 		let result: PatternTable[][];
 		try {
 			result = await Promise.all(patternPromises);
+			console.log(`result`, result);
 		} catch (err) {
 			return res.status(500).json({ message: 'Database error' });
 		}
@@ -85,7 +97,9 @@ router.post('/tag', async (req, res, next) => {
 				}
 			});
 		});
-		res.json({ patterns: finalPatterns, message: 'Patterns found~' });
+
+		//!here
+		return res.json({ patterns: finalPatterns });
 	} catch (err) {
 		console.log(`ERROR`, err);
 		next(err);
@@ -117,7 +131,8 @@ router.post('/tag/strict', async (req, res, next) => {
 			return res.json(404).json({ message: 'No patterns found' });
 		}
 
-		res.json({ finalPatterns, message: 'Patterns found~' });
+		//!here
+		res.json({ patterns: finalPatterns });
 	} catch (err) {
 		console.log(`ERROR`, err);
 		next(err);

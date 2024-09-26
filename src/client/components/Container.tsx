@@ -9,7 +9,7 @@ const Container = ({ children }: ContainerProps) => {
 	return (
 		<section
 			className="container"
-			style={{ fontFamily: "Garamond, serif", paddingBottom: "150px" }}
+			style={{ fontFamily: 'Garamond, serif', paddingBottom: '150px' }}
 		>
 			{children}
 		</section>

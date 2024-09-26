@@ -1,11 +1,25 @@
 {
-  "printWidth": 80,             
-  "useTabs": true,               
-  "semi": true,                 
-  "singleQuote": true,          
-  "jsxSingleQuote": false,       
-  "trailingComma": "es5",       
-  "bracketSpacing": true,        
-  "arrowParens": "avoid",     
-  "endOfLine": "lf" 
+	"printWidth": 80,
+	"useTabs": true,
+	"semi": true,
+	"singleQuote": true,
+	"jsxSingleQuote": false,
+	"trailingComma": "es5",
+	"bracketSpacing": true,
+	"arrowParens": "avoid",
+	"endOfLine": "lf",
+	"plugins": ["prettier-plugin-embed", "prettier-plugin-sql"],
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx"],
+			"options": {
+				"parser": "typescript",
+				"sql": {
+					"formatter": {
+						"language": "mysql"
+					}
+				}
+			}
+		}
+	]
 }

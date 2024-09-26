@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import useFetchData from '../../hooks/useFetchData';
 import { Pattern, Tag } from '../../utils/types';
-import TagButton from '../TagButton';
+import AssociatedTagList from '../AssociatedTagList';
 
 interface PatternCardProps {
 	pattern: Pattern;
@@ -36,20 +36,7 @@ const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {
 				</Link>
 				<p className="small w-75">{pattern.content.slice(0, 150)}...</p>
 			</div>
-			{tags && (
-				<>
-					{tags.map((tag: Tag) => (
-						<div
-							className="m-1 d-inline-flex btn-group"
-							role="group"
-							aria-label="Basic checkbox toggle button group"
-							key={`${tag.id}-container`}
-						>
-							<TagButton tag={tag} />
-						</div>
-					))}
-				</>
-			)}
+			{tags && <AssociatedTagList tags={tags} />}
 			<hr />
 		</div>
 	);

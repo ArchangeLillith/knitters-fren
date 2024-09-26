@@ -10,6 +10,7 @@ export const getCache = (key: string) => {
 			cache.delete(key);
 			return null;
 		}
+		console.log(`Cache was clean, returning from cache`);
 		return value;
 	}
 	return null;

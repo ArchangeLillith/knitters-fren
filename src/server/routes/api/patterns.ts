@@ -1,13 +1,15 @@
 import { Router } from 'express';
 import { ResultSetHeader } from 'mysql2';
 
-import { getCache, markCacheAsDirty } from '../../cache';
+import { getCache, markCacheAsDirty, setCache } from '../../cache';
 import { buildCache } from '../../cache/buildCache';
 import db from '../../db';
 import patterns from '../../db/queries/patterns';
 import { verifyAdmin } from '../../middlewares/verifyAdmin.mw';
 import { verifyAuthor } from '../../middlewares/verifyAuthor.mw';
 import { verifyToken } from '../../middlewares/verifyToken.mw';
+import { PatternObject, PatternObjectQuery } from '../../types';
+import { transformPatternObject } from '../../utils/functions';
 import { logActivity } from '../../utils/logging';
 
 const router = Router();
@@ -40,8 +42,14 @@ router.get('/:id', async (req, res, next) => {
 		res.json(cachedRes);
 	} else {
 		try {
-			const result = await db.patterns.oneById(id);
-			res.json(result);
+			const result: PatternObjectQuery = await db.patterns.oneById(id);
+			if (result) {
+				const patternObject: PatternObject = transformPatternObject(result);
+				setCache(`allPatterns.${id}`, patternObject);
+				res.json(patternObject);
+			} else {
+				res.status(404).json({ message: 'Pattern not found' });
+			}
 		} catch (error) {
 			//Goes to our global error handler
 			next(error);

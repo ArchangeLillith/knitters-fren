@@ -6,10 +6,10 @@ import PatternDetails from '../components/AddPatternComponents/PatternDetails';
 import PatternLink from '../components/AddPatternComponents/PatternLink';
 import PatternPaid from '../components/AddPatternComponents/PatternPaid';
 import PatternTitle from '../components/AddPatternComponents/PatternTitle';
+import AllTagsContainer from '../components/AllTagsContainer';
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import AuthWrapper from '../components/AuthComponents/AuthWrapper';
 import Container from '../components/Container';
-import TagContainer from '../components/TagContainer';
 import patternService from '../services/pattern';
 import patternTags from '../services/pattern-tags';
 import {
@@ -92,7 +92,7 @@ const AddPattern = () => {
 					<div>
 						<label htmlFor="tags">Choose your tags:</label>
 
-						<TagContainer
+						<AllTagsContainer
 							selectedTags={state.selectedTags}
 							setSelectedTags={setState}
 						/>

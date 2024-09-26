@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import useFetchData from '../hooks/useFetchData';
 import patternService from '../services/pattern';
 import patternTags from '../services/pattern-tags';
-import { Pattern, Tag } from '../utils/types';
+import { Pattern, PatternObject, Tag } from '../utils/types';
 
 const UpdatePattern = () => {
 	const { id } = useParams<string>();
@@ -11,33 +12,45 @@ const UpdatePattern = () => {
 	const [pattern, setPattern] = useState<Pattern | undefined>(undefined);
 	const [title, setTitle] = useState<string>('');
 	const [content, setContent] = useState<string>('');
+	const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 	const [allTags, setAllTags] = useState<Tag[]>([
 		{ id: 0, name: 'Loading...' },
 	]);
-	const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+
+	// Memoize the fetch configuration to prevent re-renders causing unnecessary re-fetches
+	const fetchConfigs = useMemo(
+		() => [
+			{ key: 'patternObject', url: `/api/patterns/${id}` },
+			{ key: 'tags', url: `/api/tags/` },
+		],
+		[id]
+	);
+
+	const { data, loading, error } = useFetchData<{
+		patternObject: PatternObject;
+		tags: Tag[];
+	}>(fetchConfigs);
 
 	useEffect(() => {
-		if (!id) {
-			return;
-		}
-		patternService.getOnePattern(id).then((fetchedPattern: Pattern) => {
-			setPattern(fetchedPattern);
-			setTitle(fetchedPattern.title);
-			setContent(fetchedPattern.content);
-		});
+		if (!data || !data.patternObject || !data.tags) return;
+		const fetchedPattern: Pattern = data.patternObject.pattern;
+		const fetchedAssociatedTags: Tag[] = data.patternObject.tags;
+		const fetchedTags: Tag[] = data.tags;
 
-		fetch(`${process.env.ROOT_URL}/api/tags`)
-			.then(res => res.json())
-			.then(data => setAllTags(data))
-			.catch(error => alert(error));
+		setAllTags(fetchedTags);
+		setPattern(fetchedPattern);
+		setTitle(fetchedPattern.title);
+		setContent(fetchedPattern.content);
+		setSelectedTags(fetchedAssociatedTags);
+	}, [data]);
 
-		patternTags
-			.getByPatternId(id)
-			.then(data => {
-				setSelectedTags(data);
-			})
-			.catch(error => alert(error));
-	}, [id]);
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+
+	if (error) {
+		return <div>Error: {error}</div>; // Display error message from the hook
+	}
 
 	const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -49,19 +62,20 @@ const UpdatePattern = () => {
 			content,
 		};
 
-		noteService.updatePattern(id, patternDTO);
+		patternService.updatePattern(id, patternDTO);
 
 		const tagIds = selectedTags.map(tag => tag.id);
 		if (tagIds.length > 0) {
-			console.log(`Adding new tags...`, tagIds);
 			patternTags
 				.addNewTags({ pattern_id: pattern.id, tag_ids: tagIds })
-				.then(() => navigate(`/patterns/${id}`));
+				.then(() => navigate(`/patterns/${id}`))
+				.catch(() => console.log(`ERROR`));
 		}
 		navigate(`/patterns/${id}`);
 	};
 
 	const tagToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+		// eslint-disable-next-line no-shadow
 		const { id, name } = e.target;
 		setSelectedTags(prevTags => {
 			const tagIndex = prevTags.findIndex(tag => tag.name === name);

@@ -4,14 +4,14 @@ import TagButton from './TagButton';
 import useFetchData from '../hooks/useFetchData';
 import { SearchPageState, AddPatternPageState, Tag } from '../utils/types';
 
-type TagContainerProps = {
+type AllTagsContainer = {
 	selectedTags: Tag[];
 	setSelectedTags:
 		| React.Dispatch<React.SetStateAction<SearchPageState>>
 		| React.Dispatch<React.SetStateAction<AddPatternPageState>>;
 };
 
-const TagContainer: React.FC<TagContainerProps> = ({
+const AllTagsContainer: React.FC<AllTagsContainer> = ({
 	selectedTags,
 	setSelectedTags,
 }) => {
@@ -62,4 +62,4 @@ const TagContainer: React.FC<TagContainerProps> = ({
 	);
 };
 
-export default TagContainer;
+export default AllTagsContainer;

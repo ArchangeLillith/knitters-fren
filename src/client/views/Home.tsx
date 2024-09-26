@@ -38,7 +38,7 @@ const Home = () => {
 
 		const freePatterns = allPatterns.filter(pattern => pattern.paid !== 'true');
 		const sortedPatterns: Pattern[] = sortByDate(freePatterns) as Pattern[];
-		const randomNumber = getRandomInt(allPatterns.length - 1);
+		const randomNumber = getRandomInt(freePatterns.length - 1);
 
 		setPatterns({
 			allPatterns,

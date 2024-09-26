@@ -1,50 +1,59 @@
 import type { ResultSetHeader } from 'mysql2';
 
-import type { AuthorsTable, PatternTable } from '../../types';
+import type {
+	AuthorsTable,
+	PatternObjectQuery,
+	PatternTable,
+} from '../../types';
 import { Query, QueryMetadata } from '../query';
 
 //GET all patterns, joined to show the name of the author
 const all = (): Promise<(PatternTable & AuthorsTable)[]> =>
-	Query<(PatternTable & AuthorsTable)[]>(`
-	SELECT 
-		patterns.*,
-		authors.username
-	FROM 
-		patterns 
-				JOIN 
-		authors ON authors.id = patterns.author_id;`);
+	Query<(PatternTable & AuthorsTable)[]>(/* sql */ `
+		SELECT
+			patterns.*,
+			authors.username
+		FROM
+			patterns
+			JOIN authors ON authors.id = patterns.author_id;
+	`);
 
 //GET all pattern authored by one author_id
 const allByAuthor = (
 	author: string
 ): Promise<(PatternTable & AuthorsTable)[]> =>
 	Query<(PatternTable & AuthorsTable)[]>(
-		`
-		SELECT 
-			patterns.*,
-			authors.username 
-		FROM 
-			patterns 
-					JOIN 
-					authors ON authors.id = patterns.author_id
-			WHERE patterns.author_id = ?;`,
+		/* sql */ `
+			SELECT
+				patterns.*,
+				authors.username
+			FROM
+				patterns
+				JOIN authors ON authors.id = patterns.author_id
+			WHERE
+				patterns.author_id = ?;
+		`,
 		[author]
 	);
 
 //GET one pattern, joined to show the authors name
-const oneById = async (
-	id: string
-): Promise<(PatternTable & AuthorsTable) | null> => {
-	const results = await Query<PatternTable & AuthorsTable>(
-		`
-SELECT 
-  patterns.*,
-  authors.username 
-FROM 
-  patterns 
-      JOIN 
-			authors ON authors.id = patterns.author_id
-  WHERE patterns.id = ?;`,
+const oneById = async (id: string): Promise<PatternObjectQuery | null> => {
+	const results = await Query<PatternObjectQuery>(
+		/* sql */ `
+			SELECT
+				p.*,
+				a.username,
+				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
+			FROM
+				patterns p
+				JOIN authors a ON a.id = p.author_id
+				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN tags t ON t.id = pt.tag_id
+			WHERE
+				p.id = ?
+			GROUP BY
+				p.id;
+		`,
 		[id]
 	);
 
@@ -53,19 +62,18 @@ FROM
 
 const oneByTitle = (title: string): Promise<PatternTable & AuthorsTable> =>
 	Query<PatternTable & AuthorsTable>(
-		`
-SELECT 
-  patterns.*,
-  authors.username 
-FROM 
-  patterns 
-      JOIN 
-			authors ON authors.id = patterns.author_id
-  WHERE patterns.title = ?;`,
+		/* sql */ `
+			SELECT
+				patterns.*,
+				authors.username
+			FROM
+				patterns
+				JOIN authors ON authors.id = patterns.author_id
+			WHERE
+				patterns.title = ?;
+		`,
 		[title]
 	);
-
-//TODO GET all patterns by _____ (tag, author, name)(do this by a checkbox on the front end so we don't have to join like three tables.... Or maybe that's okay?)
 
 //POST a pattern
 // this does not include any tags, they're set elsewhere
@@ -75,7 +83,7 @@ const insert = async (values: PatternTable): Promise<ResultSetHeader> => {
 	try {
 		const sanitizedValues = [title, content, id, author_id, link, paid];
 		const returnedHeaders = await QueryMetadata(
-			'INSERT INTO patterns (title, content, id, author_id, link, paid) VALUES (?, ?, ?, ?, ?, ?)',
+			/* sql */ 'INSERT INTO patterns (title, content, id, author_id, link, paid) VALUES (?, ?, ?, ?, ?, ?)',
 			sanitizedValues
 		);
 		return returnedHeaders;
@@ -88,7 +96,7 @@ const insert = async (values: PatternTable): Promise<ResultSetHeader> => {
 
 //DELETE a pattern
 const destroy = (id: string): Promise<ResultSetHeader> =>
-	QueryMetadata('DELETE FROM patterns WHERE id = ?', [id]);
+	QueryMetadata(/* sql */ 'DELETE FROM patterns WHERE id = ?', [id]);
 
 //PATCH a pattern
 const update = (patternDTO: {
@@ -96,30 +104,30 @@ const update = (patternDTO: {
 	title: string;
 	content: string;
 }): Promise<ResultSetHeader> =>
-	QueryMetadata('UPDATE patterns SET content = ?, title = ? WHERE id = ?', [
-		patternDTO.content,
-		patternDTO.title,
-		patternDTO.id,
-	]);
+	QueryMetadata(
+		/* sql */ 'UPDATE patterns SET content = ?, title = ? WHERE id = ?',
+		[patternDTO.content, patternDTO.title, patternDTO.id]
+	);
 
 const updateAuthorToBanned = (id: string): Promise<ResultSetHeader> =>
 	QueryMetadata(
-		'UPDATE patterns SET author_id = "779e05a4-8988-4641-a2e5-5d9bb8391b65" WHERE id = ?',
+		/* sql */ 'UPDATE patterns SET author_id = "779e05a4-8988-4641-a2e5-5d9bb8391b65" WHERE id = ?',
 		[id]
 	);
 
 //GET tags for one pattern, joined to show the authors name
 const one = (id: string): Promise<(PatternTable & AuthorsTable)[]> =>
 	Query<(PatternTable & AuthorsTable)[]>(
-		`
-SELECT 
-  patterns.*,
-  authors.name 
-FROM 
-  patterns 
-      JOIN 
-			authors ON authors.id = patterns.author_id
-  WHERE patterns.id = ?;`,
+		/* sql */ `
+			SELECT
+				patterns.*,
+				authors.name
+			FROM
+				patterns
+				JOIN authors ON authors.id = patterns.author_id
+			WHERE
+				patterns.id = ?;
+		`,
 		[id]
 	);
 

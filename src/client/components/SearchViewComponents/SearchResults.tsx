@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { PatternObject, Tag } from '../../utils/types';
-import TagButton from '../TagButton';
+import { PatternObject } from '../../utils/types';
+import AssociatedTagList from '../AssociatedTagList';
 
 interface SearchResultsProps {
 	foundPatterns: PatternObject[];
@@ -23,7 +23,7 @@ const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 								<div>
 									<Link
 										className="font-color-primary text-decoration-none"
-										style={{ fontSize: "25px" }}
+										style={{ fontSize: '25px' }}
 										to={`/patterns/${object.pattern.id}`}
 									>
 										{object.pattern.title}
@@ -34,39 +34,18 @@ const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 								</div>
 								<div className="h-80">
 									<br />
-
-									<div className="d-flex align-items-end h-auto">
-										{object.tags.map((tag) => (
-											<TagButton tag={tag} />
-										))}
-										<small className="ms-auto">
-											{dayjs(object.pattern.created_at).format("MMMM D, YYYY")}
-										</small>
-									</div>
+									<AssociatedTagList tags={object.tags} />
+									<small className="ms-auto">
+										{dayjs(object.pattern.created_at).format('MMMM D, YYYY')}
+									</small>
 								</div>
 							</div>
 						</div>
 					</div>
-					// <div key={object.pattern.id} className="card">
-					// 	<h2>{object.pattern.title}</h2>
-					// 	<div className="tags">
-					// 		{object.tags.map((tag) => (
-					// 			<span key={tag.id} className="tag">
-					// 				{tag.name}
-					// 			</span>
-					// 		))}
-					// 	</div>
-					// </div>
 				);
 			})}
 		</div>
 	);
 };
-
-// return foundPatterns.map((pattern, i) => {
-// 	const tags = tagsByPattern?[pattern.id] || []
-// 	return(
-//
-// )})};
 
 export default SearchResults;

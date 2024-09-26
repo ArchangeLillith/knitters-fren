@@ -3,14 +3,15 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { RiLockLine } from 'react-icons/ri';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 
+import AssociatedTagList from '../components/AssociatedTagList';
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import CommentTile from '../components/CommentTile';
-import TagButton from '../components/TagButton';
+import Container from '../components/Container';
 import useFetchData from '../hooks/useFetchData';
 import commentService from '../services/comments';
 import patternService from '../services/pattern';
 import { loadingPattern } from '../utils/patterns.utils';
-import { Pattern, PatternComment, Tag } from '../utils/types';
+import { Pattern, PatternComment, PatternObject, Tag } from '../utils/types';
 
 const PatternDetails = () => {
 	const { authState } = useContext(AuthContext);
@@ -23,30 +24,28 @@ const PatternDetails = () => {
 	const [pattern, setPattern] = useState<Pattern>(loadingPattern);
 
 	type FetchDataResponse = {
-		tags: Tag[];
-		pattern: Pattern;
+		patternObject: PatternObject;
 		comments: PatternComment[];
 	};
 
 	const fetchConfigs = useMemo(
 		() => [
-			{ key: 'tags', url: `/api/pattern_tags/${id}` },
-			{ key: 'pattern', url: `/api/patterns/${id}` },
+			{ key: 'patternObject', url: `/api/patterns/${id}` },
 			{ key: 'comments', url: `/api/comments/${id}` },
 		],
-		[]
+		[id]
 	);
 
 	const { data, loading, error } =
 		useFetchData<FetchDataResponse>(fetchConfigs);
 
 	useEffect(() => {
-		if (!data || !data.pattern) return;
+		if (!data || !data.patternObject) return;
 		console.log(`data`, data);
-
-		setPattern(data.pattern);
-		setAuthor(data.pattern.username);
-		setTags(data.tags);
+		const fetchedPattern = data.patternObject.pattern;
+		setPattern(fetchedPattern);
+		setAuthor(fetchedPattern.username);
+		setTags(data.patternObject.tags);
 		setComments(data.comments);
 	}, [data]);
 
@@ -79,7 +78,7 @@ const PatternDetails = () => {
 	if (error) <p>error....</p>;
 
 	return (
-		<>
+		<Container>
 			<div className="container container-fliud mx-auto w-80 my-3 px-5 py-3 rounded bg-soft">
 				{pattern && (
 					<div
@@ -132,36 +131,20 @@ const PatternDetails = () => {
 								</i>
 							</small>
 							<br />
-							<div className="d-flex mb-3">
-								{tags && (
-									<>
-										{tags.map((tag: Tag) => (
-											<div
-												className="m-1 d-inline-flex btn-group"
-												role="group"
-												aria-label="Basic checkbox toggle button group"
-												key={`${tag.id}-container`}
-											>
-												<TagButton tag={tag} />
-											</div>
-										))}
-									</>
-								)}
-
-								<div className="ms-auto">
-									<button
-										onClick={handleDelete}
-										className="btn btn-outline-primary btn-border mx-3 p-2"
-									>
-										Delete
-									</button>
-									<Link
-										to={`/patterns/${id}/update`}
-										className="btn btn-outline-primary btn-border p-2"
-									>
-										Update~
-									</Link>
-								</div>
+							{tags && <AssociatedTagList tags={tags} />}
+							<div className="ms-auto">
+								<button
+									onClick={handleDelete}
+									className="btn btn-outline-primary btn-border mx-3 p-2"
+								>
+									Delete
+								</button>
+								<Link
+									to={`/patterns/${id}/update`}
+									className="btn btn-outline-primary btn-border p-2"
+								>
+									Update~
+								</Link>
 							</div>
 						</div>
 					</div>
@@ -181,7 +164,7 @@ const PatternDetails = () => {
 				</form>
 			</div>
 			<CommentTile comments={comments} />
-		</>
+		</Container>
 	);
 };
 

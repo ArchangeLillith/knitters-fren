@@ -1,6 +1,9 @@
 import baseService from './base';
-import patternTagsService from './pattern-tags';
-import { Pattern, PatternObject, Tag } from '../utils/types';
+import { PatternObject, Tag } from '../utils/types';
+
+//* every function should expect a PatternObject[], even it it's empty. We throw a custom error if it's empty
+//No need to throw here because it throws lower, and if the array is empty that's handled in the frontend - maybe change this?
+//PERHAPS I can throw the author, content and title at the fetch util!!
 
 /**
  * Searches the databse for ANY author that matches the searchString
@@ -8,16 +11,10 @@ import { Pattern, PatternObject, Tag } from '../utils/types';
  * @returns an array of patterns that match the search or an empty array
  */
 const findByAuthor = async (searchString: string) => {
-	try {
-		const { message, patterns } = await baseService.get(
-			`/api/search/author/${searchString}`
-		);
-		const results = await handlePatternResults(message, patterns);
-		return results;
-	} catch (error) {
-		console.error('Error fetching patterns:', error);
-		throw error;
-	}
+	const results: PatternObject[] = await baseService.get(
+		`/api/search/author/${searchString}`
+	);
+	return results;
 };
 
 /**
@@ -26,17 +23,10 @@ const findByAuthor = async (searchString: string) => {
  * @returns an array of patterns that match the search or an empty array
  */
 const findByTitle = async (searchString: string) => {
-	console.log(`find by title`);
-	try {
-		const { message, patterns } = await baseService.get(
-			`/api/search/title/${searchString}`
-		);
-		const results = await handlePatternResults(message, patterns);
-		return results;
-	} catch (error) {
-		console.log(`Error in findbytitle`);
-		throw error;
-	}
+	const results: PatternObject[] = await baseService.get(
+		`/api/search/title/${searchString}`
+	);
+	return results;
 };
 
 /**
@@ -45,10 +35,9 @@ const findByTitle = async (searchString: string) => {
  * @returns an array of patterns that have the search string in the content section
  */
 const findByContent = async (searchString: string) => {
-	const { message, patterns } = await baseService.get(
+	const results: PatternObject[] = await baseService.get(
 		`/api/search/content/${searchString}`
 	);
-	const results = await handlePatternResults(message, patterns);
 	return results;
 };
 
@@ -58,13 +47,10 @@ const findByContent = async (searchString: string) => {
  * @returns
  */
 const findByTags = async (payload: Tag[]) => {
-	const response = await baseService.post(`/api/search/tag`, {
+	const results: PatternObject[] = await baseService.post(`/api/search/tag`, {
 		tagList: JSON.stringify(payload),
 	});
-	if (response.finalPatterns.length === 0) {
-		throw new Error('No patterns found');
-	}
-	return response;
+	return results;
 };
 
 /**
@@ -73,27 +59,13 @@ const findByTags = async (payload: Tag[]) => {
  * @returns an array of patterns that has all the tags in the payload
  */
 const findByTagsStrict = async (payload: Tag[]) => {
-	const response = await baseService.post(`/api/search/tag/strict`, {
-		tagList: JSON.stringify(payload),
-	});
-	if (response.finalPatterns.length === 0 || response === 404) {
-		return response.status(204).json({ message: 'No patterns found' });
-	}
-	return response;
-};
-
-const handlePatternResults = async (message: string, patterns: Pattern[]) => {
-	const patternObjects: PatternObject[] = [];
-	if (message === 'no pattern') {
-		return { message: 'no patterns', data: [] };
-	}
-
-	for (const pattern of patterns) {
-		const tags = await patternTagsService.getByPatternId(pattern.id);
-		patternObjects.push({ pattern, tags });
-	}
-
-	return { patternObjects, message: 'patterns found' };
+	const results: PatternObject[] = await baseService.post(
+		`/api/search/tag/strict`,
+		{
+			tagList: JSON.stringify(payload),
+		}
+	);
+	return results;
 };
 
 export default {

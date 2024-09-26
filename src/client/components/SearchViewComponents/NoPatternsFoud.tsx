@@ -1,8 +1,6 @@
 import React from 'react';
 
-interface NoPatternsFoundProps {}
-
-const NoPatternsFound = (props: NoPatternsFoundProps) => {
+const NoPatternsFound = () => {
 	return (
 		<div className="d-flex flex-column m-auto align-items-center">
 			<p className="lead">
@@ -14,7 +12,7 @@ const NoPatternsFound = (props: NoPatternsFoundProps) => {
 				src="/images/book-nanachi.png"
 				alt="book-nanachi"
 				style={{
-					width: "300px",
+					width: '300px',
 				}}
 			/>
 		</div>

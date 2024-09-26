@@ -146,3 +146,5 @@ export type NewPattern = {
 	link: string;
 	paid: 'true' | 'false';
 };
+
+export type SearchFunction = (searchString: string) => Promise<PatternObject[]>;

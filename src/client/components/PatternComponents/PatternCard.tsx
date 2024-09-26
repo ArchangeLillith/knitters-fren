@@ -2,10 +2,10 @@ import dayjs from 'dayjs';
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Pattern, Tag } from '../../utils/types';
-import TagButton from '../TagButton';
 import LockIcon from './LockIcon';
 import useFetchData from '../../hooks/useFetchData';
+import { Pattern, Tag } from '../../utils/types';
+import AssociatedTagList from '../AssociatedTagList';
 
 interface PatternCardProps {
 	pattern: Pattern;
@@ -74,11 +74,7 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 
 				<br />
 				{!featured && data.tags?.length > 0 && (
-					<div className="tag-buttons-container">
-						{data.tags.map(tag => (
-							<TagButton key={tag.id} tag={tag} />
-						))}
-					</div>
+					<AssociatedTagList tags={data.tags} />
 				)}
 			</div>
 		</div>
