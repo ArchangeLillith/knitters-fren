@@ -71,6 +71,7 @@ I'm hoping that the more organized my patterns are, the more I and other knitter
 * [![Passport][Passport]][Passport-url]
 * [![JWT][JSON-web-tokens]][JSON-web-tokens-url]
 * [![MySQL][MySQL]][MySQL-url]
+* [![S3][S3]][S3-url]
 
 I challenged myself to only use Bootstrap and a touch of SASS for styling in this project as I want to understand more what Bootstrap has to offer. I deviated a bit for minor things such as font styling or small color changes that aren't Bootstrap native. 
 
@@ -188,4 +189,5 @@ Thank you to Elivaras who's been helping me learn version control and keeping my
 [JSON-web-tokens]:https://img.shields.io/badge/JSON_Web_Tokens-6fd1cb?style=for-the-badge&logo=jsonwebtokens&logoColor=#fffffff
 [JSON-web-tokens-url]: https://jwt.io/
 [MySQL]: https://img.shields.io/badge/MySQL-ffffff?style=for-the-badge&logo=mysql&logoColor=#fffffff
-[MySQL-url]: https://www.mysql.com/
+[S3]: https://img.shields.io/badge/Amazon_S3-e5e5e5?style=for-the-badge&logo=amazon-s3
+[S3-url]: https://aws.amazon.com/pm/serv-s3/?gclid=EAIaIQobChMIzbHh-_XgiAMVci2tBh0TGjcJEAAYASAAEgL-KvD_BwE&trk=936e5692-d2c9-4e52-a837-088366a7ac3f&sc_channel=ps&ef_id=EAIaIQobChMIzbHh-_XgiAMVci2tBh0TGjcJEAAYASAAEgL-KvD_BwE:G:s&s_kwcid=AL!4422!3!536324434071!e!!g!!amazon%20s3!11346198420!112250793838
