@@ -1,6 +1,6 @@
 import React from 'react';
 
-import searchService from '../../services/search';
+import tagSearchService from '../../services/tagSearch';
 import { SearchPageState as PageState, PatternObject } from '../../utils/types';
 import AllTagsContainer from '../AllTagsContainer';
 
@@ -24,11 +24,12 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 		}));
 
 		const searchFunction = pageState.strictComparison
-			? searchService.findByTagsStrict
-			: searchService.findByTags;
+			? tagSearchService.findByTagsStrict
+			: tagSearchService.findByTags;
 
 		searchFunction(pageState.selectedTags)
 			.then((data: PatternObject[]) =>
+				// console.log(`DATA`, data)
 				setPageState(prev => ({ ...prev, foundPatterns: data }))
 			)
 			.catch(() =>

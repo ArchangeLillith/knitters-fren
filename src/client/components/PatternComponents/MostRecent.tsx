@@ -1,30 +1,15 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-import useFetchData from '../../hooks/useFetchData';
 import { Pattern, Tag } from '../../utils/types';
 import AssociatedTagList from '../AssociatedTagList';
 
 interface PatternCardProps {
 	pattern: Pattern;
+	tags: Tag[];
 }
 
-const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {
-	const fetchConfigs = useMemo(
-		() => [
-			{
-				key: 'tags',
-				url: `/api/pattern_tags/${pattern.id}`,
-			},
-		],
-		[]
-	);
-
-	const { data, loading, error } = useFetchData<{ tags: Tag[] }>(fetchConfigs);
-	const { tags } = data;
-	if (loading) <p>Loading....</p>;
-	if (error) <p>error....</p>;
-
+const MostRecentRow: React.FC<PatternCardProps> = ({ pattern, tags }) => {
 	return (
 		<div key={`${pattern.id}-wrapper-most-recent`}>
 			<div

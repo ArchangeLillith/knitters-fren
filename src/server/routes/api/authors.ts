@@ -31,7 +31,7 @@ router.post('/ban', verifyToken, verifyAdmin, async (req, res, next) => {
 		const patterns = await db.patterns.allByAuthor(authorId);
 		if (patterns.length > 0) {
 			await Promise.all(
-				patterns.map((pattern) => db.patterns.updateAuthorToBanned(pattern.id))
+				patterns.map(pattern => db.patterns.updateAuthorToBanned(pattern.id))
 			);
 		}
 
@@ -40,6 +40,7 @@ router.post('/ban', verifyToken, verifyAdmin, async (req, res, next) => {
 			author.email,
 			author.username
 		);
+
 		logActivity(
 			author.id,
 			'Author Banned',

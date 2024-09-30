@@ -3,19 +3,20 @@ import React, { useMemo } from 'react';
 import Container from '../components/Container';
 import PatternCard from '../components/PatternComponents/PatternCard';
 import useFetchData from '../hooks/useFetchData';
-import { Pattern } from '../utils/types';
+import { PatternObject } from '../utils/types';
 
 const Patterns = () => {
 	// Memoize the fetch configuration to prevent re-renders causing unnecessary re-fetches
 	const fetchConfigs = useMemo(
-		() => [{ key: 'patterns', url: '/api/patterns' }],
+		() => [{ key: 'patternObjects', url: '/api/patterns' }],
 		[]
 	);
 
-	const { data, loading, error } = useFetchData<{ patterns: Pattern[] }>(
-		fetchConfigs
-	);
+	const { data, loading, error } = useFetchData<{
+		patternObjects: PatternObject[];
+	}>(fetchConfigs);
 
+	const { patternObjects } = data;
 	if (loading) {
 		return <div>Loading...</div>;
 	}
@@ -27,12 +28,12 @@ const Patterns = () => {
 	return (
 		<Container>
 			<div className="w-75 d-flex flex-column mx-auto mt-5">
-				{data.patterns.map(pattern => (
+				{patternObjects.map(patternObj => (
 					<div
 						className="rounded w-100 bg-soft m-2 border-pink"
-						key={`${pattern.id}-container`}
+						key={`${patternObj.pattern.id}-container`}
 					>
-						<PatternCard pattern={pattern} />
+						<PatternCard patternObject={patternObj} />
 					</div>
 				))}
 			</div>

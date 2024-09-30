@@ -6,42 +6,6 @@ import { PatternObject, Tag } from '../utils/types';
 //PERHAPS I can throw the author, content and title at the fetch util!!
 
 /**
- * Searches the databse for ANY author that matches the searchString
- * @param searchString - the string to search by
- * @returns an array of patterns that match the search or an empty array
- */
-const findByAuthor = async (searchString: string) => {
-	const results: PatternObject[] = await baseService.get(
-		`/api/search/author/${searchString}`
-	);
-	return results;
-};
-
-/**
- * Searches the databse for ANY title that matches the searchString
- * @param searchString - the string to search by
- * @returns an array of patterns that match the search or an empty array
- */
-const findByTitle = async (searchString: string) => {
-	const results: PatternObject[] = await baseService.get(
-		`/api/search/title/${searchString}`
-	);
-	return results;
-};
-
-/**
- * Searches the database to find any pattern that has a content that includes the search string
- * @param searchString - the query string
- * @returns an array of patterns that have the search string in the content section
- */
-const findByContent = async (searchString: string) => {
-	const results: PatternObject[] = await baseService.get(
-		`/api/search/content/${searchString}`
-	);
-	return results;
-};
-
-/**
  * Searches the database to find any pattern that includes AT LEAST ONE of the tags
  * @param payload - an array of objects of type {id: number(?), name: string}
  * @returns
@@ -69,9 +33,6 @@ const findByTagsStrict = async (payload: Tag[]) => {
 };
 
 export default {
-	findByAuthor,
-	findByTitle,
 	findByTags,
-	findByContent,
 	findByTagsStrict,
 };

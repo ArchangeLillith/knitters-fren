@@ -9,12 +9,13 @@ import { verifyAdmin } from '../../middlewares/verifyAdmin.mw';
 import { verifyAuthor } from '../../middlewares/verifyAuthor.mw';
 import { verifyToken } from '../../middlewares/verifyToken.mw';
 import { PatternObject, PatternObjectQuery } from '../../types';
-import { transformPatternObject } from '../../utils/functions';
+import {
+	queryToPatternObject,
+	transformPatternObject,
+} from '../../utils/functions';
 import { logActivity } from '../../utils/logging';
 
 const router = Router();
-//Run all these routes prepended with the method through this middle ware
-// router.route('*').post(checkToken).put(checkToken).delete(checkToken);
 
 //GET /api/patterns
 router.get('/', async (req, res, next) => {
@@ -23,11 +24,16 @@ router.get('/', async (req, res, next) => {
 		res.json(cachedRes);
 	} else {
 		try {
-			const result = await db.patterns.all();
-			buildCache();
-			res.json(result);
+			const result: PatternObjectQuery[] = await db.patterns.all();
+			const patternsObject: PatternObject[] = queryToPatternObject(result);
+			if (patternsObject.length === 0) {
+				res.json(patternsObject);
+			} else {
+				setCache(`allPatterns`, patternsObject);
+				buildCache();
+				res.json(patternsObject);
+			}
 		} catch (error) {
-			//Goes to our global error handler
 			next(error);
 		}
 	}

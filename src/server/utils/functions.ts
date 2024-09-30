@@ -1,5 +1,3 @@
-// utils/transformPattern.ts
-
 import {
 	PatternObject,
 	PatternObjectQuery,
@@ -22,4 +20,16 @@ export const transformPatternObject = (
 	};
 
 	return { pattern, tags };
+};
+
+export const queryToPatternObject = (queryReturn: PatternObjectQuery[]) => {
+	if (queryReturn.length === 0) {
+		return [];
+	}
+	const patternsObject: PatternObject[] = [];
+	for (const patternObj of queryReturn) {
+		const patternObject: PatternObject = transformPatternObject(patternObj);
+		patternsObject.push(patternObject);
+	}
+	return patternsObject;
 };

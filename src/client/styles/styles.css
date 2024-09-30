@@ -4,11 +4,14 @@
 	-ms-user-select: none; /* IE 10 and IE 11 */
 	user-select: none; /* Standard syntax */
 }
-
+:root{
+	--primary-color: #3498db;
+}
 .link:hover,
 .primary-link:hover {
 	color: #f9b5b5;
 }
+
 .link {
 	color: rgb(255, 255, 255);
 }
@@ -204,4 +207,13 @@ a {
 	background: #d88484;
 	color: white;
 	border-radius: 5px;
+}
+
+.btn.btn-primary {
+	background: #f38686;
+	border: 1px solid #ffc4c4;
+}
+
+.text-primary.text-center {
+	color: #e78686 !important;
 }

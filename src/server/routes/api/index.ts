@@ -9,6 +9,9 @@ import patternsRouter from './patterns';
 import searchRouter from './search';
 import tagsRouter from './tags';
 
+//Run all these routes prepended with the method through this middle ware
+// router.route('*').post(checkToken).put(checkToken).delete(checkToken);
+
 const router = Router();
 
 router.use('/authors', authorsRouter);

@@ -1,8 +1,13 @@
 import { Router } from 'express';
 
 import db from '../../db';
-import { PatternObject, PatternTable, Tag } from '../../types';
-import { transformPatternObject } from '../../utils/functions';
+import {
+	PatternObject,
+	PatternObjectQuery,
+	PatternTable,
+	Tag,
+} from '../../types';
+import { queryToPatternObject } from '../../utils/functions';
 
 const router = Router();
 
@@ -12,15 +17,9 @@ const router = Router();
 router.get('/author/:queryString', async (req, res, next) => {
 	const author = req.params.queryString;
 	try {
-		const result = await db.search.findByAuthor(author);
-		if (result.length === 0) {
-			return res.json({ results: [] });
-		}
-		const patternObjects: PatternObject[] = [];
-		for (const pattern of result) {
-			patternObjects.push(transformPatternObject(pattern));
-		}
-		res.json(patternObjects);
+		const result: PatternObjectQuery[] = await db.search.findByAuthor(author);
+		const patternsObject: PatternObject[] = queryToPatternObject(result);
+		res.json(patternsObject);
 	} catch (error) {
 		next(error);
 	}
@@ -31,11 +30,8 @@ router.get('/title/:queryString', async (req, res, next) => {
 	const title = req.params.queryString;
 	try {
 		const result = await db.search.findByTitle(title);
-		if (result.length === 0) {
-			return res.json({ message: 'no pattern' });
-		}
-		//!HERE
-		res.json({ patterns: result });
+		const patternsObject: PatternObject[] = queryToPatternObject(result);
+		res.json(patternsObject);
 	} catch (error) {
 		next(error);
 	}
@@ -49,7 +45,6 @@ router.get('/content/:queryString', async (req, res, next) => {
 		if (result.length === 0) {
 			return res.status(404).json({ message: 'No patterns found' });
 		}
-		//!here
 		res.json({ patterns: result });
 	} catch (error) {
 		next(error);
@@ -59,47 +54,45 @@ router.get('/content/:queryString', async (req, res, next) => {
 //POST /api/search/tag
 router.post('/tag', async (req, res, next) => {
 	try {
-		console.log(`in tag search route`);
-		const finalPatterns: PatternTable[] = [];
 		let tags: Tag[];
-
 		try {
 			tags = JSON.parse(req.body.tagList);
-			console.log(`TAGS`, tags);
-		} catch (err) {
+		} catch {
 			return res.status(400).json({ message: 'Invalid JSON format' });
 		}
+
 		const tagIds: number[] = tags.map((tag: Tag) => tag.id);
 
-		const patternPromises = tagIds.map((id: number) => {
-			return db.search.findByTags(id);
-		});
-
-		let result: PatternTable[][];
+		const result: PatternObjectQuery[] = [];
 		try {
-			result = await Promise.all(patternPromises);
+			await Promise.all(
+				tagIds.map(async (id: number) => {
+					const [pattern] = await db.search.findByTags(id);
+					console.log(`Pattern`, pattern);
+					result.push(pattern);
+				})
+			);
 			console.log(`result`, result);
-		} catch (err) {
+		} catch {
 			return res.status(500).json({ message: 'Database error' });
 		}
 
-		if (result.length === 0) {
-			return res.json(404).json({ message: 'No patterns found' });
+		if (!result || result.length === 0) {
+			return res.status(404).json({ message: 'No patterns found' });
 		}
+		const formattedPatterns = queryToPatternObject(result);
+		console.log(`Fetched`, formattedPatterns);
+		const finalPatterns: PatternObject[] = [];
+		const uniquePatternIds = new Set<string>();
 
-		//This Array could be a Set, however it's less performant because there's no deletion from the list. This is because the deletion of something from a set is faster than deletion from an array, but only if the data list is cresting 100k items. A small project like this website isn't effected by such a small change, however, and either could be used here with negligible affects on the user experiance, however array was chosen as it's a better use case even if the data gets very large seeing as there will be no deletion from this specific list.
-		const uniquePatterns = [];
-		result.forEach((patterns: PatternTable[]) => {
-			patterns.forEach((pattern: PatternTable) => {
-				if (!uniquePatterns.includes(pattern.id)) {
-					uniquePatterns.includes(pattern.id);
-					finalPatterns.push(pattern);
-				}
-			});
+		formattedPatterns.forEach(pattern => {
+			if (!uniquePatternIds.has(pattern.pattern.id)) {
+				uniquePatternIds.add(pattern.pattern.id);
+				finalPatterns.push(pattern);
+			}
 		});
-
-		//!here
-		return res.json({ patterns: finalPatterns });
+		console.log(`final`, finalPatterns);
+		return res.json(finalPatterns);
 	} catch (err) {
 		console.log(`ERROR`, err);
 		next(err);
@@ -114,7 +107,7 @@ router.post('/tag/strict', async (req, res, next) => {
 
 		try {
 			tags = JSON.parse(req.body.tagList);
-		} catch (err) {
+		} catch {
 			return res.status(400).json({ message: 'Invalid JSON format' });
 		}
 		const idArray: number[] = tags.map((tag: Tag) => tag.id);
@@ -123,7 +116,7 @@ router.post('/tag/strict', async (req, res, next) => {
 
 		try {
 			finalPatterns = await patternPromises;
-		} catch (err) {
+		} catch {
 			return res.status(500).json({ message: 'Database error' });
 		}
 

@@ -8,14 +8,19 @@ import type {
 import { Query, QueryMetadata } from '../query';
 
 //GET all patterns, joined to show the name of the author
-const all = (): Promise<(PatternTable & AuthorsTable)[]> =>
-	Query<(PatternTable & AuthorsTable)[]>(/* sql */ `
+const all = (): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(/* sql */ `
 		SELECT
-			patterns.*,
-			authors.username
+			p.*,
+			a.username,
+			JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 		FROM
-			patterns
-			JOIN authors ON authors.id = patterns.author_id;
+			patterns p
+			JOIN authors a ON a.id = p.author_id
+			LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+			LEFT JOIN tags t ON t.id = pt.tag_id
+		GROUP BY
+			p.id;
 	`);
 
 //GET all pattern authored by one author_id

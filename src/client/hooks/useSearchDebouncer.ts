@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
-import searchService from '../services/search';
-import { SearchFunction, PatternObject, SearchPageState } from '../utils/types'; // Adjust the import path if needed
+import useFetchData from './useFetchData';
+import { PatternObject, SearchPageState } from '../utils/types'; // Adjust the import path if needed
 
 interface useSearchDebouncerProps {
 	pageState: SearchPageState;
@@ -18,6 +18,24 @@ export const useSearchDebouncer = ({
 	const { queryString, searchType } = pageState;
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+	const fetchConfigs = useMemo(() => {
+		if (!queryString) return [];
+
+		const urlMap: Record<string, string> = {
+			author: `/api/search/author/${queryString}`,
+			content: `/api/search/content/${queryString}`,
+			title: `/api/search/title/${queryString}`,
+		};
+
+		const url = urlMap[searchType];
+		if (!url) return [];
+		return [{ key: 'foundPatterns', url }];
+	}, [queryString, searchType]);
+
+	const { data, loading, error } = useFetchData<{
+		foundPatterns: PatternObject[];
+	}>(fetchConfigs);
+
 	useEffect(() => {
 		if (timeoutRef.current) {
 			clearTimeout(timeoutRef.current);
@@ -27,41 +45,19 @@ export const useSearchDebouncer = ({
 			if (queryString === '') {
 				return;
 			}
-
-			const searchFunctions: { [key: string]: SearchFunction } = {
-				tag: () => Promise.resolve([]),
-				author: searchService.findByAuthor,
-				content: searchService.findByContent,
-				title: searchService.findByTitle,
-			};
-
-			const searchFunction = searchFunctions[searchType];
-
-			if (searchFunction) {
-				searchFunction(queryString)
-					.then((patterns: PatternObject[]) => {
-						console.log(`Patterns`, patterns);
-						if (patterns.length === 0) {
-							setPageState(prev => ({
-								...prev,
-								foundPatterns: [],
-								searchTriggered: true,
-							}));
-						} else {
-							setPageState(prev => ({
-								...prev,
-								foundPatterns: patterns,
-								searchTriggered: true,
-							}));
-						}
-					})
-					.catch(() => {
-						setPageState(prev => ({
-							...prev,
-							foundPatterns: [],
-							searchTriggered: true,
-						}));
-					});
+			console.log(`DATA from bouncer`, data);
+			if (!loading && !error) {
+				setPageState(prev => ({
+					...prev,
+					foundPatterns: data.foundPatterns,
+					searchTriggered: true,
+				}));
+			} else if (error) {
+				setPageState(prev => ({
+					...prev,
+					foundPatterns: [],
+					searchTriggered: true,
+				}));
 			}
 		}, 500); //The timing adjust for the debouncer~
 

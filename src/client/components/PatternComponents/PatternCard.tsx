@@ -1,34 +1,17 @@
 import dayjs from 'dayjs';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import LockIcon from './LockIcon';
-import useFetchData from '../../hooks/useFetchData';
-import { Pattern, Tag } from '../../utils/types';
+import { PatternObject } from '../../utils/types';
 import AssociatedTagList from '../AssociatedTagList';
 
 interface PatternCardProps {
-	pattern: Pattern;
+	patternObject: PatternObject;
 	featured?: boolean;
 }
 
-const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
-	const fetchConfigs = useMemo(
-		() => [
-			{
-				key: 'tags',
-				url: `/api/pattern_tags/${pattern.id}`,
-			},
-		],
-		[]
-	);
-
-	const { data, loading, error } = useFetchData<{ tags: Tag[] }>(fetchConfigs);
-
-	if (loading) return <div>Loading...</div>;
-
-	if (error) return <div>Error: {error}</div>;
-
+const PatternCard = ({ patternObject, featured = false }: PatternCardProps) => {
 	if (featured) {
 		return (
 			<div className="my-2 mx-4">
@@ -36,18 +19,20 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 					<Link
 						className="text-color-white text-decoration-none"
 						style={{ fontSize: '30px' }}
-						to={`/patterns/${pattern.id}`}
+						to={`/patterns/${patternObject.pattern.id}`}
 					>
-						{pattern.title}
+						{patternObject.pattern.title}
 					</Link>
-					<p key={`pattern-card-para-${pattern.id}`}>
-						{pattern.content.slice(0, 200)}...
+					<p key={`pattern-card-para-${patternObject.pattern.id}`}>
+						{patternObject.pattern.content.slice(0, 200)}...
 					</p>
 					<div className="d-flex flex-column">
 						<small>
-							<i>Author: {pattern.username}</i>{' '}
+							<i>Author: {patternObject.pattern.username}</i>{' '}
 						</small>
-						<small>{dayjs(pattern.created_at).format('MMMM D, YYYY')}</small>
+						<small>
+							{dayjs(patternObject.pattern.created_at).format('MMMM D, YYYY')}
+						</small>
 					</div>
 				</div>
 			</div>
@@ -60,21 +45,23 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 				<div className="d-flex align-items-center justify-content-between">
 					<Link
 						className={`link font-color-primary ${featured ? 'text-white' : 'text-pink'}`}
-						to={`/patterns/${pattern.id}`}
+						to={`/patterns/${patternObject.pattern.id}`}
 						style={{ fontSize: featured ? '30px' : '25px' }}
 					>
-						{pattern.title}
+						{patternObject.pattern.title}
 					</Link>
-					{pattern.paid === 'true' && <LockIcon />}
+					{patternObject.pattern.paid === 'true' && <LockIcon />}
 				</div>
-				<p key={`pattern-card-para-${pattern.id}`}>
-					{pattern.content.slice(0, 200)}...
+				<p key={`pattern-card-para-${patternObject.pattern.id}`}>
+					{patternObject.pattern.content.slice(0, 200)}...
 				</p>
-				<small>{dayjs(pattern.created_at).format('MMMM D, YYYY')}</small>
+				<small>
+					{dayjs(patternObject.pattern.created_at).format('MMMM D, YYYY')}
+				</small>
 
 				<br />
-				{!featured && data.tags?.length > 0 && (
-					<AssociatedTagList tags={data.tags} />
+				{!featured && patternObject.tags?.length > 0 && (
+					<AssociatedTagList tags={patternObject.tags} />
 				)}
 			</div>
 		</div>

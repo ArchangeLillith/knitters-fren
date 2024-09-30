@@ -21,54 +21,69 @@ const findByAuthor = (author: string): Promise<PatternObjectQuery[]> =>
 		[author]
 	);
 
-const findByTitle = (title: string): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
+const findByTitle = (title: string): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
 		/* sql */ `
 			SELECT
-				*
+				p.*,
+				a.username,
+				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
-				patterns
+				patterns p
+				JOIN authors a ON a.id = p.author_id
+				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN tags t ON t.id = pt.tag_id
 			WHERE
-				title LIKE concat ('%', ?, '%')
+				p.title LIKE concat ('%', ?, '%')
+			GROUP BY
+				p.id;
 		`,
 		[title]
 	);
 
-const findByContent = (content: string): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
+const findByContent = (content: string): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
 		/* sql */ `
 			SELECT
-				*
+				p.*,
+				a.username,
+				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
-				patterns
+				patterns p
+				JOIN authors a ON a.id = p.author_id
+				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN tags t ON t.id = pt.tag_id
 			WHERE
-				content LIKE concat ('%', ?, '%')
+				p.content LIKE concat ('%', ?, '%')
+			GROUP BY
+				p.id;
 		`,
 		[content]
 	);
 
 //Tags query
-const findByTags = (tag: number): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
+const findByTags = (tag: number): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
 		/* sql */ `
 			SELECT
-				p.id,
-				p.author_id,
-				p.title,
-				p.content,
-				p.created_at
+				p.*,
+				a.username,
+				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
 				patterns p
-				JOIN pattern_tags pt ON p.id = pt.pattern_id
-				JOIN tags t ON pt.tag_id = t.id
+				JOIN authors a ON a.id = p.author_id
+				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN tags t ON t.id = pt.tag_id
 			WHERE
-				t.id = ?;
+				t.id = ?
+			GROUP BY
+				p.id;
 		`,
 		[tag]
 	);
 
-const findByTagsStrict = (tags: number[]): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
+const findByTagsStrict = (tags: number[]): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
 		/* sql */ `
 			SELECT
 				p.id,
