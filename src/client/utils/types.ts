@@ -33,7 +33,7 @@ export type Tag = {
 };
 
 export type AdminPageState = {
-	patterns: Pattern[];
+	patterns: PatternObject[];
 	tags: Tag[];
 	logs: Log[];
 	filteredLogs: Log[];
@@ -65,24 +65,27 @@ export type AddPatternPageProps = {
  *Author type declaration
  */
 export type Author = {
-	id?: string;
-	username?: string;
-	email?: string;
-	patternsAuthored?: string[];
-	patternsFavorited?: string[];
-	commentsAuthored?: string[];
-	role?: 'user' | 'admin';
+	id: string;
+	username: string;
+	email: string;
+	patternsAuthored: string[];
+	patternsFavorited: string[];
+	commentsAuthored: number[];
+	role: 'user' | 'admin';
 };
 
-export interface AuthState extends Author {
+export type AuthState = {
 	authenticated: boolean;
-}
+	authorData: Author | null;
+};
 
 /**
  * Tying the url to a name
  */
 export enum ELocations {
+	// eslint-disable-next-line no-unused-vars
 	CreatePattern = '/patterns/new',
+	// eslint-disable-next-line no-unused-vars
 	FavoritePatterns = '/patterns/favorites',
 }
 
@@ -148,3 +151,25 @@ export type NewPattern = {
 };
 
 export type SearchFunction = (searchString: string) => Promise<PatternObject[]>;
+
+export const loadingPattern = {
+	pattern: {
+		id: '0',
+		author_id: 'Loading...',
+		username: '',
+		title: 'Loading...',
+		content: 'Loading...',
+		created_at: 'Loading...',
+	},
+	tags: [],
+};
+
+export const undefinedUser: Author = {
+	id: '',
+	username: '',
+	email: '',
+	patternsAuthored: [],
+	patternsFavorited: [],
+	commentsAuthored: [],
+	role: 'user',
+};

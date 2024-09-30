@@ -36,8 +36,6 @@ const addNewComment = async (values: {
 	content: string;
 }): Promise<ResultSetHeader> => {
 	const { author_id, pattern_id, content } = values;
-	console.log(`DB query`, author_id, pattern_id, content);
-
 	const sanitizedValues = [author_id, pattern_id, content];
 	const returnedHeaders = await QueryMetadata(
 		/* sql */ 'INSERT INTO pattern_comments (author_id, pattern_id, content) VALUES (?, ?, ?)',

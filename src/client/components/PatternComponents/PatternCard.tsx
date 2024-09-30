@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import LockIcon from './LockIcon';
 import { PatternObject } from '../../utils/types';
 import AssociatedTagList from '../AssociatedTagList';
+import FavIcon from './FavIcon';
+import { AuthContext } from '../AuthComponents/AuthProvider';
 
 interface PatternCardProps {
 	patternObject: PatternObject;
@@ -12,45 +14,25 @@ interface PatternCardProps {
 }
 
 const PatternCard = ({ patternObject, featured = false }: PatternCardProps) => {
-	if (featured) {
-		return (
-			<div className="my-2 mx-4">
-				<div className="m-2">
-					<Link
-						className="text-color-white text-decoration-none"
-						style={{ fontSize: '30px' }}
-						to={`/patterns/${patternObject.pattern.id}`}
-					>
-						{patternObject.pattern.title}
-					</Link>
-					<p key={`pattern-card-para-${patternObject.pattern.id}`}>
-						{patternObject.pattern.content.slice(0, 200)}...
-					</p>
-					<div className="d-flex flex-column">
-						<small>
-							<i>Author: {patternObject.pattern.username}</i>{' '}
-						</small>
-						<small>
-							{dayjs(patternObject.pattern.created_at).format('MMMM D, YYYY')}
-						</small>
-					</div>
-				</div>
-			</div>
-		);
-	}
+	const { authState } = useContext(AuthContext);
 
 	return (
 		<div className="my-2 mx-4">
 			<div className="m-2">
-				<div className="d-flex align-items-center justify-content-between">
-					<Link
-						className={`link font-color-primary ${featured ? 'text-white' : 'text-pink'}`}
-						to={`/patterns/${patternObject.pattern.id}`}
-						style={{ fontSize: featured ? '30px' : '25px' }}
-					>
-						{patternObject.pattern.title}
-					</Link>
-					{patternObject.pattern.paid === 'true' && <LockIcon />}
+				<div className="d-flex flex-row justify-content-between align-items-center">
+					<div className="d-flex align-items-center justify-content-start">
+						<Link
+							className={`${featured ? 'link-white' : 'link-pink'}`}
+							to={`/patterns/${patternObject.pattern.id}`}
+							style={{ fontSize: featured ? '30px' : '25px' }}
+						>
+							{patternObject.pattern.title}
+						</Link>
+						{patternObject.pattern.paid === 'true' && <LockIcon size={20} />}
+					</div>
+					{authState.authenticated && !featured && (
+						<FavIcon patternId={patternObject.pattern.id} size={20} />
+					)}
 				</div>
 				<p key={`pattern-card-para-${patternObject.pattern.id}`}>
 					{patternObject.pattern.content.slice(0, 200)}...
@@ -58,6 +40,7 @@ const PatternCard = ({ patternObject, featured = false }: PatternCardProps) => {
 				<small>
 					{dayjs(patternObject.pattern.created_at).format('MMMM D, YYYY')}
 				</small>
+				<small>{patternObject.pattern.username}</small>
 
 				<br />
 				{!featured && patternObject.tags?.length > 0 && (

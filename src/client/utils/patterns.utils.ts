@@ -49,14 +49,3 @@ export function sortByDate(
 	// }
 }
 
-export const loadingPattern = {
-	pattern: {
-		id: '0',
-		author_id: 'Loading...',
-		username: '',
-		title: 'Loading...',
-		content: 'Loading...',
-		created_at: 'Loading...',
-	},
-	tags: [],
-};

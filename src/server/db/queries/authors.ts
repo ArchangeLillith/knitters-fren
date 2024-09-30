@@ -7,15 +7,41 @@ import { Query, QueryMetadata } from '../query';
 const all = (): Promise<AuthorsTable> =>
 	Query<AuthorsTable>(/* sql */ 'SELECT * FROM authors;');
 
+/**
+ * @param id - autor id as a string
+ * @returns an object of {
+ * id: string,
+ * username: string,
+ * email: string,
+ * role: user | admin,
+ * patternsAuthored: [] <- could be null inside as an entry, needs filtering
+ * patternsFavorited: [] <- same as last
+ * commentsAuthored: [] <- same as last
+ * }
+ */
 const one = async (id: string): Promise<AuthorsTable | undefined> => {
 	const authors: AuthorsTable[] = await Query<AuthorsTable[]>(
 		/* sql */ `
 			SELECT
-				*
+				a.id,
+				a.username,
+				a.email,
+				a.role,
+				JSON_ARRAYAGG (p.id) AS patternsAuthored,
+				JSON_ARRAYAGG (fp.pattern_id) AS patternsFavorited,
+				JSON_ARRAYAGG (pc.id) AS commentsAuthored
 			FROM
-				authors
+				authors a
+				LEFT JOIN patterns p ON p.author_id = a.id
+				LEFT JOIN favorite_patterns fp ON fp.author_id = a.id
+				LEFT JOIN pattern_comments pc ON pc.author_id = a.id
 			WHERE
-				id = ?;
+				a.id = ?
+			GROUP BY
+				a.id,
+				a.username,
+				a.email,
+				a.role;
 		`,
 		[id]
 	);

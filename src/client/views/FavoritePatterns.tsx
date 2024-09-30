@@ -5,29 +5,36 @@ import AuthWrapper from '../components/AuthComponents/AuthWrapper';
 import Container from '../components/Container';
 import PatternCard from '../components/PatternComponents/PatternCard';
 import useFetchData from '../hooks/useFetchData';
-import { Pattern } from '../utils/types';
+import { PatternObject } from '../utils/types';
 
 const FavoritePatterns = () => {
 	const { authState } = useContext(AuthContext);
-	const [patterns, setPatterns] = useState<Pattern[]>([]);
-	const [noFavoritesError, setNoFavoritesError] = useState<boolean>(false);
+	const author_id = authState.authorData?.id;
+	const [patterns, setPatterns] = useState<PatternObject[]>([]);
+	const [noFavorites, setNoFavorites] = useState<boolean>(false);
 
 	const fetchConfigs = useMemo(
-		() => [{ key: 'patterns', url: `/api/favorite_patterns/${authState.id}` }],
-		[authState.id]
+		() => [
+			{
+				key: 'patterns',
+				url: `/api/favorite_patterns/${author_id}`,
+			},
+		],
+		[author_id]
 	);
 
-	const { data, loading, error } = useFetchData<{ patterns: Pattern[] }>(
+	const { data, loading, error } = useFetchData<{ patterns: PatternObject[] }>(
 		fetchConfigs
 	);
 
 	useEffect(() => {
+		console.log(`DATAAA`, data);
 		if (!data || !data.patterns) return;
 		if (data.patterns.length === 0) {
-			setNoFavoritesError(true);
+			setNoFavorites(true);
 		} else {
 			setPatterns(data.patterns);
-			setNoFavoritesError(false);
+			setNoFavorites(false);
 		}
 	}, [data]);
 
@@ -42,12 +49,12 @@ const FavoritePatterns = () => {
 						patterns.map(pattern => (
 							<div
 								className="rounded w-100 bg-soft m-2 border-pink"
-								key={`${pattern.id}-container`}
+								key={`${pattern.pattern.id}-container`}
 							>
-								<PatternCard pattern={pattern} />
+								<PatternCard patternObject={pattern} />
 							</div>
 						))
-					) : noFavoritesError ? (
+					) : noFavorites ? (
 						<div>No favs TT_TT</div>
 					) : null}
 				</div>

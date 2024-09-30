@@ -1,8 +1,9 @@
 import React, { createContext, useState, useEffect } from 'react';
 
 import authService from '../../services/auth';
+import favoritesService from '../../services/favorites';
 import storage from '../../utils/storage';
-import { Author, AuthState } from '../../utils/types';
+import { AuthState, undefinedUser } from '../../utils/types';
 
 /**
  * Typing for the auth state
@@ -13,31 +14,32 @@ interface AuthContextType {
 	setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
 	loginToAuthState: (token: string) => void;
 	logoutFromAuthState: () => void;
-	updateUserData: (userData: Partial<Author>) => void;
+	updateUserData: (userData: Partial<AuthState>) => void;
+	handleFavPatternChange: (
+		eventButton: React.MouseEvent<HTMLButtonElement, MouseEvent>
+	) => void;
 }
 
 /**
  * Auth state object that's going to get used by other components, initialized here
  */
 export const AuthContext = createContext<AuthContextType>({
-	authState: { authenticated: false },
+	authState: { authenticated: false, authorData: undefinedUser },
 	loading: false,
 	setAuthState: () => {},
 	loginToAuthState: () => {},
 	logoutFromAuthState: () => {},
 	updateUserData: () => {},
+	handleFavPatternChange: () => {},
 });
 
 interface AuthProviderProps {
 	children: React.ReactNode;
 }
-
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [authState, setAuthState] = useState<AuthState>({
 		authenticated: false,
-		id: undefined,
-		username: '',
-		role: 'user',
+		authorData: null,
 	});
 
 	const [loading, setLoading] = useState(true);
@@ -49,9 +51,9 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const loginToAuthState = async (token: string) => {
 		try {
 			const userData = await authService.getUserFromToken(token);
-			setAuthState({ authenticated: true, ...userData });
+			setAuthState({ authenticated: true, authorData: userData });
 		} catch (error) {
-			setAuthState({ authenticated: false });
+			setAuthState({ authenticated: false, authorData: null });
 			alert(error);
 		}
 	};
@@ -60,18 +62,48 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	 * The function that resets a user in auth state when they log out
 	 */
 	const logoutFromAuthState = () => {
-		setAuthState({ authenticated: false });
+		setAuthState({ authenticated: false, authorData: null });
 	};
 
 	/**
 	 * Updates the userdata in state for the components to use
 	 * @param userData - The user data to be set in state
 	 */
-	const updateUserData = (userData: Partial<Author>) => {
+	const updateUserData = (userData: Partial<AuthState>) => {
 		setAuthState(prevState => ({
 			...prevState,
 			...userData,
 		}));
+	};
+
+	const handleFavPatternChange = async (
+		eventButton: React.MouseEvent<HTMLButtonElement>
+	) => {
+		const { authorData } = authState;
+		if (!authorData) return;
+
+		const pattern_id = eventButton.currentTarget.id;
+		const isFavorited = authorData.patternsFavorited.some(
+			fav_id => fav_id === pattern_id
+		);
+
+		const result = isFavorited
+			? await favoritesService.removeFavorite(authorData.id, pattern_id)
+			: await favoritesService.addFavorite(authorData.id, pattern_id);
+
+		if (result.affectedRows > 0) {
+			const newFavs = isFavorited
+				? authorData.patternsFavorited.filter(fav_id => fav_id !== pattern_id)
+				: [...authorData.patternsFavorited, pattern_id];
+
+			setAuthState(prevState => ({
+				...prevState,
+				authorData: {
+					...authorData,
+					patternsFavorited: newFavs,
+				},
+			}));
+		}
 	};
 
 	/**
@@ -80,12 +112,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	useEffect(() => {
 		const checkUser = async () => {
 			const token = storage.getToken();
-			console.log('Tokennnn', token); // Debug log: check if token exists
+			console.log('Tokennnn', token);
 
 			if (!token) {
 				console.log('No token found, setting auth to false.');
-				setAuthState({ authenticated: false });
-				setLoading(false);
+				setAuthState({ authenticated: false, authorData: null });
 				return;
 			}
 
@@ -96,22 +127,27 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					console.log('User data retrieved:', userData); // Debug log: check if user data is correct
 					setAuthState({
 						authenticated: true,
-						id: userData.id,
-						username: userData.username,
-						role: userData.role,
+						authorData: {
+							id: userData.id,
+							username: userData.username,
+							role: userData.role,
+							email: userData.email,
+							patternsAuthored: userData.patternsAuthored,
+							patternsFavorited: userData.patternsFavorited,
+							commentsAuthored: userData.commentsAuthored,
+						},
 					});
 				} else {
 					console.log('User data is null or undefined, setting auth to false.');
-					setAuthState({ authenticated: false });
+					setAuthState({ authenticated: false, authorData: null });
 				}
 			} catch (error) {
-				console.error('Error fetching user data:', error); // Log the exact error
-				setAuthState({ authenticated: false });
+				console.error('Error fetching user data:', error);
+				setAuthState({ authenticated: false, authorData: null });
 			} finally {
 				setLoading(false);
 			}
 		};
-
 		checkUser();
 	}, []);
 
@@ -124,6 +160,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				loginToAuthState,
 				logoutFromAuthState,
 				updateUserData,
+				handleFavPatternChange,
 			}}
 		>
 			{children}

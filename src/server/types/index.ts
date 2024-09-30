@@ -1,4 +1,5 @@
 declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		export interface Request {
 			currentUser?: AuthorsTable;
@@ -8,22 +9,24 @@ declare global {
 }
 
 export interface PatternTable {
-	id?: string;
+	id: string;
 	author_id?: string;
 	title?: string;
 	content?: string;
 	created_at?: string;
 	link?: string;
 	paid?: 'true' | 'false';
+	username: string;
 }
 
 export interface AuthorsTable {
-	id?: string;
-	username?: string;
-	email?: string;
-	password?: string;
-	created_at?: string;
-	role?: string;
+	id: string;
+	username: string;
+	email: string;
+	role: 'user' | 'admin';
+	patternsAuthored: number[] | null[];
+	patternsFavorited: string[] | null[];
+	commentsAuthored: string[] | null[];
 }
 
 //The type that's used in sql queries because the tags are aggregated so slapping a TagsTable on it doens't work

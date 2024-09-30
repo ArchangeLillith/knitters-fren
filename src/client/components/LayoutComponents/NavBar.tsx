@@ -9,6 +9,7 @@ const NavBar = () => {
 	const { logoutFromAuthState } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
+	const { authorData } = authState;
 
 	/**
 	 * Logs the user out by removing the token and calling to the auth state to reset the state
@@ -86,9 +87,9 @@ const NavBar = () => {
 							</Link>
 						</li>
 					</ul>
-					{authState.username && (
+					{authorData?.username && (
 						<div className="me-3 text-soft">
-							<div>Welcome back {authState.username}!</div>
+							<div>Welcome back {authorData?.username}!</div>
 						</div>
 					)}
 					{authState.authenticated && (
@@ -98,7 +99,7 @@ const NavBar = () => {
 							</button>
 						</div>
 					)}
-					{authState.role === 'admin' && (
+					{authorData?.role === 'admin' && (
 						<div>
 							<Link to="/admin">Admin Panel</Link>
 						</div>

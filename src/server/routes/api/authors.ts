@@ -4,6 +4,7 @@ import db from '../../db';
 import { verifyAdmin } from '../../middlewares/verifyAdmin.mw';
 import { verifyToken } from '../../middlewares/verifyToken.mw';
 import type { AuthorsTable } from '../../types';
+import { cleanAuthor } from '../../utils/functions';
 import { logActivity } from '../../utils/logging';
 
 const router = Router();
@@ -58,10 +59,9 @@ router.get('/:id', async (req, res, next) => {
 		const id = req.params.id;
 		//Destructures the one author
 		const author: AuthorsTable = await db.authors.one(id);
-		delete author.password;
-		delete author.email;
-		delete author.created_at;
-		res.json(author);
+		const cleanedAuthor = cleanAuthor(author);
+		console.log(`cleaned`, cleanedAuthor);
+		res.json(cleanedAuthor);
 	} catch (error) {
 		next(error);
 	}

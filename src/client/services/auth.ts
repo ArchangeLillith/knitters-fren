@@ -54,6 +54,7 @@ const getUserFromToken = async (token: string): Promise<Author> => {
 		const decoded: any = jwtDecode(token);
 		const userId: string = decoded.id;
 		const user: Author = await baseService.get(`/api/authors/${userId}`);
+		console.log(`userrrrrrrr`, user);
 		if (!user) throw new Error("user couldn't be fetched TT_TT");
 		return user;
 	} catch (error) {

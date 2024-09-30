@@ -18,8 +18,8 @@ import {
 	PatternComment,
 	AdminPageState as PageState,
 	Tag,
-	Pattern,
 	Author,
+	PatternObject,
 } from '../utils/types';
 
 const AdminPanel = () => {
@@ -38,7 +38,7 @@ const AdminPanel = () => {
 
 	type FetchDataResponse = {
 		tags: Tag[];
-		patterns: Pattern[];
+		patterns: PatternObject[];
 		logs: Log[];
 		authors: Author[];
 		comments: PatternComment[];

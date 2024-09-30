@@ -16,7 +16,7 @@ const MostRecentRow: React.FC<PatternCardProps> = ({ pattern, tags }) => {
 				className="d-flex flex-row justify-content-around"
 				key={`${pattern.id}-most-recent`}
 			>
-				<Link to={`/patterns/${pattern.id}`} className="lead w-50 link">
+				<Link to={`/patterns/${pattern.id}`} className="w-50 link-white fs-4">
 					{pattern.title}
 				</Link>
 				<p className="small w-75">{pattern.content.slice(0, 150)}...</p>

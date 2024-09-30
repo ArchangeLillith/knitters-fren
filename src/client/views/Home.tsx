@@ -5,8 +5,8 @@ import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import Container from '../components/Container';
 import PatternCard from '../components/PatternComponents/PatternCard';
 import useFetchData from '../hooks/useFetchData';
-import { loadingPattern, sortByDate } from '../utils/patterns.utils';
-import { PatternObject } from '../utils/types';
+import { sortByDate } from '../utils/patterns.utils';
+import { PatternObject, loadingPattern } from '../utils/types';
 
 interface PatternProps {
 	allPatterns: PatternObject[];
@@ -111,7 +111,8 @@ const Home = () => {
 							className="my-2 w-75 m-auto"
 						>
 							{pattern.pattern.paid === 'true' &&
-								pattern.pattern.author_id === authState.id && (
+								authState.authorData &&
+								pattern.pattern.author_id === authState.authorData.id && (
 									<div
 										key={`all-pattern-inner-wrapper-${pattern.pattern.title}`}
 										className="border my-2 border-black rounded"
