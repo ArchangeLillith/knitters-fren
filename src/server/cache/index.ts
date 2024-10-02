@@ -3,9 +3,9 @@ const cache = new Map();
 //Gets cached data
 export const getCache = (key: string) => {
 	if (cache.has(key)) {
-		console.log(`id`, key);
+		console.log(`Cache key attempting to be accessed:`, key);
 		const { value, dirty } = cache.get(key);
-		console.log(`value, dirty`, value, dirty);
+		console.log(`Cache value, dirty boolean:`, value, dirty);
 		if (dirty) {
 			console.log(`Cache was dirty, dumping`);
 			cache.delete(key);

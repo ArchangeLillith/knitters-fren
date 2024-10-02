@@ -10,7 +10,9 @@ export const formatAndRemovePaid = (
 ): PatternObject[] => {
 	const formatted: PatternObject[] = queryToPatternObject(array);
 	console.log(`formatted`, formatted);
-	const withoutPaid: PatternObject[] = removePaid(formatted, author_id);
+	const withoutNullTags = removeNullTags(formatted);
+	console.log(`Without null tags`, withoutNullTags);
+	const withoutPaid: PatternObject[] = removePaid(withoutNullTags, author_id);
 	console.log(`Withoutpaid`, withoutPaid);
 	return withoutPaid;
 };
@@ -19,6 +21,7 @@ export const queryToPatternObject = (queryReturn: PatternObjectQuery[]) => {
 	if (queryReturn.length === 0) {
 		return [];
 	}
+	console.log(`QUERY RETURN`, queryReturn);
 	const patternsObject: PatternObject[] = [];
 	for (const patternObj of queryReturn) {
 		const patternObject: PatternObject = transformPatternObject(patternObj);
@@ -27,9 +30,18 @@ export const queryToPatternObject = (queryReturn: PatternObjectQuery[]) => {
 	return patternsObject;
 };
 
+export const removeNullTags = (pattern: PatternObject[]) => {
+	for (let i = 0; i < pattern.length; i++) {
+		const newTags = pattern[i].tags.filter(tag => tag.id !== null);
+		pattern[i].tags = newTags;
+	}
+	return pattern;
+};
+
 export const transformPatternObject = (
 	result: PatternObjectQuery
 ): PatternObject => {
+	const tags = result.tags.length > 0 ? result.tags : [];
 	const pattern: PatternObject = {
 		id: result.id,
 		title: result.title,
@@ -39,7 +51,7 @@ export const transformPatternObject = (
 		created_at: result.created_at,
 		link: result.link,
 		username: result.username,
-		tags: result.tags,
+		tags,
 	};
 	return pattern;
 };

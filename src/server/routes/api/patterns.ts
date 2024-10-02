@@ -11,6 +11,7 @@ import { verifyToken } from '../../middlewares/verifyToken.mw';
 import { PatternObject, PatternObjectQuery } from '../../types';
 import {
 	formatAndRemovePaid,
+	removeNullTags,
 	removePaid,
 	transformPatternObject,
 } from '../../utils/functions';
@@ -28,6 +29,7 @@ router.get('/', verifyToken, async (req, res, next) => {
 
 		if (cachedRes !== null) {
 			patternsObject = removePaid(cachedRes, author_id);
+			patternsObject = removeNullTags(patternsObject);
 		} else {
 			const result: PatternObjectQuery[] = await db.patterns.all();
 			patternsObject = formatAndRemovePaid(result, author_id);
