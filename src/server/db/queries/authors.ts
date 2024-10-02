@@ -31,7 +31,7 @@ const one = async (id: string): Promise<AuthorsTable | undefined> => {
 				JSON_ARRAYAGG (fp.pattern_id) AS patternsFavorited,
 				JSON_ARRAYAGG (pc.id) AS commentsAuthored
 			FROM
-				authors a
+				kf_authors a
 				LEFT JOIN kf_patterns p ON p.author_id = a.id
 				LEFT JOIN kf_favorite_patterns fp ON fp.author_id = a.id
 				LEFT JOIN kf_pattern_comments pc ON pc.author_id = a.id

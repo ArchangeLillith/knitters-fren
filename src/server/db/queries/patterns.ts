@@ -15,10 +15,10 @@ const all = (): Promise<PatternObjectQuery[]> =>
 			a.username,
 			JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 		FROM
-			patterns p
-			JOIN authors a ON a.id = p.author_id
-			LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
-			LEFT JOIN tags t ON t.id = pt.tag_id
+			kf_patterns p
+			JOIN kf_authors a ON a.id = p.author_id
+			LEFT JOIN kf_pattern_tags pt ON pt.pattern_id = p.id
+			LEFT JOIN kf_tags t ON t.id = pt.tag_id
 		GROUP BY
 			p.id;
 	`);
