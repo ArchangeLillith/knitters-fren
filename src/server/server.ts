@@ -50,13 +50,14 @@ if (process.env.NODE_ENV === 'production') {
 			'/profile',
 			'/register',
 			'/patterns',
+			'/patterns/*',
 			'/gallery',
 			'/search',
 			'/favorites',
 			'/patterns/new',
 			'/admin',
 		],
-		(req, res) => res.sendFile(path.join(__dirname, '../../public/index.html'))
+		(req, res) => res.sendFile(path.join(__dirname, '../public/index.html'))
 	);
 }
 
