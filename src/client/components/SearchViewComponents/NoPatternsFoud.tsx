@@ -13,7 +13,7 @@ const NoPatternsFound = () => {
 					happy to assist!
 				</p>
 				<img
-					src="s3://knitters-fren/website-images/book-nanachi.png"
+					src="https://knitters-fren.s3.ca-central-1.amazonaws.com/website-images/book-nanachi.png"
 					alt="book-nanachi"
 					style={{
 						width: '300px',

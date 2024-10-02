@@ -18,7 +18,7 @@ const Gallery = () => {
 				</div>
 				<img
 					style={{ width: '500px' }}
-					src="s3://knitters-fren/website-images/sleeping-with-mitty.png"
+					src="https://knitters-fren.s3.ca-central-1.amazonaws.com/website-images/sleeping-with-mitty.png"
 					alt="sleeping..."
 					className="sleeping-nanachi "
 				/>

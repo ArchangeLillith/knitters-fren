@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import bcrypt from 'bcrypt';
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,12 +16,10 @@ router.post('/', async (req, res, next) => {
 		const { email, password, username } = req.body;
 		const banned = await db.banned.findBannedByEmailOrUser(email, username);
 		if (banned.length > 0) {
-			return res
-				.status(403)
-				.json({
-					message:
-						'This email or username is associated with a banned account. Please choose another or contact support.',
-				});
+			return res.status(403).json({
+				message:
+					'This email or username is associated with a banned account. Please choose another or contact support.',
+			});
 		}
 		if (!email || !isValidEmail(email)) {
 			const error = new Error('invalid email');
