@@ -11,14 +11,17 @@ import {
 import { configurePassport } from './middlewares/passport.mw';
 import routes from './routes';
 
-
 const app = express();
 
-console.log(`Recomiled server.ts`);
+console.log(`Recompiled server.ts`);
+
 // Apply CORS middleware for all environments
 app.use(
 	cors({
-		origin: ['http://localhost:8000'],
+		origin:
+			process.env.NODE_ENV === 'production'
+				? ['https://your-production-domain.com']
+				: ['http://localhost:8000'],
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
 	})
@@ -26,33 +29,31 @@ app.use(
 
 console.log(`Running Node.js version: ${process.version}`);
 configurePassport(app);
-app.use(express.static('public'));
-app.use(morgan('dev'));
+
 app.use(express.json());
-app.use(routes);
-//Refactor take these into an array elsewhere
-app.get(
-	[
-		'/',
-		'/login',
-		'/profile',
-		'/register',
-		'/patterns',
-		'/gallery',
-		'/search',
-		'/favorites',
-		'/patterns/new',
-		'/admin',
-	],
-	(req, res) => res.sendFile(path.join(__dirname, '../../public/index.html'))
-);
 
 if (process.env.NODE_ENV === 'production') {
-	app.use(express.static('public'));
+	// Serve static files only in production
+	app.use(express.static(path.join(__dirname, '../../public')));
 }
+
+// Logging based on environment
+if (process.env.NODE_ENV === 'development') {
+	app.use(morgan('dev'));
+}
+
+// Routes and APIs
+app.use(routes);
+
+// Handle client-side routing by sending index.html for non-API routes
+app.get('/*', (req, res) =>
+	res.sendFile(path.join(__dirname, '../../public/index.html'))
+);
+
+// Error Handlers
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
 
-app.listen(config.app.port, () =>
-	console.log(`Server running on port ${config.app.port}~`)
-);
+// Dynamic port binding
+const PORT = process.env.PORT || config.app.port;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}~`));
