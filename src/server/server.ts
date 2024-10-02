@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Serve static files only in production
 if (process.env.NODE_ENV === 'production') {
-	const staticPath = path.join(__dirname, '../../public');
+	const staticPath = path.join(__dirname, '../public');
 	app.use(express.static(staticPath));
 
 	// Handle client-side routing (serve index.html for any unmatched route)
