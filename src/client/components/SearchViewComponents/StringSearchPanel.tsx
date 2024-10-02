@@ -25,6 +25,12 @@ const StringSearchPanel: React.FC<StringSearchPanelProps> = ({
 		}
 	}, []);
 
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			e.preventDefault(); // Prevent form submission on Enter
+		}
+	};
+
 	const queryStringChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		e.preventDefault();
 		setPageState(prev => ({
@@ -44,6 +50,7 @@ const StringSearchPanel: React.FC<StringSearchPanelProps> = ({
 						ref={inputRef}
 						className="w-25 form-control"
 						onChange={queryStringChange}
+						onKeyDown={handleKeyDown}
 						value={pageState.queryString}
 						placeholder="Start typing!"
 					></input>

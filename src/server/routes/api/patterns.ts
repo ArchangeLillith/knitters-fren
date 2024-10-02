@@ -13,7 +13,6 @@ import {
 	formatAndRemovePaid,
 	removeNullTags,
 	removePaid,
-	transformPatternObject,
 } from '../../utils/functions';
 import { logActivity } from '../../utils/logging';
 
@@ -47,26 +46,27 @@ router.get('/', verifyToken, async (req, res, next) => {
 });
 
 //GET api/patterns/:id
-router.get('/:id', async (req, res, next) => {
-	const id = req.params.id;
-	const cachedRes = getCache(`allPatterns.${id}`);
+router.get('/:id', verifyToken, async (req, res, next) => {
+	try {
+		const id = req.params.id;
+		const author_id = req.currentUser ? req.currentUser.id : null;
+		const cachedRes = getCache(`allPatterns.${id}`);
+		let patternObject: PatternObject[] = [cachedRes];
 
-	if (cachedRes !== null) {
-		res.json(cachedRes);
-	} else {
-		try {
+		if (cachedRes !== null) {
+			patternObject = removePaid(cachedRes, author_id);
+			patternObject = removeNullTags(patternObject);
+		} else {
 			const result: PatternObjectQuery = await db.patterns.oneById(id);
-			if (result) {
-				const patternObject: PatternObject = transformPatternObject(result);
-				setCache(`allPatterns.${id}`, patternObject);
-				res.json(patternObject);
-			} else {
-				res.status(404).json({ message: 'Pattern not found' });
+			if (result.paid && author_id !== result.author_id) {
+				res.status(401).json({ message: 'Pattern inaccessible' });
 			}
-		} catch (error) {
-			//Goes to our global error handler
-			next(error);
+
+			setCache(`allPatterns.${id}`, patternObject);
+			res.json(patternObject);
 		}
+	} catch (error) {
+		next(error);
 	}
 });
 
