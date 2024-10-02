@@ -43,14 +43,15 @@ if (process.env.NODE_ENV === 'production') {
 	const staticPath = path.join(__dirname, '../public');
 	app.use(express.static(staticPath));
 
+	// Routes and API endpoints
+	app.use('/api', routes);
+	app.use('/auth', routes);
+
 	// Handle client-side routing (serve index.html for any unmatched route)
 	app.get('/*', (req, res) => {
 		res.sendFile(path.join(staticPath, 'index.html'));
 	});
 }
-
-// Routes and API endpoints
-app.use(routes);
 
 // Handle 404 errors
 app.use(notFoundHandler);
