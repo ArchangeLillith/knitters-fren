@@ -22,11 +22,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
 	) => {
 		submitButton.preventDefault();
 		if (!authState.authorData?.id || !id) return;
-		commentService.addNewComment(
-			pattern.pattern.id,
-			authState.authorData.id,
-			content
-		);
+		commentService.addNewComment(pattern.id, authState.authorData.id, content);
 
 		//needed, we can't use a hook here so we have to use the comment service one
 		commentService

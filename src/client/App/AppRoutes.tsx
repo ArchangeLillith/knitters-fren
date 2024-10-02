@@ -7,6 +7,7 @@ import NavBar from '../components/LayoutComponents/NavBar';
 import AddPattern from '../views/AddPattern';
 import AdminPanel from '../views/AdminPanel';
 import FavoritePatterns from '../views/FavoritePatterns';
+import Gallery from '../views/Gallery';
 import Home from '../views/Home';
 import Login from '../views/Login';
 import NotFound from '../views/NotFound';
@@ -22,6 +23,7 @@ const App = () => {
 			<NavBar />
 			<Routes>
 				<Route path="/" element={<Home />}></Route>
+				<Route path="/gallery" element={<Gallery />}></Route>
 				<Route path="/patterns" element={<Patterns />}></Route>
 				<Route path="/favorites" element={<FavoritePatterns />}></Route>
 				<Route path="/search" element={<SearchView />}></Route>

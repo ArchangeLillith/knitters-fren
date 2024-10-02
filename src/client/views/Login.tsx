@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, {
 	FormEvent,
 	useContext,
@@ -9,6 +10,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import Container from '../components/Container';
+import { useFadeIn } from '../hooks/useFadeIn';
 import loginService from '../services/auth';
 import { locationStrings } from '../utils/types';
 
@@ -16,6 +18,7 @@ const Login = () => {
 	const [password, setPassword] = useState<string>('');
 	const [username, setUsername] = useState<string>('');
 	const inputRef = useRef<HTMLInputElement>(null);
+	const isVisible = useFadeIn(10); // 100ms delay
 	const { loginToAuthState } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const { state } = useLocation();
@@ -44,7 +47,9 @@ const Login = () => {
 
 	return (
 		<Container>
-			<div className="d-flex align-items-center flex-column justify-content-center">
+			<div
+				className={`fade-in ${isVisible ? 'visible d-flex align-items-center flex-column justify-content-center' : 'd-flex align-items-center flex-column justify-content-center'}`}
+			>
 				{fromLocation && (
 					<div className="d-flex align-items-center">
 						<div>

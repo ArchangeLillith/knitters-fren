@@ -8,13 +8,21 @@ type FetchConfig = {
 };
 
 const useFetchData = <T extends Record<string, unknown>>(
-	configs: FetchConfig[]
+	configs: FetchConfig[],
+	authLoading?: boolean
 ) => {
+	console.log(`useFetch enterede`);
 	const [data, setData] = useState<T>({} as T);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<null | string>(null);
 
 	useEffect(() => {
+		// Only fetch if authLoading is false
+		if (authLoading) {
+			setLoading(true); // Optional: you can set the loading state explicitly here
+			return; // Do not proceed with fetch if auth is still loading
+		}
+
 		const fetchData = async () => {
 			try {
 				const responses = await Promise.all(
@@ -25,18 +33,17 @@ const useFetchData = <T extends Record<string, unknown>>(
 					(acc as Record<string, unknown>)[config.key] = responses[index];
 					return acc;
 				}, {} as T);
-
+				console.log(`Fetched data in fetch`, fetchedData);
 				setData(fetchedData);
 			} catch (err) {
-				console.error(err);
+				console.log(`ERROR in fetch,`, err);
 				setError('Failed to load data');
 			} finally {
 				setLoading(false);
 			}
 		};
-
 		fetchData();
-	}, [configs]);
+	}, [configs, authLoading]);
 
 	return { data, loading, error };
 };

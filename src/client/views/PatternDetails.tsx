@@ -38,10 +38,11 @@ const PatternDetails = () => {
 		useFetchData<FetchDataResponse>(fetchConfigs);
 
 	useEffect(() => {
+		console.log('Fetched pattern:', data);
 		if (!data || !data.patternObject) return;
 		const fetchedPattern = data.patternObject;
 		setPattern(fetchedPattern);
-		setAuthor(fetchedPattern.pattern.username);
+		setAuthor(fetchedPattern.username);
 		setComments(data.comments);
 	}, [data]);
 
@@ -56,8 +57,8 @@ const PatternDetails = () => {
 			.catch(e => alert(e));
 	};
 
-	if (loading) <p>Loadig....</p>;
-	if (error) <p>error....</p>;
+	if (loading) return;
+	if (error) return;
 
 	return (
 		id && (
@@ -69,39 +70,35 @@ const PatternDetails = () => {
 								{/* Title and Icons */}
 								<div className="d-flex flex-row justify-content-between align-items-center">
 									<div className="d-flex flex-row align-items-center">
-										<div className="display-4 my-3">
-											{pattern.pattern.title}
-										</div>
-										{pattern.pattern.paid === 'true' && <LockIcon size={30} />}
+										<div className="display-4 my-3">{pattern.title}</div>
+										{pattern.paid === 'true' && <LockIcon size={30} />}
 									</div>
 									{authState.authenticated && (
-										<FavIcon patternId={pattern.pattern.id} size={30} />
+										<FavIcon patternId={pattern.id} size={30} />
 									)}
 								</div>
 
 								{/* Pattern PDF Link */}
-								{pattern.pattern.link !== '' && (
+								{pattern.link !== '' && (
 									<object
 										width="100%"
 										height="1000"
-										data={pattern.pattern.link}
+										data={pattern.link}
 										type="application/pdf"
 										aria-label="pattern pdf"
 									></object>
 								)}
 
 								{/* Pattern Content */}
-								<p key={`pattern-card-para-${pattern.pattern.id}`}>
-									{pattern.pattern.content}
-								</p>
+								<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>
 								<small>Author: {author}</small>
 								<small
 									className="m-2"
-									key={`pattern-card-created-at-${pattern.pattern.id}`}
+									key={`pattern-card-created-at-${pattern.id}`}
 								>
 									<i>
 										Submitted:{' '}
-										{dayjs(pattern.pattern.created_at).format('MMMM D, YYYY')}
+										{dayjs(pattern.created_at).format('MMMM D, YYYY')}
 									</i>
 								</small>
 								<br />
@@ -110,7 +107,7 @@ const PatternDetails = () => {
 								{pattern.tags && <AssociatedTagList tags={pattern.tags} />}
 
 								{/* Author Actions (Delete / Update Buttons) */}
-								{pattern.pattern.author_id === authState.authorData?.id && (
+								{pattern.author_id === authState.authorData?.id && (
 									<div className="ms-auto">
 										<button
 											onClick={handleDelete}

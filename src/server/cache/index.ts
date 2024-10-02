@@ -3,8 +3,9 @@ const cache = new Map();
 //Gets cached data
 export const getCache = (key: string) => {
 	if (cache.has(key)) {
+		console.log(`id`, key);
 		const { value, dirty } = cache.get(key);
-
+		console.log(`value, dirty`, value, dirty);
 		if (dirty) {
 			console.log(`Cache was dirty, dumping`);
 			cache.delete(key);
@@ -28,6 +29,7 @@ export const setCache = (key, value, ttl = 3600, dirty = false) => {
 
 export const markCacheAsDirty = (key: string) => {
 	if (cache.has(key)) {
+		console.log(`marking key:`, key);
 		const cachedData = cache.get(key);
 		cachedData.dirty = true;
 		cache.set(key, cachedData);

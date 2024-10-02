@@ -10,6 +10,7 @@ import AllTagsContainer from '../components/AllTagsContainer';
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import AuthWrapper from '../components/AuthComponents/AuthWrapper';
 import Container from '../components/Container';
+import { useFadeIn } from '../hooks/useFadeIn';
 import patternService from '../services/pattern';
 import patternTags from '../services/pattern-tags';
 import {
@@ -22,7 +23,7 @@ import {
 const AddPattern = () => {
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
-
+	const isVisible = useFadeIn(50); // 100ms delay
 	//Initialize state
 	const [state, setState] = useState<PageState>({
 		title: '',
@@ -30,6 +31,7 @@ const AddPattern = () => {
 		content: '',
 		link: '',
 		selectedTags: [],
+		tagsActive: false,
 	});
 
 	//Create the DTO
@@ -37,7 +39,7 @@ const AddPattern = () => {
 		id: uuidv4(),
 		title: state.title,
 		content: state.content,
-		author_id: authState.id!,
+		author_id: authState.authorData?.id || '',
 		link: state.link,
 		paid: state.paid,
 	};
@@ -70,42 +72,47 @@ const AddPattern = () => {
 	return (
 		<AuthWrapper>
 			<Container>
-				<img
-					src="/images/teacup-nanachi.png"
-					alt="teacup-nanachi"
-					style={{
-						width: '250px',
-						position: 'absolute',
-						right: '1%',
-						top: '12%',
-					}}
-				/>
-				<form className="d-flex flex-column my-4 py-4">
-					<div className="form-group flex-grow-1 d-flex flex-column">
-						<PatternTitle state={state} setState={setState} />
-						<div className="d-flex flex-row w-100">
-							<PatternLink state={state} setState={setState} />
-							<PatternPaid state={state} setState={setState} />
+				<div className={`fade-in ${isVisible ? 'visible' : ''}`}>
+					<img
+						src="/images/teacup-nanachi.png"
+						alt="teacup-nanachi"
+						style={{
+							width: '250px',
+							position: 'absolute',
+							right: '1%',
+							top: '12%',
+						}}
+					/>
+					<form className="d-flex flex-column my-4 py-4">
+						<div className="form-group flex-grow-1 d-flex flex-column">
+							<PatternTitle state={state} setState={setState} />
+							<div className="d-flex flex-row w-100">
+								<PatternLink state={state} setState={setState} />
+								<PatternPaid state={state} setState={setState} />
+							</div>
 						</div>
-					</div>
-					<PatternDetails state={state} setState={setState} />
-					<div>
-						<label htmlFor="tags">Choose your tags:</label>
+						<PatternDetails state={state} setState={setState} />
+						<div>
+							<label htmlFor="tags">Choose your tags:</label>
 
-						<AllTagsContainer
-							selectedTags={state.selectedTags}
-							setSelectedTags={setState}
-						/>
-					</div>
-					<div className="d-flex justify-content-center align-items-center">
-						<button
-							className="btn btn-primary py-1 w-25 my-3"
-							onClick={handleSubmit}
-						>
-							Add Pattern~
-						</button>
-					</div>
-				</form>
+							<AllTagsContainer
+								selectedTags={{
+									tagsActive: state.tagsActive,
+									selectedTags: state.selectedTags,
+								}}
+								setSelectedTags={setState}
+							/>
+						</div>
+						<div className="d-flex justify-content-center align-items-center">
+							<button
+								className="btn btn-primary py-1 w-25 my-3"
+								onClick={handleSubmit}
+							>
+								Add Pattern~
+							</button>
+						</div>
+					</form>
+				</div>
 			</Container>
 		</AuthWrapper>
 	);

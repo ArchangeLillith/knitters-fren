@@ -1,6 +1,5 @@
 import { getCache, setCache } from '.';
 import db from '../db';
-import patterns from '../db/queries/patterns';
 import { PatternObjectQuery, PatternObject } from '../types';
 import { transformPatternObject } from '../utils/functions';
 

@@ -7,7 +7,6 @@ import PassportLocal from 'passport-local';
 import config from '../config';
 import db from '../db';
 
-
 export function configurePassport(app: Express) {
 	console.log('Configuring Passport strategies...');
 

@@ -10,7 +10,8 @@ import { verifyAuthor } from '../../middlewares/verifyAuthor.mw';
 import { verifyToken } from '../../middlewares/verifyToken.mw';
 import { PatternObject, PatternObjectQuery } from '../../types';
 import {
-	queryToPatternObject,
+	formatAndRemovePaid,
+	removePaid,
 	transformPatternObject,
 } from '../../utils/functions';
 import { logActivity } from '../../utils/logging';
@@ -18,24 +19,28 @@ import { logActivity } from '../../utils/logging';
 const router = Router();
 
 //GET /api/patterns
-router.get('/', async (req, res, next) => {
-	const cachedRes = getCache('allPatterns');
-	if (cachedRes !== null) {
-		res.json(cachedRes);
-	} else {
-		try {
+router.get('/', verifyToken, async (req, res, next) => {
+	try {
+		const author_id = req.currentUser ? req.currentUser.id : null;
+		const cachedRes: PatternObject[] = getCache('allPatterns');
+
+		let patternsObject: PatternObject[];
+
+		if (cachedRes !== null) {
+			patternsObject = removePaid(cachedRes, author_id);
+		} else {
 			const result: PatternObjectQuery[] = await db.patterns.all();
-			const patternsObject: PatternObject[] = queryToPatternObject(result);
-			if (patternsObject.length === 0) {
-				res.json(patternsObject);
-			} else {
-				setCache(`allPatterns`, patternsObject);
-				buildCache();
-				res.json(patternsObject);
-			}
-		} catch (error) {
-			next(error);
+			patternsObject = formatAndRemovePaid(result, author_id);
 		}
+
+		if (patternsObject.length > 0) {
+			setCache('allPatterns', patternsObject);
+			buildCache();
+		}
+
+		res.json(patternsObject);
+	} catch (error) {
+		next(error);
 	}
 });
 

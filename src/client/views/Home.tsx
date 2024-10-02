@@ -1,21 +1,15 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 
-import MostRecentRow from '../components//PatternComponents/MostRecent';
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import Container from '../components/Container';
+import MostRecent from '../components/PatternComponents/MostRecent';
 import PatternCard from '../components/PatternComponents/PatternCard';
 import useFetchData from '../hooks/useFetchData';
 import { sortByDate } from '../utils/patterns.utils';
-import { PatternObject, loadingPattern } from '../utils/types';
-
-interface PatternProps {
-	allPatterns: PatternObject[];
-	featured: PatternObject;
-	mostRecent: PatternObject[];
-}
+import { PatternObject, PatternProps, loadingPattern } from '../utils/types';
 
 const Home = () => {
-	const { authState } = useContext(AuthContext);
+	const { authState, authLoading } = useContext(AuthContext);
 	const [patterns, setPatterns] = React.useState<PatternProps>({
 		allPatterns: [],
 		featured: loadingPattern,
@@ -23,37 +17,36 @@ const Home = () => {
 	});
 
 	const fetchConfigs = useMemo(
-		() => [{ key: 'allPatterns', url: `/api/patterns/` }],
-		[]
+		() => (authLoading ? [] : [{ key: 'allPatterns', url: `/api/patterns/` }]),
+		[authLoading]
 	);
 
-	const { data, loading, error } = useFetchData<{
+	const { data } = useFetchData<{
 		allPatterns: PatternObject[];
-	}>(fetchConfigs);
+	}>(fetchConfigs, authLoading);
 
 	useEffect(() => {
-		if (!data || !data.allPatterns) return;
+		if (!data || !data.allPatterns || authLoading) return;
 
 		const { allPatterns } = data;
-		console.log(`Alldtat`, allPatterns);
-
-		const freePatterns = allPatterns.filter(
-			pattern => pattern.pattern.paid !== 'true'
-		);
+		const freePatterns = allPatterns.filter(pattern => pattern.paid !== 'true');
 		const sortedPatterns: PatternObject[] = sortByDate(
 			freePatterns
 		) as PatternObject[];
 		const randomNumber = getRandomInt(freePatterns.length - 1);
 
-		setPatterns({
-			allPatterns,
-			featured: freePatterns[randomNumber],
-			mostRecent: sortedPatterns.slice(0, 3),
+		setPatterns(prev => {
+			// Only update if the patterns have changed
+			if (JSON.stringify(prev.allPatterns) === JSON.stringify(allPatterns)) {
+				return prev;
+			}
+			return {
+				allPatterns,
+				featured: freePatterns[randomNumber],
+				mostRecent: sortedPatterns.slice(0, 3),
+			};
 		});
-	}, [data]);
-
-	if (loading) <p>Loading....</p>;
-	if (error) <p>error....</p>;
+	}, [data, authLoading]);
 
 	return (
 		<Container>
@@ -73,11 +66,12 @@ const Home = () => {
 						Featured Pattern:
 					</div>
 					{patterns.featured && (
-						<PatternCard patternObject={patterns.featured} featured={true} />
+						<PatternCard pattern={patterns.featured} featured={true} />
 					)}
 				</div>
 				<div className="mb-5">
 					<img
+						rel="preload"
 						alt="site-logo-sleeping-nanachi"
 						src="/images/Nanachi-logo.png"
 						className="py-4"
@@ -85,19 +79,15 @@ const Home = () => {
 					/>
 				</div>
 			</div>
-			<div className="container-fluid container" key="lower-section-container">
-				<div
-					key="most-recent-wrapper"
-					className="bg-bright text-white w-120 p-4 rounded flex flex-column"
-				>
+			<div className="container-fluid container">
+				<div className="bg-bright text-white w-120 p-4 rounded flex flex-column">
 					<div>
 						<h4 className="text-soft">Most Recent Patterns</h4>
 					</div>
 					{patterns.mostRecent.map(pattern => (
-						<MostRecentRow
-							tags={pattern.tags}
-							pattern={pattern.pattern}
-							key={`${pattern.pattern.id}-most-recent-row`}
+						<MostRecent
+							pattern={pattern}
+							key={`${pattern.id}-most-recent-row`}
 						/>
 					))}
 				</div>
@@ -107,25 +97,25 @@ const Home = () => {
 					<h3 className="mx-4">All Patterns:</h3>
 					{patterns.allPatterns.map(pattern => (
 						<div
-							key={`all-pattern-outer-wrapper-${pattern.pattern.title}`}
+							key={`all-pattern-outer-wrapper-${pattern.title}`}
 							className="my-2 w-75 m-auto"
 						>
-							{pattern.pattern.paid === 'true' &&
+							{pattern.paid === 'true' &&
 								authState.authorData &&
-								pattern.pattern.author_id === authState.authorData.id && (
+								pattern.author_id === authState.authorData.id && (
 									<div
-										key={`all-pattern-inner-wrapper-${pattern.pattern.title}`}
+										key={`all-pattern-inner-wrapper-${pattern.title}`}
 										className="border my-2 border-black rounded"
 									>
-										<PatternCard patternObject={pattern} />
+										<PatternCard pattern={pattern} />
 									</div>
 								)}
-							{pattern.pattern.paid === 'false' && (
+							{pattern.paid === 'false' && (
 								<div
-									key={`all-pattern-inner-wrapper-${pattern.pattern.title}`}
+									key={`all-pattern-inner-wrapper-${pattern.title}`}
 									className="border my-2 border-black rounded"
 								>
-									<PatternCard patternObject={pattern} />
+									<PatternCard pattern={pattern} />
 								</div>
 							)}
 						</div>

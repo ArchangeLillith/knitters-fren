@@ -6,10 +6,10 @@ import NoPatternsFound from '../components/SearchViewComponents/NoPatternsFoud';
 import SearchResults from '../components/SearchViewComponents/SearchResults';
 import StringSearchPanel from '../components/SearchViewComponents/StringSearchPanel';
 import TagSearchPanel from '../components/SearchViewComponents/TagSearchPanel';
-import { useSearchDebouncer } from '../hooks/useSearchDebouncer';
 import { SearchPageState as PageState } from '../utils/types';
 
 function SearchView() {
+	console.log(`Search view render`);
 	const { state } = useLocation();
 	const externallySelectedTag: { id: string; name: string } = state;
 
@@ -50,11 +50,6 @@ function SearchView() {
 	};
 
 	/**
-	 * Use 🌈⭐ The debouncer ⭐🌈 custom hook
-	 */
-	useSearchDebouncer({ pageState, setPageState });
-
-	/**
 	 *
 	 * @param searchTypeDropdown - select dropdown that's value is what the user wants to search by
 	 * Sets the search type between the offered options, foundPatterns is reset on change of search type and the type of serach value is passed in on change of the select element which sets a state and has an effect on the search trigger function as well as UI elements
@@ -85,8 +80,8 @@ function SearchView() {
 
 	return (
 		<Container>
-			<div className="p-2 m-3 d-flex">
-				<h3 className="text-soft">You are searching by:</h3>
+			<div className="p-2 m-3 d-flex align-items-center justify-content-start">
+				<h3 className="search-header">You are searching by:</h3>
 				<form className="d-flex">
 					<select
 						className="form-select mx-2 w-auto"

@@ -35,7 +35,7 @@ const Patterns: React.FC<AdminPageProps> = ({ state, setState }) => {
 			}
 
 			const newPatterns = state.patterns.filter(
-				pattern => !toBeDeleted.includes(pattern.pattern.id)
+				pattern => !toBeDeleted.includes(pattern.id)
 			);
 
 			setState(prev => ({ ...prev, patterns: newPatterns }));
@@ -85,7 +85,7 @@ const Patterns: React.FC<AdminPageProps> = ({ state, setState }) => {
 					)}
 					{state.patterns?.map(pattern => (
 						<div
-							key={`wrapper-for-${pattern.pattern.id}`}
+							key={`wrapper-for-${pattern.id}`}
 							className="border rounded w-100 bg-soft m-2 border-pink"
 						>
 							<input
@@ -93,25 +93,25 @@ const Patterns: React.FC<AdminPageProps> = ({ state, setState }) => {
 								onClick={addToDelete}
 								id={`delete-checkbox`}
 								className="m-3"
-								key={`check-for-${pattern.pattern.id}`}
+								key={`check-for-${pattern.id}`}
 							/>
 							<label htmlFor="delete-checkbox">Add to delete list</label>
 							<PatternCard
-								patternObject={pattern}
-								key={`patterncard-for-${pattern.pattern.id}`}
+								pattern={pattern}
+								key={`patterncard-for-${pattern.id}`}
 							/>
 							<button
-								id={pattern.pattern.id}
+								id={pattern.id}
 								onClick={modalConfirm}
 								className="btn btn-primary m-3"
-								key={`button-for-${pattern.pattern.id}`}
+								key={`button-for-${pattern.id}`}
 							>
 								DELEEEETE
 							</button>
 							<Link
-								key={`update-button-for-${pattern.pattern.id}`}
+								key={`update-button-for-${pattern.id}`}
 								className="btn btn-primary m-3"
-								to={`/patterns/${pattern.pattern.id}/update`}
+								to={`/patterns/${pattern.id}/update`}
 							>
 								Edit
 							</Link>

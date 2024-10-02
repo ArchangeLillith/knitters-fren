@@ -2,6 +2,23 @@ import { Dispatch, SetStateAction } from 'react';
 
 export type objectType = { [key: string]: string | boolean };
 
+declare module 'react-router-dom' {
+	interface Location {
+		state: {
+			from: any;
+			id: string;
+			name: string;
+		};
+	}
+}
+
+export type FetchDataResponse = {
+	tags: Tag[];
+	patterns: PatternObject[];
+	logs: Log[];
+	authors: Author[];
+	comments: PatternComment[];
+};
 /**
  * Pattern type declaration
  */
@@ -13,19 +30,9 @@ export type Pattern = {
 	title: string;
 	content: string;
 	created_at: string;
-	tags?: string[];
+	tags?: Tag[];
 	paid?: 'true' | 'false';
 };
-
-declare module 'react-router-dom' {
-	interface Location {
-		state: {
-			from: any;
-			id: string;
-			name: string;
-		};
-	}
-}
 
 export type Tag = {
 	name: string;
@@ -54,8 +61,14 @@ export type AddPatternPageState = {
 	content: string;
 	link: string;
 	selectedTags: Tag[];
+	tagsActive: boolean;
 };
-
+export type SetSelectedTags =
+	| React.Dispatch<React.SetStateAction<SearchPageState>>
+	| React.Dispatch<React.SetStateAction<AddPatternPageState>>
+	| React.Dispatch<
+			React.SetStateAction<{ tagsActive: boolean; selectedTags: Tag[] }>
+	  >;
 export type AddPatternPageProps = {
 	state: AddPatternPageState;
 	setState: React.Dispatch<React.SetStateAction<AddPatternPageState>>;
@@ -130,7 +143,14 @@ export type SearchPageState = {
 };
 
 export type PatternObject = {
-	pattern: Pattern;
+	id: string;
+	link?: string;
+	author_id: string;
+	username: string;
+	title: string;
+	content: string;
+	created_at: string;
+	paid?: 'true' | 'false';
 	tags: Tag[];
 };
 
@@ -149,18 +169,20 @@ export type NewPattern = {
 	link: string;
 	paid: 'true' | 'false';
 };
-
+export interface PatternProps {
+	allPatterns: PatternObject[];
+	featured: PatternObject;
+	mostRecent: PatternObject[];
+}
 export type SearchFunction = (searchString: string) => Promise<PatternObject[]>;
 
 export const loadingPattern = {
-	pattern: {
-		id: '0',
-		author_id: 'Loading...',
-		username: '',
-		title: 'Loading...',
-		content: 'Loading...',
-		created_at: 'Loading...',
-	},
+	id: '0',
+	author_id: 'Loading...',
+	username: '',
+	title: 'Loading...',
+	content: 'Loading...',
+	created_at: 'Loading...',
 	tags: [],
 };
 

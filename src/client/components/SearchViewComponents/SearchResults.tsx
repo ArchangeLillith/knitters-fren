@@ -12,7 +12,7 @@ interface SearchResultsProps {
 const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 	return (
 		<div>
-			{foundPatterns.map((object, index) => {
+			{foundPatterns.map((pattern, index) => {
 				return (
 					<div
 						className="border rounded w-100 bg-soft m-2 border-pink"
@@ -24,19 +24,19 @@ const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 									<Link
 										className="font-color-primary text-decoration-none"
 										style={{ fontSize: '25px' }}
-										to={`/patterns/${object.pattern.id}`}
+										to={`/patterns/${pattern.id}`}
 									>
-										{object.pattern.title}
+										{pattern.title}
 									</Link>
-									<p key={`pattern-card-para-${object.pattern.id}`}>
-										{object.pattern.content.slice(0, 300)}...
+									<p key={`pattern-card-para-${pattern.id}`}>
+										{pattern.content.slice(0, 300)}...
 									</p>
 								</div>
 								<div className="h-80">
 									<br />
-									<AssociatedTagList tags={object.tags} />
+									<AssociatedTagList tags={pattern.tags} />
 									<small className="ms-auto">
-										{dayjs(object.pattern.created_at).format('MMMM D, YYYY')}
+										{dayjs(pattern.created_at).format('MMMM D, YYYY')}
 									</small>
 								</div>
 							</div>

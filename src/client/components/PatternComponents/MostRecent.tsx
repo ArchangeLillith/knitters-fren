@@ -1,15 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Pattern, Tag } from '../../utils/types';
+import { Pattern } from '../../utils/types';
 import AssociatedTagList from '../AssociatedTagList';
 
 interface PatternCardProps {
 	pattern: Pattern;
-	tags: Tag[];
 }
 
-const MostRecentRow: React.FC<PatternCardProps> = ({ pattern, tags }) => {
+const MostRecentRow: React.FC<PatternCardProps> = ({ pattern }) => {
 	return (
 		<div key={`${pattern.id}-wrapper-most-recent`}>
 			<div
@@ -21,7 +20,7 @@ const MostRecentRow: React.FC<PatternCardProps> = ({ pattern, tags }) => {
 				</Link>
 				<p className="small w-75">{pattern.content.slice(0, 150)}...</p>
 			</div>
-			{tags && <AssociatedTagList tags={tags} />}
+			{pattern.tags && <AssociatedTagList tags={pattern.tags} />}
 			<hr />
 		</div>
 	);

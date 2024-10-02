@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { getCache } from '../../cache';
+import { getCache, markCacheAsDirty } from '../../cache';
 import db from '../../db';
 import { Tag } from '../../types';
 
@@ -60,6 +60,7 @@ router.get('/:id', async (req, res, next) => {
 
 //POST /api/pattern_tags/pattern_id
 router.post('/:id', async (req, res, next) => {
+	console.log(`req.body`);
 	//Input to insert: values: { pattern_id: number; tag_id: number }[]
 	const pattern_id = req.params.id;
 	const idArray = JSON.parse(req.body.tagList).tag_ids;
@@ -69,8 +70,13 @@ router.post('/:id', async (req, res, next) => {
 		values.push([pattern_id, tag_id]);
 	}
 	try {
-		const result = await db.pattern_tags.insert(values);
-		res.json(result);
+		const deleted =
+			await db.pattern_tags.destroyAllBasedOnPatternId(pattern_id);
+		if (deleted) {
+			const result = await db.pattern_tags.insert(values);
+			res.json(result);
+		}
+		markCacheAsDirty(`allPatterns.${pattern_id}`);
 	} catch (error) {
 		next(error);
 	}

@@ -10,7 +10,7 @@ import { AuthState, undefinedUser } from '../../utils/types';
  */
 interface AuthContextType {
 	authState: AuthState;
-	loading: boolean;
+	authLoading: boolean;
 	setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
 	loginToAuthState: (token: string) => void;
 	logoutFromAuthState: () => void;
@@ -25,7 +25,7 @@ interface AuthContextType {
  */
 export const AuthContext = createContext<AuthContextType>({
 	authState: { authenticated: false, authorData: undefinedUser },
-	loading: false,
+	authLoading: true,
 	setAuthState: () => {},
 	loginToAuthState: () => {},
 	logoutFromAuthState: () => {},
@@ -42,8 +42,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		authorData: null,
 	});
 
-	const [loading, setLoading] = useState(true);
-	console.log(`loading`, loading);
+	const [authLoading, setLoading] = useState(true);
 	/**
 	 * The function that handles the auth state to reflect a log in
 	 * @param token - a JWT
@@ -51,9 +50,17 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const loginToAuthState = async (token: string) => {
 		try {
 			const userData = await authService.getUserFromToken(token);
-			setAuthState({ authenticated: true, authorData: userData });
+			setAuthState(prev => {
+				if (prev.authenticated && prev.authorData?.id === userData.id) {
+					return prev;
+				}
+				return { authenticated: true, authorData: userData };
+			});
 		} catch (error) {
-			setAuthState({ authenticated: false, authorData: null });
+			setAuthState(prev => {
+				if (!prev.authenticated) return prev; // Avoid re-render if the state is already false
+				return { authenticated: false, authorData: null };
+			});
 			alert(error);
 		}
 	};
@@ -80,7 +87,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		eventButton: React.MouseEvent<HTMLButtonElement>
 	) => {
 		const { authorData } = authState;
-		if (!authorData) return;
+		if (!authorData || !authorData.id) return;
 
 		const pattern_id = eventButton.currentTarget.id;
 		const isFavorited = authorData.patternsFavorited.some(
@@ -96,13 +103,21 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				? authorData.patternsFavorited.filter(fav_id => fav_id !== pattern_id)
 				: [...authorData.patternsFavorited, pattern_id];
 
-			setAuthState(prevState => ({
-				...prevState,
-				authorData: {
-					...authorData,
-					patternsFavorited: newFavs,
-				},
-			}));
+			setAuthState(prev => {
+				if (
+					JSON.stringify(prev.authorData?.patternsFavorited) ===
+					JSON.stringify(newFavs)
+				) {
+					return prev; // Avoid setting state if the favorite list hasn't changed
+				}
+				return {
+					...prev,
+					authorData: {
+						...prev.authorData,
+						patternsFavorited: newFavs,
+					},
+				};
+			});
 		}
 	};
 
@@ -112,30 +127,41 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	useEffect(() => {
 		const checkUser = async () => {
 			const token = storage.getToken();
-			console.log('Tokennnn', token);
 
+			// Check if no token exists and the user is already logged out
 			if (!token) {
-				console.log('No token found, setting auth to false.');
-				setAuthState({ authenticated: false, authorData: null });
+				if (!authState.authenticated) {
+					setAuthState({ authenticated: false, authorData: null });
+				}
+				setLoading(false); // Only set authLoading to false here
 				return;
 			}
 
 			try {
-				console.log('Fetching user data from token...');
 				const userData = await authService.getUserFromToken(token);
 				if (userData) {
-					console.log('User data retrieved:', userData); // Debug log: check if user data is correct
-					setAuthState({
-						authenticated: true,
-						authorData: {
-							id: userData.id,
-							username: userData.username,
-							role: userData.role,
-							email: userData.email,
-							patternsAuthored: userData.patternsAuthored,
-							patternsFavorited: userData.patternsFavorited,
-							commentsAuthored: userData.commentsAuthored,
-						},
+					console.log('User data retrieved:', userData);
+					setAuthState(prev => {
+						// Only set state if the values have changed
+						if (
+							prev.authenticated === true &&
+							prev.authorData?.id === userData.id &&
+							JSON.stringify(prev.authorData) === JSON.stringify(userData)
+						) {
+							return prev; // Avoid unnecessary re-renders if no change
+						}
+						return {
+							authenticated: true,
+							authorData: {
+								id: userData.id,
+								username: userData.username,
+								role: userData.role,
+								email: userData.email,
+								patternsAuthored: userData.patternsAuthored,
+								patternsFavorited: userData.patternsFavorited,
+								commentsAuthored: userData.commentsAuthored,
+							},
+						};
 					});
 				} else {
 					console.log('User data is null or undefined, setting auth to false.');
@@ -145,16 +171,16 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				console.error('Error fetching user data:', error);
 				setAuthState({ authenticated: false, authorData: null });
 			} finally {
-				setLoading(false);
+				setLoading(false); // Ensure loading state is only set once
 			}
 		};
 		checkUser();
-	}, []);
+	}, [authState.authenticated]);
 
 	return (
 		<AuthContext.Provider
 			value={{
-				loading,
+				authLoading,
 				authState,
 				setAuthState,
 				loginToAuthState,

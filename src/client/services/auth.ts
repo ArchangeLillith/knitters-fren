@@ -33,7 +33,6 @@ const registerUserAndStoreToken = async (payload: {
 	console.log(`REGISTER AND STORE TOKEN`);
 	const token = await baseService.post('/auth/register/', payload);
 	if (!token) return;
-	console.log(`TOKEN`, token);
 	storage.setToken(token);
 	return token;
 };
@@ -51,10 +50,10 @@ const getUserFromToken = async (token: string): Promise<Author> => {
 				'token bad, something went wrong with frontend check of token'
 			);
 		}
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const decoded: any = jwtDecode(token);
 		const userId: string = decoded.id;
 		const user: Author = await baseService.get(`/api/authors/${userId}`);
-		console.log(`userrrrrrrr`, user);
 		if (!user) throw new Error("user couldn't be fetched TT_TT");
 		return user;
 	} catch (error) {

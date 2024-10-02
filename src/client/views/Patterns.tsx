@@ -14,26 +14,26 @@ const Patterns = () => {
 
 	const { data, loading, error } = useFetchData<{
 		patternObjects: PatternObject[];
-	}>(fetchConfigs);
+	}>(fetchConfigs, false);
 
 	const { patternObjects } = data;
 	if (loading) {
-		return <div>Loading...</div>;
+		return;
 	}
 
 	if (error) {
-		return <div>Error: {error}</div>; // Display error message from the hook
+		return; // Display error message from the hook
 	}
 
 	return (
 		<Container>
 			<div className="w-75 d-flex flex-column mx-auto mt-5">
-				{patternObjects.map(patternObj => (
+				{patternObjects.map(pattern => (
 					<div
 						className="rounded w-100 bg-soft m-2 border-pink"
-						key={`${patternObj.pattern.id}-container`}
+						key={`${pattern.id}-container`}
 					>
-						<PatternCard patternObject={patternObj} />
+						<PatternCard pattern={pattern} />
 					</div>
 				))}
 			</div>

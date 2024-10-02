@@ -21,6 +21,7 @@ export interface PatternTable {
 
 export interface AuthorsTable {
 	id: string;
+	password?: string;
 	username: string;
 	email: string;
 	role: 'user' | 'admin';
@@ -70,6 +71,13 @@ export type PatternTag = {
 };
 
 export type PatternObject = {
-	pattern: PatternTable;
+	id: string;
+	author_id?: string;
+	title?: string;
+	content?: string;
+	created_at?: string;
+	link?: string;
+	paid?: 'true' | 'false';
+	username: string;
 	tags: Tag[];
 };

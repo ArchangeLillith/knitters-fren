@@ -58,10 +58,10 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 
 	return (
 		<div className="d-flex flex-column my-2 py-2">
-			<h2 className="text-center mt-2 text-primary">
+			<h2 className="text-center mt-2 font-color-primary">
 				Select tags to search by!
 			</h2>
-			<div>{JSON.stringify(pageState.selectedTags)}</div>
+			{/* <div>{JSON.stringify(pageState.selectedTags)}</div> */}
 			<AllTagsContainer
 				selectedTags={pageState.selectedTags}
 				setSelectedTags={setPageState}

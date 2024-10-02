@@ -17,9 +17,7 @@ import {
 	Log,
 	PatternComment,
 	AdminPageState as PageState,
-	Tag,
-	Author,
-	PatternObject,
+	FetchDataResponse,
 } from '../utils/types';
 
 const AdminPanel = () => {
@@ -35,14 +33,6 @@ const AdminPanel = () => {
 		filteredComments: [],
 		showModal: false,
 	});
-
-	type FetchDataResponse = {
-		tags: Tag[];
-		patterns: PatternObject[];
-		logs: Log[];
-		authors: Author[];
-		comments: PatternComment[];
-	};
 
 	const fetchConfigs = useMemo(
 		() => [
@@ -80,11 +70,14 @@ const AdminPanel = () => {
 			filteredComments: filteredComments.slice(0, 15),
 		}));
 	}, [data]); // Run effect when data changes
+	if (!authState.authorData) {
+		return <div>Not logged in</div>;
+	}
 
 	if (loading) <p>Loadig....</p>;
 	if (error) <p>error....</p>;
 
-	if (authState.role !== 'admin') {
+	if (authState.authorData.role !== 'admin') {
 		return <Navigate to="/" />;
 	}
 

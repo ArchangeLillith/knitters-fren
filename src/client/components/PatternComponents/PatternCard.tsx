@@ -9,11 +9,11 @@ import FavIcon from './FavIcon';
 import { AuthContext } from '../AuthComponents/AuthProvider';
 
 interface PatternCardProps {
-	patternObject: PatternObject;
+	pattern: PatternObject;
 	featured?: boolean;
 }
 
-const PatternCard = ({ patternObject, featured = false }: PatternCardProps) => {
+const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 	const { authState } = useContext(AuthContext);
 
 	return (
@@ -23,28 +23,26 @@ const PatternCard = ({ patternObject, featured = false }: PatternCardProps) => {
 					<div className="d-flex align-items-center justify-content-start">
 						<Link
 							className={`${featured ? 'link-white' : 'link-pink'}`}
-							to={`/patterns/${patternObject.pattern.id}`}
+							to={`/patterns/${pattern.id}`}
 							style={{ fontSize: featured ? '30px' : '25px' }}
 						>
-							{patternObject.pattern.title}
+							{pattern.title}
 						</Link>
-						{patternObject.pattern.paid === 'true' && <LockIcon size={20} />}
+						{pattern.paid === 'true' && <LockIcon size={20} />}
 					</div>
 					{authState.authenticated && !featured && (
-						<FavIcon patternId={patternObject.pattern.id} size={20} />
+						<FavIcon patternId={pattern.id} size={20} />
 					)}
 				</div>
-				<p key={`pattern-card-para-${patternObject.pattern.id}`}>
-					{patternObject.pattern.content.slice(0, 200)}...
+				<p key={`pattern-card-para-${pattern.id}`}>
+					{pattern.content.slice(0, 200)}...
 				</p>
-				<small>
-					{dayjs(patternObject.pattern.created_at).format('MMMM D, YYYY')}
-				</small>
-				<small>{patternObject.pattern.username}</small>
+				<small>{dayjs(pattern.created_at).format('MMMM D, YYYY')}</small>
+				<small>{pattern.username}</small>
 
 				<br />
-				{!featured && patternObject.tags?.length > 0 && (
-					<AssociatedTagList tags={patternObject.tags} />
+				{!featured && pattern.tags?.length > 0 && (
+					<AssociatedTagList tags={pattern.tags} />
 				)}
 			</div>
 		</div>

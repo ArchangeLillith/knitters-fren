@@ -21,6 +21,9 @@ router.get('/', async (req, res, next) => {
 
 //GET /api/authors/ban
 router.post('/ban', verifyToken, verifyAdmin, async (req, res, next) => {
+	if (req.currentUser === null) {
+		return res.status(401).json({ message: 'Not authorized' });
+	}
 	try {
 		const { authorId } = req.body;
 
