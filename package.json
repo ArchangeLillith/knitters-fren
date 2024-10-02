@@ -14,7 +14,7 @@
 		"build": "npm-run-all --sequential build:*",
 		"lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
 		"lint:debug": "npx eslint . --ext .js,.jsx,.ts,.tsx --debug",
-		"start": "node /src/server/dist/server.js"
+		"start": "node dist/server.js"
 	},
 	"engines": {
 		"node": "20.x"
