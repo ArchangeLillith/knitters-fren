@@ -34,7 +34,7 @@ router.get('/', verifyToken, async (req, res, next) => {
 			patternsObject = formatAndRemovePaid(result, author_id);
 		}
 
-		if (patternsObject.length > 0) {
+		if (patternsObject.length > 0 && cachedRes.length === null) {
 			setCache('allPatterns', patternsObject);
 			buildCache();
 		}
@@ -54,12 +54,13 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 		//Formatting like this to we can use the removePaid and Null
 		let patternObject: PatternObject[] = [cachedRes];
 
+		console.log(`Pattern objectttt,`, patternObject[0]);
 		if (patternObject[0] !== null) {
 			patternObject = removePaid(cachedRes, author_id);
 			patternObject = removeNullTags(patternObject);
 		} else {
 			const result: PatternObjectQuery = await db.patterns.oneById(id);
-			if (result.paid && author_id !== result.author_id) {
+			if (result.paid === 'true' && author_id !== result.author_id) {
 				res.status(401).json({ message: 'Pattern inaccessible' });
 			}
 

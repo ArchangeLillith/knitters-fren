@@ -18,7 +18,7 @@ const allByAuthorId = (id: string): Promise<PatternObjectQuery[]> =>
 				a.id AS author_id,
 				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
-				authors a
+				kf_authors a
 				JOIN kf_favorite_patterns fp ON fp.author_id = a.id
 				LEFT JOIN kf_patterns p ON p.id = fp.pattern_id
 				LEFT JOIN kf_pattern_tags pt ON pt.pattern_id = p.id
