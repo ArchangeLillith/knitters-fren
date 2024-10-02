@@ -15,7 +15,7 @@ const Footer = () => {
 				rel="noreferrer"
 			>
 				<img
-					src="/images/nanachi-footer-hang.png"
+					src="s3://knitters-fren/website-images/nanachi-footer-hang.png"
 					style={{ height: '100px' }}
 					alt="Footer nanchi"
 				/>

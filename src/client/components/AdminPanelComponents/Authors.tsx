@@ -99,7 +99,7 @@ const Authors: React.FC<AdminPageProps> = ({ state, setState }) => {
 							</div>
 							<img
 								style={{ width: '300px', marginRight: '0px' }}
-								src="/images/nanachi-ban-hammer.png"
+								src="s3://knitters-fren/website-images/nanachi-ban-hammer.png"
 								alt="banning!"
 								className="ban-hammer-nanachi "
 							/>

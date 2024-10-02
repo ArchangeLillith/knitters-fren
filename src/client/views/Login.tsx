@@ -61,7 +61,7 @@ const Login = () => {
 				<div className="d-flex align-items-center flex-column justify-content-center p-2 my-5 mx-3 bg-soft border-pink rounded w-50">
 					<h3>Welcome back~</h3>
 					<img
-						src="/images/pancake-nanachi.png"
+						src="s3://knitters-fren/website-images/pancake-nanachi.png"
 						alt="teacup-nanachi"
 						style={{
 							width: '250px',

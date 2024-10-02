@@ -72,7 +72,7 @@ const AddPattern = () => {
 		<AuthWrapper>
 			<Container bottomPadding={10}>
 				<img
-					src="/images/teacup-nanachi.png"
+					src="s3://knitters-fren/website-images/teacup-nanachi.png"
 					alt="teacup-nanachi"
 					style={{
 						width: '250px',

@@ -18,7 +18,7 @@ const NotFound = () => {
 			>
 				<img
 					style={{ width: '250px' }}
-					src="/images/404.gif"
+					src="s3://knitters-fren/website-images/404.gif"
 					alt="loading..."
 					className="404-nanachi "
 				/>

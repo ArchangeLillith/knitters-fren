@@ -46,7 +46,7 @@ const Register = () => {
 				<div className="d-flex align-items-center flex-column justify-content-center p-2 my-5 mx-3 bg-soft border-pink rounded w-50">
 					<h3>Nice to meet you</h3>
 					<img
-						src="/images/nice-to-meet-you-nanachi.png"
+						src="s3://knitters-fren/website-images/nice-to-meet-you-nanachi.png"
 						alt="teacup-nanachi"
 						style={{
 							width: '250px',

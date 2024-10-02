@@ -73,7 +73,7 @@ const Home = () => {
 					<img
 						rel="preload"
 						alt="site-logo-sleeping-nanachi"
-						src="/images/Nanachi-logo.png"
+						src="s3://knitters-fren/website-images/Nanachi-logo.png"
 						className="py-4"
 						style={{ height: '130%' }}
 					/>

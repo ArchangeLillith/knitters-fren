@@ -112,7 +112,7 @@ const UpdatePattern = () => {
 				</button>
 			</form>
 			<img
-				src="/images/drawing-nanachi.png"
+				src="s3://knitters-fren/website-images/drawing-nanachi.png"
 				style={{
 					position: 'absolute',
 					top: '70%',
