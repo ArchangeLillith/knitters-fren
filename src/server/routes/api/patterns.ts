@@ -51,9 +51,10 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 		const id = req.params.id;
 		const author_id = req.currentUser ? req.currentUser.id : null;
 		const cachedRes = getCache(`allPatterns.${id}`);
+		//Formatting like this to we can use the removePaid and Null
 		let patternObject: PatternObject[] = [cachedRes];
 
-		if (cachedRes[0] !== null) {
+		if (patternObject[0] !== null) {
 			patternObject = removePaid(cachedRes, author_id);
 			patternObject = removeNullTags(patternObject);
 		} else {
