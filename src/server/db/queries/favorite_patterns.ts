@@ -19,10 +19,10 @@ const allByAuthorId = (id: string): Promise<PatternObjectQuery[]> =>
 				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
 				authors a
-				JOIN favorite_patterns fp ON fp.author_id = a.id
-				LEFT JOIN patterns p ON p.id = fp.pattern_id
-				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
-				LEFT JOIN tags t ON t.id = pt.tag_id
+				JOIN kf_favorite_patterns fp ON fp.author_id = a.id
+				LEFT JOIN kf_patterns p ON p.id = fp.pattern_id
+				LEFT JOIN kf_pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN kf_tags t ON t.id = pt.tag_id
 			WHERE
 				a.id = ?
 			GROUP BY
@@ -44,7 +44,7 @@ const addFavorite = async (
 	return QueryMetadata(
 		`
 		INSERT INTO
-			favorite_patterns (author_id, pattern_id)
+			kf_favorite_patterns (author_id, pattern_id)
 		VALUES
 			(?,?);
 	`,
@@ -58,7 +58,7 @@ const removeFavorite = async (
 	return QueryMetadata(
 		`
 		DELETE FROM
-			favorite_patterns
+			kf_favorite_patterns
 		WHERE author_id = ? AND pattern_id = ?;
 	`,
 		[author_id, pattern_id]

@@ -1,4 +1,4 @@
-import type { PatternObjectQuery, PatternTable } from '../../types';
+import type { PatternObjectQuery } from '../../types';
 import { Query } from '../query';
 
 const findByAuthor = (author: string): Promise<PatternObjectQuery[]> =>
@@ -9,10 +9,10 @@ const findByAuthor = (author: string): Promise<PatternObjectQuery[]> =>
         a.username,
         JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
       FROM
-        patterns p
-        JOIN authors a ON a.id = p.author_id
-        LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
-        LEFT JOIN tags t ON t.id = pt.tag_id
+        kf_patterns p
+        JOIN kf_authors a ON a.id = p.author_id
+        LEFT JOIN kf_pattern_tags pt ON pt.pattern_id = p.id
+        LEFT JOIN kf_tags t ON t.id = pt.tag_id
       WHERE
         	a.username LIKE concat ('%', ?, '%')
       GROUP BY
@@ -29,10 +29,10 @@ const findByTitle = (title: string): Promise<PatternObjectQuery[]> =>
 				a.username,
 				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
-				patterns p
-				JOIN authors a ON a.id = p.author_id
-				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
-				LEFT JOIN tags t ON t.id = pt.tag_id
+				kf_patterns p
+				JOIN kf_authors a ON a.id = p.author_id
+				LEFT JOIN kf_pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN kf_tags t ON t.id = pt.tag_id
 			WHERE
 				p.title LIKE concat ('%', ?, '%')
 			GROUP BY
@@ -49,10 +49,10 @@ const findByContent = (content: string): Promise<PatternObjectQuery[]> =>
 				a.username,
 				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
-				patterns p
-				JOIN authors a ON a.id = p.author_id
-				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
-				LEFT JOIN tags t ON t.id = pt.tag_id
+				kf_patterns p
+				JOIN kf_authors a ON a.id = p.author_id
+				LEFT JOIN kf_pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN kf_tags t ON t.id = pt.tag_id
 			WHERE
 				p.content LIKE concat ('%', ?, '%')
 			GROUP BY
@@ -70,10 +70,10 @@ const findByTags = (tag: number): Promise<PatternObjectQuery[]> =>
 				a.username,
 				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
-				patterns p
-				JOIN authors a ON a.id = p.author_id
-				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
-				LEFT JOIN tags t ON t.id = pt.tag_id
+				kf_patterns p
+				JOIN kf_authors a ON a.id = p.author_id
+				LEFT JOIN kf_pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN kf_tags t ON t.id = pt.tag_id
 			WHERE
 				t.id = ?
 			GROUP BY
@@ -92,9 +92,9 @@ const findByTagsStrict = (tags: number[]): Promise<PatternObjectQuery[]> =>
 				p.content,
 				p.created_at
 			FROM
-				patterns p
-				JOIN pattern_tags pt ON p.id = pt.pattern_id
-				JOIN tags t ON pt.tag_id = t.id
+				kf_patterns p
+				JOIN kf_pattern_tags pt ON p.id = pt.pattern_id
+				JOIN kf_tags t ON pt.tag_id = t.id
 			WHERE
 				t.id IN (${tags.map(() => '?').join(', ')})
 			GROUP BY

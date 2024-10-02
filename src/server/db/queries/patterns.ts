@@ -30,13 +30,13 @@ const allByAuthor = (
 	Query<(PatternTable & AuthorsTable)[]>(
 		/* sql */ `
 			SELECT
-				patterns.*,
-				authors.username
+				kf_patterns.*,
+				kf_authors.username
 			FROM
-				patterns
-				JOIN authors ON authors.id = patterns.author_id
+				kf_patterns
+				JOIN kf_authors ON kf_authors.id = kf_patterns.author_id
 			WHERE
-				patterns.author_id = ?;
+				kf_patterns.author_id = ?;
 		`,
 		[author]
 	);
@@ -50,10 +50,10 @@ const oneById = async (id: string): Promise<PatternObjectQuery | null> => {
 				a.username,
 				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
 			FROM
-				patterns p
-				JOIN authors a ON a.id = p.author_id
-				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
-				LEFT JOIN tags t ON t.id = pt.tag_id
+				kf_patterns p
+				JOIN kf_authors a ON a.id = p.author_id
+				LEFT JOIN kf_pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN kf_tags t ON t.id = pt.tag_id
 			WHERE
 				p.id = ?
 			GROUP BY
@@ -69,13 +69,13 @@ const oneByTitle = (title: string): Promise<PatternTable & AuthorsTable> =>
 	Query<PatternTable & AuthorsTable>(
 		/* sql */ `
 			SELECT
-				patterns.*,
-				authors.username
+				kf_patterns.*,
+				kf_authors.username
 			FROM
-				patterns
-				JOIN authors ON authors.id = patterns.author_id
+				kf_patterns
+				JOIN kf_authors ON kf_authors.id = kf_patterns.author_id
 			WHERE
-				patterns.title = ?;
+				kf_patterns.title = ?;
 		`,
 		[title]
 	);
@@ -88,7 +88,7 @@ const insert = async (values: PatternTable): Promise<ResultSetHeader> => {
 	try {
 		const sanitizedValues = [title, content, id, author_id, link, paid];
 		const returnedHeaders = await QueryMetadata(
-			/* sql */ 'INSERT INTO patterns (title, content, id, author_id, link, paid) VALUES (?, ?, ?, ?, ?, ?)',
+			/* sql */ 'INSERT INTO kf_patterns (title, content, id, author_id, link, paid) VALUES (?, ?, ?, ?, ?, ?)',
 			sanitizedValues
 		);
 		return returnedHeaders;
@@ -101,7 +101,7 @@ const insert = async (values: PatternTable): Promise<ResultSetHeader> => {
 
 //DELETE a pattern
 const destroy = (id: string): Promise<ResultSetHeader> =>
-	QueryMetadata(/* sql */ 'DELETE FROM patterns WHERE id = ?', [id]);
+	QueryMetadata(/* sql */ 'DELETE FROM kf_patterns WHERE id = ?', [id]);
 
 //PATCH a pattern
 const update = (patternDTO: {
@@ -110,13 +110,13 @@ const update = (patternDTO: {
 	content: string;
 }): Promise<ResultSetHeader> =>
 	QueryMetadata(
-		/* sql */ 'UPDATE patterns SET content = ?, title = ? WHERE id = ?',
+		/* sql */ 'UPDATE kf_patterns SET content = ?, title = ? WHERE id = ?',
 		[patternDTO.content, patternDTO.title, patternDTO.id]
 	);
 
 const updateAuthorToBanned = (id: string): Promise<ResultSetHeader> =>
 	QueryMetadata(
-		/* sql */ 'UPDATE patterns SET author_id = "779e05a4-8988-4641-a2e5-5d9bb8391b65" WHERE id = ?',
+		/* sql */ 'UPDATE kf_patterns SET author_id = "779e05a4-8988-4641-a2e5-5d9bb8391b65" WHERE id = ?',
 		[id]
 	);
 
@@ -125,13 +125,13 @@ const one = (id: string): Promise<(PatternTable & AuthorsTable)[]> =>
 	Query<(PatternTable & AuthorsTable)[]>(
 		/* sql */ `
 			SELECT
-				patterns.*,
-				authors.name
+				kf_patterns.*,
+				kf_authors.name
 			FROM
-				patterns
-				JOIN authors ON authors.id = patterns.author_id
+				kf_patterns
+				JOIN kf_authors ON kf_authors.id = kf_patterns.author_id
 			WHERE
-				patterns.id = ?;
+				kf_patterns.id = ?;
 		`,
 		[id]
 	);

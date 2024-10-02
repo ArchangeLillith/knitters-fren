@@ -5,7 +5,7 @@ import { Query, QueryMetadata } from '../query';
 
 //API calls
 const all = (): Promise<AuthorsTable> =>
-	Query<AuthorsTable>(/* sql */ 'SELECT * FROM authors;');
+	Query<AuthorsTable>(/* sql */ 'SELECT * FROM kf_authors;');
 
 /**
  * @param id - autor id as a string
@@ -32,9 +32,9 @@ const one = async (id: string): Promise<AuthorsTable | undefined> => {
 				JSON_ARRAYAGG (pc.id) AS commentsAuthored
 			FROM
 				authors a
-				LEFT JOIN patterns p ON p.author_id = a.id
-				LEFT JOIN favorite_patterns fp ON fp.author_id = a.id
-				LEFT JOIN pattern_comments pc ON pc.author_id = a.id
+				LEFT JOIN kf_patterns p ON p.author_id = a.id
+				LEFT JOIN kf_favorite_patterns fp ON fp.author_id = a.id
+				LEFT JOIN kf_pattern_comments pc ON pc.author_id = a.id
 			WHERE
 				a.id = ?
 			GROUP BY
@@ -55,7 +55,7 @@ const find = (val: string): Promise<AuthorsTable[]> =>
 			SELECT
 				*
 			FROM
-				authors
+				kf_authors
 			WHERE
 				email = ?
 				OR username = ?;
@@ -72,7 +72,7 @@ const insert = (values: {
 }): Promise<ResultSetHeader> => {
 	const { id, email, username, password, role } = values;
 	return QueryMetadata(
-		/* sql */ 'INSERT INTO authors (id, email, username, password, role) VALUES (?,?,?,?,?);',
+		/* sql */ 'INSERT INTO kf_authors (id, email, username, password, role) VALUES (?,?,?,?,?);',
 		[id, email, username, password, role]
 	);
 };
@@ -84,13 +84,13 @@ const ban = (
 ): Promise<ResultSetHeader> => {
 	console.log(`ID`, id, email, username);
 	return QueryMetadata(
-		/* sql */ 'INSERT INTO banned_authors (id, email, username) VALUES (?,?,?);',
+		/* sql */ 'INSERT INTO kf_banned_authors (id, email, username) VALUES (?,?,?);',
 		[id, email, username]
 	);
 };
 
 //DELETE a pattern
 const destroy = (id: string): Promise<ResultSetHeader> =>
-	QueryMetadata(/* sql */ 'DELETE FROM authors WHERE id = ?;', [id]);
+	QueryMetadata(/* sql */ 'DELETE FROM kf_authors WHERE id = ?;', [id]);
 
 export default { all, one, find, insert, ban, destroy };

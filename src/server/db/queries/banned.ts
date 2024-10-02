@@ -7,7 +7,7 @@ const findBannedById = (id: string): Promise<AuthorsTable[]> =>
 			SELECT
 				*
 			FROM
-				banned_authors
+				kf_banned_authors
 			WHERE
 				id = ?;
 		`,
@@ -23,7 +23,7 @@ const findBannedByEmailOrUser = (
 			SELECT
 				*
 			FROM
-				banned_authors
+				kf_banned_authors
 			WHERE
 				username = ?
 				OR email = ?;

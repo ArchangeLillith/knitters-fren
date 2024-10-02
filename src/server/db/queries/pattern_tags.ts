@@ -9,7 +9,7 @@ const all = (): Promise<PatternTag[]> =>
 		SELECT
 			*
 		FROM
-			pattern_tags;
+			kf_pattern_tags;
 	`);
 
 //GET all tags by the pattern ID
@@ -17,13 +17,12 @@ const allByPatternId = (id: string): Promise<Tag[]> =>
 	Query<Tag[]>(
 		/* sql */ `
 			SELECT
-				tags.id AS id,
-				tags.name AS name
+				kf_tags.id AS id,
+				kf_tags.name AS name
 			FROM
-				tags
-				JOIN pattern_tags ON tags.id = pattern_tags.tag_id
+				kf_tags JOINkf_ pattern_tags ON tags.id = pattern_tags.tag_id
 			WHERE
-				pattern_tags.pattern_id = ?
+				kf_pattern_tags.pattern_id = ?
 		`,
 		[id]
 	);
@@ -38,7 +37,7 @@ const insert = (values: [string, number][]): Promise<ResultSetHeader> => {
 
 	const sql = /* sql */ `
 		INSERT INTO
-			pattern_tags (pattern_id, tag_id)
+			kf_pattern_tags (pattern_id, tag_id)
 		VALUES
 			${placeholders};
 	`;
@@ -49,7 +48,7 @@ const insert = (values: [string, number][]): Promise<ResultSetHeader> => {
 
 //DELETE all tags from one pattern
 const destroyAllBasedOnPatternId = (id: string): Promise<ResultSetHeader> =>
-	QueryMetadata(/* sql */ 'DELETE FROM pattern_tags WHERE pattern_id = ?', [
+	QueryMetadata(/* sql */ 'DELETE FROM kf_pattern_tags WHERE pattern_id = ?', [
 		id,
 	]);
 
@@ -60,7 +59,7 @@ const update = (values: {
 	name: string;
 	id: number;
 }): Promise<ResultSetHeader> =>
-	QueryMetadata(/* sql */ 'UPDATE pattern_tags SET name = ? WHERE id = ?', [
+	QueryMetadata(/* sql */ 'UPDATE kf_pattern_tags SET name = ? WHERE id = ?', [
 		values.name,
 		values.id,
 	]);
