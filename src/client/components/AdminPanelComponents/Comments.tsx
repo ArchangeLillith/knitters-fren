@@ -1,8 +1,9 @@
-import React from "react";
-import { AdminState } from "../../utils/types";
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
+import React from 'react';
 
-const Comments: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
+import { AdminPageState } from '../../utils/types';
+
+const Comments: React.FC<{ state: AdminPageState }> = ({ state }) => {
 	return (
 		<>
 			<h2 className="accordion-header">
@@ -32,13 +33,13 @@ const Comments: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{adminState.comments?.map((comment) => (
+							{state.comments?.map(comment => (
 								<tr key={comment.id}>
-									<td scope="row">{comment.username}</td>
+									<td>{comment.username}</td>
 									<td>{comment.content}</td>
 									<td>{comment.pattern_id}</td>
 									<td>
-										{dayjs(comment.created_at).format("MMMM D, YYYY h:mm A")}
+										{dayjs(comment.created_at).format('MMMM D, YYYY h:mm A')}
 									</td>
 								</tr>
 							))}

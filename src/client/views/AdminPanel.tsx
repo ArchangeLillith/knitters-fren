@@ -1,14 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Log, PatternComment, AdminPageState as PageState } from "../utils/types";
-import { Navigate } from "react-router-dom";
-import { AuthContext } from "../components/AuthComponents/AuthProvider";
-import { sortByDate } from "../utils/patterns.utils";
-import logService from "../services/logs";
-import authorService from "../services/author";
-import patternService from "../services/pattern";
-import commentService from "../services/comments";
-import patternTagsService from "../services/pattern-tags";
-import Container from "../components/Container";
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+
 import {
 	Authors,
 	Logs,
@@ -16,15 +8,20 @@ import {
 	Patterns,
 	Tags,
 	Comments,
-} from "../components/AdminPanelComponents";
-
-
+} from '../components/AdminPanelComponents';
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import Container from '../components/Container';
+import useFetchData from '../hooks/useFetchData';
+import { sortByDate } from '../utils/patterns.utils';
+import {
+	Log,
+	PatternComment,
+	AdminPageState as PageState,
+	FetchDataResponse,
+} from '../utils/types';
 
 const AdminPanel = () => {
 	const { authState } = useContext(AuthContext);
-	if (authState.role !== "admin") {
-		return <Navigate to="/" />;
-	}
 
 	const [state, setState] = useState<PageState>({
 		patterns: [],
@@ -35,75 +32,75 @@ const AdminPanel = () => {
 		comments: [],
 		filteredComments: [],
 		showModal: false,
-		banAuthor: { id: "", username: "" },
 	});
 
-	useEffect(() => {
-		logService
-			.getAllLogs()
-			.then((data) => {
-				const filteredLogs: Log[] = sortByDate(data) as Log[];
-				setState((prev) => ({
-					...prev,
-					logs: data,
-					filteredLogs: filteredLogs.slice(0, 15),
-				}));
-			})
-			.catch((error) => console.error("Failed to load activity logs:", error));
-		patternService
-			.getAllPatterns()
-			.then((data) => setState((prev) => ({ ...prev, patterns: data })))
-			.catch((error) => alert(error));
-		patternTagsService
-			.getAllTags()
-			.then((data) => setState((prev) => ({ ...prev, tags: data })))
-			.catch((error) => console.error(error));
-		authorService
-			.getAllAuthors()
-			.then((data) => setState((prev) => ({ ...prev, authors: data })))
-			.catch((error) => console.error(error));
-		commentService.getAllComments().then((data) => {
-			const filteredComments: PatternComment[] = sortByDate(
-				data
-			) as PatternComment[];
-			setState((prev) => ({
-				...prev,
-				comments: data,
-				filteredComments: filteredComments.slice(0, 15),
-			}));
-		});
-	}, []);
+	const fetchConfigs = useMemo(
+		() => [
+			{ key: 'patterns', url: '/api/patterns' },
+			{ key: 'tags', url: '/api/tags' },
+			{ key: 'logs', url: '/api/logs' },
+			{ key: 'authors', url: '/api/authors' },
+			{ key: 'comments', url: '/api/comments' },
+		],
+		[]
+	);
 
-	{
-		/* Please to make, delete and edit tags (pref in batch) */
+	const { data, loading, error } =
+		useFetchData<FetchDataResponse>(fetchConfigs);
+
+	useEffect(() => {
+		if (!data || !data.patterns) return;
+
+		const { tags, patterns, logs, authors, comments } = data;
+
+		const filteredLogs: Log[] = sortByDate(logs) as Log[];
+		const filteredComments: PatternComment[] = sortByDate(
+			comments
+		) as PatternComment[];
+
+		// Update state based on fetched data
+		setState(prev => ({
+			...prev,
+			logs,
+			filteredLogs: filteredLogs.slice(0, 15),
+			patterns,
+			tags,
+			authors,
+			comments,
+			filteredComments: filteredComments.slice(0, 15),
+		}));
+	}, [data]); // Run effect when data changes
+	if (!authState.authorData) {
+		return <div>Not logged in</div>;
 	}
-	{
-		/* Place to display logging nicely*/
-	}
-	{
-		/* Overview of my database, like how many users and patterns ect, cool stats */
+
+	if (loading) <p>Loadig....</p>;
+	if (error) <p>error....</p>;
+
+	if (authState.authorData.role !== 'admin') {
+		return <Navigate to="/" />;
 	}
 
 	return (
 		<Container>
 			<div className="accordion my-5">
 				<div className="accordion-item">
-					<Logs adminState={state} />
+					<Logs state={state} />
 				</div>
 				<div className="accordion-item">
-					<Patterns adminState={state} setAdminState={setState} />
+					<Patterns state={state} setState={setState} />
 				</div>
 				<div className="accordion-item">
-					<Tags adminState={state} />
+					<Tags state={state} />
 				</div>
 				<div className="accordion-item">
-					<Authors adminState={state} setAdminState={setState} />
+					<Authors state={state} setState={setState} />
 				</div>
 				<div className="accordion-item">
-					<DbStats adminState={state} />
+					<DbStats state={state} />
 				</div>
 				<div className="accordion-item">
-					<Comments adminState={state} />
+					<Comments state={state} />
 				</div>
 			</div>
 		</Container>

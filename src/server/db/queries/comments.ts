@@ -1,33 +1,32 @@
-import { ResultSetHeader } from "mysql2";
-import { Query, QueryMetadata } from "../query";
-import type { PatternComment } from "../../types";
+import { ResultSetHeader } from 'mysql2';
+
+import type { PatternComment } from '../../types';
+import { Query, QueryMetadata } from '../query';
 
 //GET all
 const all = (): Promise<PatternComment[]> =>
-	Query<PatternComment[]>(
-		`
-SELECT 
-		pattern_comments.*,
-		authors.username
-	FROM
-		authors 
-	JOIN 
-		pattern_comments ON authors.id = pattern_comments.author_id`
-	);
-	
+	Query<PatternComment[]>(/* sql */ `
+		SELECT
+			pattern_comments.*,
+			authors.username
+		FROM
+			authors
+			JOIN pattern_comments ON authors.id = pattern_comments.author_id
+	`);
+
 //GET all tags by the pattern ID
 const allByPattern = (id: string): Promise<PatternComment[]> =>
 	Query<PatternComment[]>(
-		`
-SELECT 
-		pattern_comments.*,
-		authors.username
-	FROM
-		authors 
-	JOIN 
-		pattern_comments ON authors.id = pattern_comments.author_id
-	WHERE 
-		pattern_comments.pattern_id = ?`,
+		/* sql */ `
+			SELECT
+				pattern_comments.*,
+				authors.username
+			FROM
+				authors
+				JOIN pattern_comments ON authors.id = pattern_comments.author_id
+			WHERE
+				pattern_comments.pattern_id = ?
+		`,
 		[id]
 	);
 
@@ -37,17 +36,12 @@ const addNewComment = async (values: {
 	content: string;
 }): Promise<ResultSetHeader> => {
 	const { author_id, pattern_id, content } = values;
-	console.log(`DB query`, author_id, pattern_id, content);
-	try {
-		const sanitizedValues = [author_id, pattern_id, content];
-		const returnedHeaders = await QueryMetadata(
-			"INSERT INTO pattern_comments (author_id, pattern_id, content) VALUES (?, ?, ?)",
-			sanitizedValues
-		);
-		return returnedHeaders;
-	} catch (error) {
-		throw error;
-	}
+	const sanitizedValues = [author_id, pattern_id, content];
+	const returnedHeaders = await QueryMetadata(
+		/* sql */ 'INSERT INTO pattern_comments (author_id, pattern_id, content) VALUES (?, ?, ?)',
+		sanitizedValues
+	);
+	return returnedHeaders;
 };
 
 export default { all, allByPattern, addNewComment };

@@ -2,13 +2,12 @@ CREATE SCHEMA knitters_fren;
 USE knitters_fren;
 
 CREATE TABLE authors (
-id CHAR(36) NOT NULL PRIMARY KEY,
-email VARCHAR(254) NOT NULL UNIQUE,
-username CHAR(30) NOT NULL UNIQUE, 
-`password` CHAR(60) NOT NULL, 
-`role` ENUM('admin', 'user') NOT NULL DEFAULT 'user',
-link VARCHAR(255),
-created_at TIMESTAMP DEFAULT NOW()
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    email VARCHAR(254) NOT NULL UNIQUE,
+    username CHAR(30) NOT NULL UNIQUE,
+    `password` CHAR(60) NOT NULL,
+    `role` ENUM('admin', 'user') NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
     INSERT INTO authors (id, email, username, password) VALUE (
@@ -17,25 +16,34 @@ created_at TIMESTAMP DEFAULT NOW()
     'Admin',
     '$2b$12$qmlu8i8wOlvrteqJmQ1zs.h02/9d13SH2WTXh8oY947wlR6AdkD1K');
 
-SELECT * FROM authors;
+SELECT 
+    *
+FROM
+    authors;
 
 CREATE TABLE patterns (
-id CHAR(36) NOT NULL PRIMARY KEY,
-author_id CHAR(36),
-title VARCHAR(50) NOT NULL UNIQUE,
-content LONGTEXT NOT NULL,
-created_at TIMESTAMP DEFAULT NOW(),
-FOREIGN KEY (author_id) REFERENCES authors(id)
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    author_id CHAR(36),
+    title VARCHAR(50) NOT NULL UNIQUE,
+    content LONGTEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW (),
+    link VARCHAR(255),
+    FOREIGN KEY (author_id)
+        REFERENCES authors (id)
 );
 
+UPDATE patterns 
+SET 
+    author_id = '779e05a4-8988-4641-a2e5-5d9bb8391b65'
+WHERE
+    id = 'bed72fdc-9716-4812-9735-7a3492a16a0e';
 
-
-    INSERT INTO patterns (id, author_id, title, content) VALUE (
-	'2b99c031-e979-4a54-9bd0-fd237afd62b5',
-    'b990a79e-7dc2-4c61-b3c3-670fcb8945d3',
-    'Pattern Test',
-		'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in bibendum leo. Nam interdum justo et tincidunt tincidunt. Quisque posuere orci nec mauris pulvinar, vel tempor ex volutpat. Fusce id lectus ut eros vehicula sollicitudin. Aenean auctor sem euismod, commodo erat eget, varius justo. In rhoncus quam sed nunc tristique, id cursus ligula dictum. Curabitur venenatis, massa ut laoreet congue, erat sapien vestibulum enim, ac malesuada erat odio eget risus. Sed sit amet odio sed felis interdum pretium non vel sapien. Nullam mollis nisl ut leo interdum, at gravida mauris laoreet. Proin pharetra, orci non porttitor dictum, sapien eros feugiat dolor, ut aliquam nisl neque vel magna. Mauris consectetur vestibulum augue, nec tempor odio volutpat ac. Nunc ultricies quam nec arcu facilisis, ut suscipit arcu efficitur.');
-      
+UPDATE patterns 
+SET 
+    link = 'https://knitters-fren.s3.ca-central-1.amazonaws.com/Braided-Cable-Knit-Hat.pdf'
+WHERE
+    id = 'fa3106cf-db3e-46c3-935c-7eaacbbd62c6';
+ 
       
           INSERT INTO patterns (id, author_id, title, content) VALUE (
 	'490f2157-a4ec-49a6-ad35-89bb396fccef',
@@ -43,12 +51,15 @@ FOREIGN KEY (author_id) REFERENCES authors(id)
     'Pattern For Reg',
 		'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in bibendum leo. Nam interdum justo et tincidunt tincidunt. Quisque posuere orci nec mauris pulvinar, vel tempor ex volutpat. Fusce id lectus ut eros vehicula sollicitudin. Aenean auctor sem euismod, commodo erat eget, varius justo. In rhoncus quam sed nunc tristique, id cursus ligula dictum. Curabitur venenatis, massa ut laoreet congue, erat sapien vestibulum enim, ac malesuada erat odio eget risus. Sed sit amet odio sed felis interdum pretium non vel sapien. Nullam mollis nisl ut leo interdum, at gravida mauris laoreet. Proin pharetra, orci non porttitor dictum, sapien eros feugiat dolor, ut aliquam nisl neque vel magna. Mauris consectetur vestibulum augue, nec tempor odio volutpat ac. Nunc ultricies quam nec arcu facilisis, ut suscipit arcu efficitur.');
       
-SELECT * FROM patterns;
+SELECT 
+    *
+FROM
+    patterns;
 
 CREATE TABLE tags (
-id INT NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(60) UNIQUE NOT NULL,
-PRIMARY KEY(id)
+    id INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(60) UNIQUE NOT NULL,
+    PRIMARY KEY (id)
 );
 
 INSERT INTO tags (`name`) VALUES
@@ -69,43 +80,65 @@ INSERT INTO tags (`name`) VALUES
 	("Brioche"),
 	("Button Holes");
 
-SELECT * FROM tags;
+SELECT 
+    *
+FROM
+    tags;
 
 CREATE TABLE pattern_tags (
-id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-pattern_id CHAR(36),
-tag_id INT,
-FOREIGN KEY (pattern_id) REFERENCES patterns(id),
-FOREIGN KEY (tag_id) REFERENCES tags(id)
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    pattern_id CHAR(36),
+    tag_id INT,
+    FOREIGN KEY (pattern_id)
+        REFERENCES patterns (id),
+    FOREIGN KEY (tag_id)
+        REFERENCES tags (id),
+    UNIQUE (pattern_id , tag_id)
 );
 
 INSERT INTO pattern_tags (pattern_id, tag_id) VALUE ("490f2157-a4ec-49a6-ad35-89bb396fccef",6);
 
-SELECT * FROM pattern_tags;
+SELECT 
+    *
+FROM
+    pattern_tags;
+
 
 CREATE TABLE favorite_patterns (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     author_id CHAR(36),
     pattern_id CHAR(36),
-    FOREIGN KEY (author_id) REFERENCES authors(id),
-    FOREIGN KEY (pattern_id) REFERENCES patterns(id),
-    UNIQUE (author_id, pattern_id)
+    FOREIGN KEY (author_id)
+        REFERENCES authors (id),
+    FOREIGN KEY (pattern_id)
+        REFERENCES patterns (id),
+    UNIQUE (author_id , pattern_id)
 );
 
-INSERT INTO favorite_patterns (author_id, pattern_id) VALUE ("b990a79e-7dc2-4c61-b3c3-670fcb8945d3", "490f2157-a4ec-49a6-ad35-89bb396fccef");
+INSERT INTO favorite_patterns (author_id, pattern_id) VALUE ("3b6d9d2b-132a-4542-aa40-2de35690f4e6", "981ca702-c843-49c1-ae54-d73c73c7b698");
 
-SELECT * FROM favorite_patterns;
+SELECT 
+    *
+FROM
+    favorite_patterns;
 
 CREATE TABLE pattern_comments (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     author_id CHAR(36) NOT NULL,
     pattern_id CHAR(36) NOT NULL,
-	content VARCHAR(1500) NOT NULL,
+    content VARCHAR(1500) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES authors(id),
-    FOREIGN KEY (pattern_id) REFERENCES patterns(id),
-    UNIQUE (author_id, pattern_id)
+    FOREIGN KEY (author_id)
+        REFERENCES authors (id),
+    FOREIGN KEY (pattern_id)
+        REFERENCES patterns (id)
 );
+
+
+SELECT 
+    *
+FROM
+    pattern_comments;
 
 CREATE USER 'nanachi'@'localhost' IDENTIFIED BY 'regandriku';
 GRANT ALL PRIVILEGES ON knitters_fren.* TO 'nanachi'@'localhost';
@@ -117,18 +150,27 @@ CREATE TABLE activity_logs (
     action VARCHAR(255) NOT NULL,
     details TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES authors(id)
+    FOREIGN KEY (user_id)
+        REFERENCES authors (id)
 );
 
-SELECT * FROM activity_logs;
+SELECT 
+    *
+FROM
+    activity_logs;
 
 
 
 
-
-
-
-
+CREATE TABLE banned_authors (
+    id CHAR(36) PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id)
+        REFERENCES authors (id)
+        ON DELETE CASCADE
+);
 
 
 
@@ -190,72 +232,3 @@ SELECT * FROM activity_logs;
 ("Seasonal"),
 ("Shawl");
         
-
-
-
-    
-  
-
-
-INSERT INTO pattern_tags VALUES
-	(20, 33),
-    (20,34),
-    (20, 35);
-
-SELECT * FROM authors;
-SELECT * FROM pattern_tags;
-ALTER TABLE patterns
-ADD COLUMN link VARCHAR(255);
-
-  
-  UPDATE patterns SET content = "This si a new thingy" WHERE id = 3 AND author_id = 2;
-
-
-SELECT * from pattern_tags;
-
-	SELECT 
-		pattern_tags.tag_id as TagId,
-		patterns.id AS PatternId
-	FROM 
-		pattern_tags 
-				JOIN 
-		patterns ON patterns.id = pattern_tags.pattern_id WHERE patterns.id = 6;
-        
-        
-SELECT 
-    pattern_tags.tag_id AS TagId, 'tags.name' AS `name`, tags.id
-FROM
-    pattern_tags
-        INNER JOIN
-    tags ON 'tags.id' = pattern_tags.tag_id
-WHERE
-    pattern_tags.pattern_id = 6;
-        
-SELECT * FROM patterns WHERE title LIKE scarf;
-
-SELECT 
-	tags.id AS tag_id, 
-	tags.name AS tag_name
-FROM tags
-JOIN pattern_tags ON tags.id = pattern_tags.tag_id
-WHERE pattern_tags.pattern_id = 33;
-
-	SELECT * from pattern_tags;
-
-SELECT 
-    pattern_tags.tag_id AS TagId, patterns.*, tags.*
-FROM
-    pattern_tags
-        JOIN
-    patterns ON patterns.id = pattern_tags.pattern_id;
-    
-    
-    SELECT p.id, p.author_id, p.title, p.content, p.created_at, t.`name`
-		FROM patterns p
-			JOIN pattern_tags pt ON p.id = pt.pattern_id
-			JOIN tags t ON pt.tag_id = t.id ;
-
-
-
-SELECT * from patterns;
-    

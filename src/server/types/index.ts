@@ -1,4 +1,5 @@
 declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		export interface Request {
 			currentUser?: AuthorsTable;
@@ -7,30 +8,37 @@ declare global {
 	}
 }
 
-export type Tag = { id: number; name: string };
-
 export interface PatternTable {
-	id?: string;
+	id: string;
 	author_id?: string;
 	title?: string;
 	content?: string;
 	created_at?: string;
 	link?: string;
-	paid?: "true" | "false";
+	paid?: 'true' | 'false';
+	username: string;
 }
 
 export interface AuthorsTable {
-	id?: string;
-	username?: string;
-	email?: string;
+	id: string;
 	password?: string;
-	created_at?: string;
-	role?: string;
+	username: string;
+	email: string;
+	role: 'user' | 'admin';
+	patternsAuthored: number[] | null[];
+	patternsFavorited: string[] | null[];
+	commentsAuthored: string[] | null[];
 }
 
-export interface PatternTags {
-	name: string;
+//The type that's used in sql queries because the tags are aggregated so slapping a TagsTable on it doens't work
+export interface PatternObjectQuery extends PatternTable, AuthorsTable {
+	tags: Tag[];
+	pattern: PatternTable;
+}
+
+export interface Tag {
 	id: number;
+	name: string;
 }
 
 export type Log = {
@@ -48,4 +56,28 @@ export type PatternComment = {
 	content: string;
 	created_at: string;
 	username?: string;
+};
+
+export type FavoriteTable = {
+	id: number;
+	author_id: string;
+	pattern_id: string;
+};
+
+export type PatternTag = {
+	pattern_id: string;
+	tag_id: number;
+	id: number;
+};
+
+export type PatternObject = {
+	id: string;
+	author_id?: string;
+	title?: string;
+	content?: string;
+	created_at?: string;
+	link?: string;
+	paid?: 'true' | 'false';
+	username: string;
+	tags: Tag[];
 };

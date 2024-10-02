@@ -1,32 +1,4 @@
-import baseService from "./base";
-
-/**
- * Gets all the tags for the pattern id passed in
- * @param id - the id of the pattern we want the tags for
- * @returns an array(?) of tags
- */
-const getAllTags = async () => {
-	try {
-		const tags = await baseService.get(`/api/pattern_tags/`);
-		return tags;
-	} catch (error) {
-		throw error;
-	}
-};
-
-/**
- * Gets all the tags for the pattern id passed in
- * @param id - the id of the pattern we want the tags for
- * @returns an array(?) of tags
- */
-const getByPatternId = async (id: string) => {
-	try {
-		const tags = await baseService.get(`/api/pattern_tags/${id}`);
-		return tags;
-	} catch (error) {
-		throw error;
-	}
-};
+import baseService from './base';
 
 /**
  *
@@ -60,17 +32,11 @@ const addNewTags = async (payload: {
  * Removes all tag association from pattern_tags table based on the patternId
  * @param id - id of pattern we want to remove patterns from
  */
-const destroyAllTagsBasedOnId = async (id: any) => {
-	try {
-		await baseService.destroy(`/api/pattern_tags/delete/${id}`);
-	} catch (error) {
-		throw error;
-	}
+const destroyAllTagsBasedOnId = async (id: string) => {
+	await baseService.destroy(`/api/pattern_tags/delete/${id}`);
 };
 
 export default {
-	getAllTags,
-	getByPatternId,
 	addNewTags,
 	destroyAllTagsBasedOnId,
 };

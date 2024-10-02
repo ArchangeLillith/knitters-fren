@@ -1,52 +1,107 @@
-import type { PatternTable } from "../../types";
-import { Query } from "../query";
+import type { PatternObjectQuery, PatternTable } from '../../types';
+import { Query } from '../query';
 
-const findByAuthor = (author: string): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
-		`SELECT 
-			patterns.*,
-			authors.username  
-		FROM 
-			patterns
-		JOIN 
-			authors ON patterns.author_id = authors.id WHERE authors.username = ?;`,
+const findByAuthor = (author: string): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
+		/*sql */ `
+			SELECT
+        p.*,
+        a.username,
+        JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
+      FROM
+        patterns p
+        JOIN authors a ON a.id = p.author_id
+        LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+        LEFT JOIN tags t ON t.id = pt.tag_id
+      WHERE
+        	a.username LIKE concat ('%', ?, '%')
+      GROUP BY
+        p.id;
+		`,
 		[author]
 	);
 
-const findByTitle = (title: string): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
-		`SELECT * FROM patterns WHERE title LIKE concat('%', ?, '%')`,
+const findByTitle = (title: string): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
+		/* sql */ `
+			SELECT
+				p.*,
+				a.username,
+				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
+			FROM
+				patterns p
+				JOIN authors a ON a.id = p.author_id
+				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN tags t ON t.id = pt.tag_id
+			WHERE
+				p.title LIKE concat ('%', ?, '%')
+			GROUP BY
+				p.id;
+		`,
 		[title]
 	);
 
-const findByContent = (content: string): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
-		`SELECT * FROM patterns WHERE content LIKE concat('%', ?, '%')`,
+const findByContent = (content: string): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
+		/* sql */ `
+			SELECT
+				p.*,
+				a.username,
+				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
+			FROM
+				patterns p
+				JOIN authors a ON a.id = p.author_id
+				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN tags t ON t.id = pt.tag_id
+			WHERE
+				p.content LIKE concat ('%', ?, '%')
+			GROUP BY
+				p.id;
+		`,
 		[content]
 	);
 
 //Tags query
-const findByTags = (tag: number): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
-		`SELECT p.id, p.author_id, p.title, p.content, p.created_at
-		FROM patterns p
-			JOIN pattern_tags pt ON p.id = pt.pattern_id
-			JOIN tags t ON pt.tag_id = t.id 
-	WHERE t.id = ?;`,
+const findByTags = (tag: number): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
+		/* sql */ `
+			SELECT
+				p.*,
+				a.username,
+				JSON_ARRAYAGG (JSON_OBJECT ('id', t.id, 'name', t.name)) AS tags
+			FROM
+				patterns p
+				JOIN authors a ON a.id = p.author_id
+				LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
+				LEFT JOIN tags t ON t.id = pt.tag_id
+			WHERE
+				t.id = ?
+			GROUP BY
+				p.id;
+		`,
 		[tag]
 	);
 
-const findByTagsStrict = (tags: number[]): Promise<PatternTable[]> =>
-	Query<PatternTable[]>(
-		`
-			SELECT p.id, p.author_id, p.title, p.content, p.created_at
-			FROM patterns p
+const findByTagsStrict = (tags: number[]): Promise<PatternObjectQuery[]> =>
+	Query<PatternObjectQuery[]>(
+		/* sql */ `
+			SELECT
+				p.id,
+				p.author_id,
+				p.title,
+				p.content,
+				p.created_at
+			FROM
+				patterns p
 				JOIN pattern_tags pt ON p.id = pt.pattern_id
-				JOIN tags t ON pt.tag_id = t.id 
-			WHERE t.id IN (${tags.map(() => "?").join(", ")})
-			GROUP BY p.id
-			HAVING COUNT(DISTINCT t.id) = ?;
-			`,
+				JOIN tags t ON pt.tag_id = t.id
+			WHERE
+				t.id IN (${tags.map(() => '?').join(', ')})
+			GROUP BY
+				p.id
+			HAVING
+				COUNT(DISTINCT t.id) = ?;
+		`,
 		[...tags, tags.length]
 	);
 

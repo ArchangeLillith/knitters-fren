@@ -1,12 +1,15 @@
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthComponents/AuthProvider";
-import storage from "../../utils/storage";
+import React, { useContext } from 'react';
+import { TfiSearch } from 'react-icons/tfi';
+import { Link, useNavigate } from 'react-router-dom';
+
+import storage from '../../utils/storage';
+import { AuthContext } from '../AuthComponents/AuthProvider';
 
 const NavBar = () => {
 	const { logoutFromAuthState } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const { authState } = useContext(AuthContext);
+	const { authorData } = authState;
 
 	/**
 	 * Logs the user out by removing the token and calling to the auth state to reset the state
@@ -17,13 +20,13 @@ const NavBar = () => {
 			logoutFromAuthState();
 			navigate(`/`);
 		} catch (error) {
-			console.error("Error logging out:", error);
+			console.error('Error logging out:', error);
 		}
 	};
 
 	return (
 		<nav
-			style={{ fontFamily: "Garamond, serif", fontSize: "24px" }}
+			style={{ fontFamily: 'Garamond, serif', fontSize: '24px' }}
 			className="navbar sticky-top navbar-expand-lg navbar-light bg-navbar "
 		>
 			<div className="container-fluid">
@@ -32,7 +35,7 @@ const NavBar = () => {
 					to="/"
 					style={{
 						fontFamily: "'Brush Script MT', cursive",
-						fontSize: "30px",
+						fontSize: '30px',
 					}}
 				>
 					Knitters Fren
@@ -60,6 +63,13 @@ const NavBar = () => {
 								Patterns
 							</Link>
 						</li>
+						{authState.authenticated && (
+							<li className="nav-item text-soft">
+								<Link to="/favorites" className="nav-link">
+									Favorites
+								</Link>
+							</li>
+						)}
 						<li className="nav-item">
 							<Link to="/patterns/new" className="nav-link">
 								Create a Pattern
@@ -70,27 +80,26 @@ const NavBar = () => {
 								Gallery
 							</Link>
 						</li>
+
 						<li className="nav-item">
 							<Link to="/search" className="nav-link">
-								Search
+								<TfiSearch />
 							</Link>
 						</li>
 					</ul>
-					{authState.username && (
-						<div>
-							<div>Welcome back {authState.username}!</div>
+					{authorData?.username && (
+						<div className="me-3 text-soft">
+							<div>Welcome back {authorData?.username}!</div>
 						</div>
 					)}
 					{authState.authenticated && (
-						<div>
-							<div>
-								<button onClick={logOut} className="nav-link">
-									Log out!
-								</button>
-							</div>
+						<div className="me-3">
+							<button onClick={logOut} className="nav-link">
+								Log out
+							</button>
 						</div>
 					)}
-					{authState.role === "admin" && (
+					{authorData?.role === 'admin' && (
 						<div>
 							<Link to="/admin">Admin Panel</Link>
 						</div>

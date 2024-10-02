@@ -1,8 +1,7 @@
-import type { PatternTags } from "../../types";
-import { Query } from "../query";
+import type { Tag } from '../../types';
+import { Query } from '../query';
 
 //API calls
-const all = (): Promise<PatternTags[]> =>
-	Query<PatternTags[]>(`SELECT * FROM tags;`);
+const all = (): Promise<Tag[]> => Query<Tag[]>(`SELECT * FROM tags;`);
 
 export default { all };

@@ -1,4 +1,4 @@
-import { Query } from "../db/query";
+import { Query } from '../db/query';
 
 export async function logActivity(
 	userId: string,

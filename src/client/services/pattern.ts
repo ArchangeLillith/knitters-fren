@@ -1,33 +1,6 @@
-import type { ResultSetHeader } from "mysql2";
-import baseService from "./base";
+import type { ResultSetHeader } from 'mysql2';
 
-/**
- * Calls to backend and returns all patterns from database
- * @returns an array of patterns
- */
-const getAllPatterns = async () => {
-	try {
-		const patterns = await baseService.get("/api/patterns");
-		return patterns;
-	} catch (error) {
-		throw error;
-	}
-};
-
-/**
- *
- * Calls to the backend to grab the pattern based on the id passed in
- * @param id - the id of the requested pattern
- * @returns the pattern requested
- */
-const getOnePattern = async (id: string) => {
-	try {
-		const Pattern = await baseService.get(`/api/patterns/${id}`);
-		return Pattern;
-	} catch (error) {
-		throw error;
-	}
-};
+import baseService from './base';
 
 /**
  *
@@ -41,16 +14,12 @@ const addNewPattern = async (payload: {
 	content: string;
 	author_id: string;
 	link: string;
-	paid: "true" | "false";
+	paid: 'true' | 'false';
 }) => {
-	try {
-		console.log(`Adding pattern....`);
-		const response = await baseService.post("/api/patterns", payload);
-		console.log(`response`, response);
-		return response.pattern;
-	} catch (error) {
-		throw error;
-	}
+	console.log(`Adding pattern....`);
+	const response = await baseService.post('/api/patterns', payload);
+	console.log(`response`, response);
+	return response.pattern;
 };
 
 /**
@@ -58,15 +27,11 @@ const addNewPattern = async (payload: {
  * @param id - the patternId to destroy
  */
 const destroyPattern = async (id: string) => {
-	try {
-		const result: ResultSetHeader = await baseService.destroy(
-			`/api/patterns/${id}`
-		);
-		console.log(`Result`, result);
-		return result;
-	} catch (error) {
-		throw error;
-	}
+	const result: ResultSetHeader = await baseService.destroy(
+		`/api/patterns/${id}`
+	);
+	console.log(`Result`, result);
+	return result;
 };
 
 /**
@@ -78,14 +43,10 @@ const updatePattern = async (
 	id: string,
 	payload: { id: string; title: string; content: string }
 ) => {
-	try {
-		await baseService.put(`/api/patterns/${id}`, payload);
-	} catch (error) {}
+	await baseService.put(`/api/patterns/${id}`, payload);
 };
 
 export default {
-	getAllPatterns,
-	getOnePattern,
 	addNewPattern,
 	destroyPattern,
 	updatePattern,

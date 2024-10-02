@@ -1,7 +1,8 @@
-import React from "react";
-import { AdminState } from "../../utils/types";
+import React from 'react';
 
-const DbStats: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
+import { AdminPageState } from '../../utils/types';
+
+const DbStats: React.FC<{ state: AdminPageState }> = ({ state }) => {
 	return (
 		<>
 			<h2 className="accordion-header">
@@ -21,8 +22,8 @@ const DbStats: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 				className="accordion-collapse collapse"
 			>
 				<div className="accordion-body">
-					<div>Authors:{adminState.authors?.length}</div>
-					<div>Patterns:{adminState.patterns?.length}</div>
+					<div>Authors:{state.authors?.length}</div>
+					<div>Patterns:{state.patterns?.length}</div>
 					<div>
 						Comments:<i>Work in progress</i>
 					</div>

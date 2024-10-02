@@ -1,83 +1,337 @@
-/* This is linked in case we want to test or do some custom styling */
+/* -------------------------------------
+   CSS Variables 
+------------------------------------- */
+:root {
+	/* Primary Colors */
+	--primary: #e78686;
+	--soft: #fbe2e2;
+	--muted: #d5a7a7;
+
+	/* Background Colors */
+	--background: #f0c9c9;
+	--background-bright: #f09b9b;
+	--background-light: #ffcdcd;
+	--background-soft: #fbe2e2;
+	--background-muted: #d5a7a7;
+	--background-nav: #cb8585;
+
+	/* Text Colors */
+	--text-primary: #e78686;
+	--text-soft: #ffd4d4;
+	--text-muted: #d5a7a7;
+
+	/* Button Colors */
+	--btn-primary: #f4a6a6;
+	--btn-prim-bord: #ffdede;
+	--btn-muted: #d5a7a7;
+	--btn-soft: #fbe2e2;
+	--primary-btn-out: #cb8585;
+	--primary-btn-back: #da9898;
+
+	/* Link Colors */
+	--link-white: #ffefef;
+	--link-primary: #e78686;
+	--link-dark: #c56161;
+
+	/* Tooltip Colors */
+	--tooltip-icon: #f38686;
+	--tooltip-text: #ae6f6f;
+
+	/* Misc Colors */
+	--tag-tile: #d88484;
+}
+
+/* -------------------------------------
+   Utility Classes
+------------------------------------- */
 .select-none {
 	-webkit-user-select: none; /* Safari */
 	-ms-user-select: none; /* IE 10 and IE 11 */
 	user-select: none; /* Standard syntax */
 }
 
-.link:hover,
-.primary-link:hover {
-	color: #f9b5b5;
-}
-.link {
-	color: rgb(255, 255, 255);
-}
-/* Colors */
-body,
-#root {
-	background-color: #f0c9c9;
-	padding-bottom: 40px;
-}
-
-.bg-bright {
-	background-color: #f09b9b;
-}
-
-.font-color-primary {
-	color: #e78686;
-}
-
-.font-color-white {
-	color: #ffffff;
-}
-
-.bg-soft {
-	background-color: #fbe2e2;
-}
-
-.text-soft {
-	color: #fbe2e2;
-}
-
-.bg-muted {
-	background-color: #d5a7a7;
-}
-
-.bg-navbar {
-	background-color: #cb8585;
-}
-
-.btn-muted {
-	background-color: #d5a7a7;
-}
-
-.btn-soft {
-	background-color: #fbe2e2;
-}
-
 .w-60 {
 	width: 60%;
 }
 
-.border-pink {
-	border: 1px solid #e78686; /* Assuming border-width is 1px */
+.fade-in-wrapper {
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out; /* Adjust duration for smooth fade-in */
 }
 
-a:hover {
-	color: #d4d4d4; /* This is 20% darker than #ffffff */
+.fade-in-wrapper.visible {
+	opacity: 1;
 }
 
-.primary-link,
-a {
-	color: #c56161;
+/* -------------------------------------
+   Global Styles
+------------------------------------- */
+html,
+body,
+#root {
+	background-color: var(--background);
+	margin: 0;
+	padding: 0;
+	height: 100%;
 }
 
+
+/* -------------------------------------
+   Typography
+------------------------------------- */
+.font-color-primary {
+	color: var(--text-primary);
+}
+
+.font-color-white,
+.text-color-white {
+	color: white;
+}
+
+.text-soft,
+.text-soft.nav-link,
+a.nav-link:hover {
+	color: var(--text-soft);
+}
+.text-muted {
+	color: var(--text-muted);
+}
+.h4.align-self-end {
+	margin-bottom: 0;
+}
+
+h3.search-header {
+	margin-bottom: 0;
+	margin-right: 10px;
+}
+
+/* -------------------------------------
+   Background Styles
+------------------------------------- */
+.bg-bright {
+	background-color: var(--background-bright);
+}
+
+.bg-soft {
+	background-color: var(--background-soft);
+}
+
+.bg-muted,
+.btn-muted {
+	background-color: var(--muted);
+}
+
+.bg-navbar {
+	background-color: var(--background-nav);
+}
+
+.background-light {
+	background-color: var(--background-light);
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.heart-btn {
+	color: var(--primary);
+	border: none;
+	background: none;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* -------------------------------------
+   Links
+------------------------------------- */
+.link-white {
+	position: relative;
+	text-decoration: none;
+	color: var(--link-white);
+	text-shadow: 1px 1px 2px var(--link-dark);
+	transition: all 0.25s ease-out;
+}
+.link-white:hover {
+	color: var(--link-dark);
+	text-shadow: 1px 1px 4px white;
+}
+
+.link-pink {
+	position: relative;
+	text-decoration: none;
+	color: var(--link-primary);
+	text-shadow: 1px 1px 2px rgb(255, 255, 255);
+	transition: all 0.15s ease-out;
+}
+
+a.primary-link {
+	position: relative;
+	text-decoration: none;
+	color: var(--link-dark);
+	text-shadow: 1px 1px 4px rgb(255, 255, 255);
+	transition: all 0.15s ease-out;
+}
+
+.image-credit {
+	color: var(--soft);
+}
+.link-pink:hover {
+	color: var(--link-dark);
+	text-shadow: 1px 1px 2px pink;
+}
+
+.link-pink::before {
+	content: '';
+	position: absolute;
+	background: var(--link-primary);
+	height: 3px;
+	top: 90%;
+	left: 0;
+	width: 0%;
+	transition: width 0.5s ease;
+}
+.link-pink:hover::before {
+	width: 100%;
+	background: var(--link-dark);
+}
+
+/* -------------------------------------
+   Buttons
+------------------------------------- */
 .btn.btn-outline-primary {
-	color: #ffffff;
-	border-color: #cb8585;
-	background-color: #da9898;
+	color: white;
+	border-color: var(--primary-btn-out);
+	background-color: var(--primary-btn-back);
 }
 
+.btn-soft {
+	background-color: var(--btn-soft);
+}
+
+.btn.btn-primary {
+	background-color: var(--btn-primary);
+	border: 1px solid var(--btn-prim-bord);
+}
+
+.btn.btn-primary:hover {
+	background-color: var(--btn-prim-bord);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+.btn.btn-primary:focus-visible {
+	background-color: var(--btn-prim-bord);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+	border-color: var(--background-light);
+	outline: 0;
+	box-shadow: 0 0 0 0.25rem rgba(255, 106, 133, 0.554);
+}
+
+button.btn.btn-primary:active {
+	background-color: var(--btn-prim-bord);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+.btn.btn-secondary {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+.btn.btn-secondary:hover {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+.btn.btn-secondary:focus {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+.btn.btn-secondary:focus-visible {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+	border-color: var(--background-light);
+	outline: 0;
+	box-shadow: 0 0 0 0.25rem rgba(255, 106, 133, 0.554);
+}
+
+.btn.btn-secondary:active {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+/* -------------------------------------
+   Borders
+------------------------------------- */
+.border-pink {
+	border: 1px solid var(--primary);
+}
+input.form-control:focus {
+	color: black;
+	background-color: white;
+	border-color: var(--background-light);
+	outline: 0;
+	box-shadow: 0 0 0 0.25rem rgba(255, 149, 169, 0.25);
+}
+
+/* -------------------------------------
+   Tooltip
+------------------------------------- */
+.tooltip-icon,
+.tooltip-icon-lock {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	text-align: center;
+	border-radius: 50%;
+	font-size: 12px;
+	cursor: pointer;
+	margin-left: 5px;
+	position: relative;
+}
+
+.tooltip-icon {
+	background-color: var(--tooltip-icon);
+	color: white;
+}
+
+.tooltip-icon-lock {
+	color: black;
+}
+
+.tooltip-text {
+	visibility: hidden;
+	width: 175px;
+	background-color: var(--tooltip-text);
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 10px;
+	position: absolute;
+	z-index: 1;
+	top: 125%; /* Adjust position */
+	left: 50%;
+	transform: translateX(-50%);
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+
+.tooltip-icon:hover + .tooltip-text,
+.tooltip-icon-lock:hover + .tooltip-text {
+	visibility: visible;
+	opacity: 1;
+}
+
+/* -------------------------------------
+   Modal
+------------------------------------- */
 .modal-overlay {
 	position: fixed;
 	top: 0;
@@ -104,12 +358,14 @@ a {
 	justify-content: flex-end;
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
 .modal-link {
 	text-decoration: none;
-	color: rgb(248, 144, 144);
+	color: #f89090;
 }
+
 .modal-button {
-	color: rgb(255, 255, 255);
+	color: white;
 	width: 80%;
 	background-color: #ec9e9e;
 	align-self: center;
@@ -119,80 +375,16 @@ a {
 	box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
 }
 
-.background-light {
-	background-color: #ffcdcd;
-	border-radius: 10px;
-	padding: 10px;
-}
-.h3.text-color-light {
-	color: #d5a7a7;
-}
-.h4.align-self-end {
-	margin-bottom: 0;
-}
-
-.tooltip-icon {
-	display: inline-block;
-	width: 16px;
-	height: 16px;
-	background-color: #f38686;
+/* -------------------------------------
+   Tags
+------------------------------------- */
+.tag-tile {
+	background: var(--tag-tile);
 	color: white;
-	text-align: center;
-	border-radius: 50%;
-	font-size: 12px;
-	cursor: pointer;
-	margin-left: 5px;
-	position: relative;
-}
-.tooltip-icon-lock {
-	display: inline-block;
-	width: 16px;
-	height: 16px;
-	color: black;
-	text-align: center;
-	border-radius: 50%;
-	font-size: 12px;
-	cursor: pointer;
-	margin-left: 5px;
-	position: relative;
-}
-
-.text-color-white {
-	color: white;
+	border-radius: 5px;
 }
 
 .selected-tag {
 	background: white;
 	color: pink;
-}
-.tooltip-text {
-	visibility: hidden;
-	width: 175px;
-	background-color: rgb(174, 111, 111);
-	color: #fff;
-	text-align: center;
-	border-radius: 6px;
-	padding: 10px 10px;
-	position: absolute;
-	z-index: 1;
-	top: 125%; /* Adjust position */
-	left: 50%;
-	transform: translateX(-50%);
-	opacity: 0;
-	transition: opacity 0.3s;
-}
-
-.tooltip-icon:hover + .tooltip-text {
-	visibility: visible;
-	opacity: 1;
-}
-.tooltip-icon-lock:hover + .tooltip-text {
-	visibility: visible;
-	opacity: 1;
-}
-
-.tag-tile {
-	background: #d88484;
-	color: white;
-	border-radius: 5px;
 }

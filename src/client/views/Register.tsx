@@ -1,19 +1,20 @@
-import React, { FormEvent, useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Container from "../components/Container";
-import authService from "../services/auth";
-import { AuthContext } from "../components/AuthComponents/AuthProvider";
-import { validateFields } from "../utils/functions.utils";
-import { FormFields } from "../utils/types";
+import React, { FormEvent, useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import Container from '../components/Container';
+import authService from '../services/auth';
+import { validateFields } from '../utils/functions.utils';
+import { FormFields } from '../utils/types';
 
 const Register = () => {
 	const { loginToAuthState } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [formFields, setFormFields] = useState<FormFields>({
-		email: "",
-		username: "",
-		password: "",
-		confirmPassword: "",
+		email: '',
+		username: '',
+		password: '',
+		confirmPassword: '',
 	});
 
 	const registerUser = async (event: FormEvent<HTMLFormElement>) => {
@@ -21,7 +22,7 @@ const Register = () => {
 		const errors = validateFields(formFields);
 
 		if (errors.length > 0) {
-			console.log(errors.join(", "));
+			console.log(errors.join(', '));
 			return;
 		}
 
@@ -35,7 +36,7 @@ const Register = () => {
 				navigate(`/`);
 			}
 		} catch (error) {
-			console.error("Error logging in:", error);
+			console.error('Error logging in:', error);
 		}
 	};
 
@@ -48,7 +49,7 @@ const Register = () => {
 						src="/images/nice-to-meet-you-nanachi.png"
 						alt="teacup-nanachi"
 						style={{
-							width: "250px",
+							width: '250px',
 						}}
 					/>
 					<form onSubmit={registerUser}>
@@ -59,8 +60,8 @@ const Register = () => {
 								className="form-control"
 								id="emailInput"
 								aria-describedby="emailHelp"
-								onChange={(e) =>
-									setFormFields((prev) => ({ ...prev, email: e.target.value }))
+								onChange={e =>
+									setFormFields(prev => ({ ...prev, email: e.target.value }))
 								}
 							/>
 						</div>
@@ -71,8 +72,8 @@ const Register = () => {
 								className="form-control"
 								id="usernameInput"
 								aria-describedby="username"
-								onChange={(e) =>
-									setFormFields((prev) => ({
+								onChange={e =>
+									setFormFields(prev => ({
 										...prev,
 										username: e.target.value,
 									}))
@@ -85,8 +86,8 @@ const Register = () => {
 								type="password"
 								className="form-control"
 								id="passwordInput"
-								onChange={(e) =>
-									setFormFields((prev) => ({
+								onChange={e =>
+									setFormFields(prev => ({
 										...prev,
 										password: e.target.value,
 									}))
@@ -100,8 +101,8 @@ const Register = () => {
 								className="form-control"
 								id="confirmPassword"
 								aria-describedby="password"
-								onChange={(e) =>
-									setFormFields((prev) => ({
+								onChange={e =>
+									setFormFields(prev => ({
 										...prev,
 										confirmPassword: e.target.value,
 									}))
@@ -112,8 +113,8 @@ const Register = () => {
 							Submit
 						</button>
 						<div>
-							Already have an account? Log in{" "}
-							<Link to="/login" style={{ color: "#cb8585" }}>
+							Already have an account? Log in{' '}
+							<Link to="/login" style={{ color: '#cb8585' }}>
 								here!
 							</Link>
 						</div>

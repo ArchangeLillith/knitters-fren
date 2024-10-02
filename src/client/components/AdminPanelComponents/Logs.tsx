@@ -1,8 +1,9 @@
-import React from "react";
-import { AdminState } from "../../utils/types";
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
+import React from 'react';
 
-const Logs: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
+import { AdminPageState } from '../../utils/types';
+
+const Logs: React.FC<{ state: AdminPageState }> = ({ state }) => {
 	return (
 		<>
 			<h2 className="accordion-header">
@@ -32,12 +33,12 @@ const Logs: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{adminState.filteredLogs?.map((log) => (
+							{state.filteredLogs?.map(log => (
 								<tr key={log.id}>
-									<td scope="row">{log.user_id}</td>
+									<td>{log.user_id}</td>
 									<td>{log.action}</td>
 									<td>{log.details}</td>
-									<td>{dayjs(log.created_at).format("MMMM D, YYYY")}</td>
+									<td>{dayjs(log.created_at).format('MMMM D, YYYY')}</td>
 								</tr>
 							))}
 						</tbody>

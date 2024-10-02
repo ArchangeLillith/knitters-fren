@@ -1,23 +1,19 @@
-import React, { useState } from "react";
-import patternService from "../../services/pattern";
-import type { ResultSetHeader } from "mysql2";
-import { AdminState } from "../../utils/types";
-import { Link } from "react-router-dom";
-import PatternCard from "../PatternComponents/PatternCard";
-import Modal from "../Modal";
+import type { ResultSetHeader } from 'mysql2';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-interface PatternProps {
-	adminState: AdminState;
-	setAdminState: React.Dispatch<React.SetStateAction<AdminState>>;
-}
+import patternService from '../../services/pattern';
+import { AdminPageProps } from '../../utils/types';
+import Modal from '../Modal';
+import PatternCard from '../PatternComponents/PatternCard';
 
-const Patterns: React.FC<PatternProps> = ({ adminState, setAdminState }) => {
+const Patterns: React.FC<AdminPageProps> = ({ state, setState }) => {
 	const [toBeDeleted, setToBeDelted] = useState<string[]>([]);
 
 	const modalConfirm = (deleteButton: React.MouseEvent<HTMLButtonElement>) => {
 		const target = deleteButton.currentTarget as HTMLButtonElement;
 		setToBeDelted([target.id]);
-		setAdminState((prev) => ({
+		setState(prev => ({
 			...prev,
 			showModal: true,
 		}));
@@ -27,25 +23,25 @@ const Patterns: React.FC<PatternProps> = ({ adminState, setAdminState }) => {
 		submitButton: React.MouseEvent<HTMLButtonElement>
 	) => {
 		submitButton.preventDefault();
-		const deletePromises = toBeDeleted.map((id) =>
+		const deletePromises = toBeDeleted.map(id =>
 			patternService.destroyPattern(id)
 		);
 
 		try {
 			const results: ResultSetHeader[] = await Promise.all(deletePromises);
-			const hasErrors = results.some((result) => result.affectedRows === 0);
+			const hasErrors = results.some(result => result.affectedRows === 0);
 			if (hasErrors) {
-				alert("something went wrong, affectedRows === 0");
+				alert('something went wrong, affectedRows === 0');
 			}
 
-			const newPatterns = adminState.patterns.filter(
-				(pattern) => !toBeDeleted.includes(pattern.id)
+			const newPatterns = state.patterns.filter(
+				pattern => !toBeDeleted.includes(pattern.id)
 			);
 
-			setAdminState((prev) => ({ ...prev, patterns: newPatterns }));
+			setState(prev => ({ ...prev, patterns: newPatterns }));
 		} catch (error) {
 			console.error(
-				"Yo some stuff went wrong during deleting, this is that catch fr that"
+				'Yo some stuff went wrong during deleting, this is that catch fr that'
 			);
 			alert(error);
 		}
@@ -54,15 +50,15 @@ const Patterns: React.FC<PatternProps> = ({ adminState, setAdminState }) => {
 	const addToDelete = (checkBox: React.MouseEvent<HTMLInputElement>) => {
 		const id = (checkBox.target as HTMLInputElement).id;
 
-		if (toBeDeleted.some((arrayId) => arrayId === id)) {
-			setToBeDelted(toBeDeleted.filter((arrayId) => arrayId !== id));
+		if (toBeDeleted.some(arrayId => arrayId === id)) {
+			setToBeDelted(toBeDeleted.filter(arrayId => arrayId !== id));
 		} else {
-			setToBeDelted((prev) => [...prev, id]);
+			setToBeDelted(prev => [...prev, id]);
 		}
 	};
 
 	const closeModal = () => {
-		setAdminState((prev) => ({ ...prev, showModal: false }));
+		setState(prev => ({ ...prev, showModal: false }));
 	};
 
 	return (
@@ -87,7 +83,7 @@ const Patterns: React.FC<PatternProps> = ({ adminState, setAdminState }) => {
 					{toBeDeleted.length > 0 && (
 						<button onClick={handleDelete}>Order 66</button>
 					)}
-					{adminState.patterns?.map((pattern) => (
+					{state.patterns?.map(pattern => (
 						<div
 							key={`wrapper-for-${pattern.id}`}
 							className="border rounded w-100 bg-soft m-2 border-pink"
@@ -123,7 +119,7 @@ const Patterns: React.FC<PatternProps> = ({ adminState, setAdminState }) => {
 					))}
 				</div>
 
-				{adminState.showModal && toBeDeleted.length > 0 && (
+				{state.showModal && toBeDeleted.length > 0 && (
 					<Modal>
 						<div className="align-self-center h3 text-color-light">
 							Are you sure you want to ban these patterns?

@@ -1,6 +1,4 @@
 import * as esbuild from "esbuild";
-import * as sass from "sass";
-import { sassPlugin } from "esbuild-sass-plugin";
 
 try {
 	await esbuild.build({
@@ -11,16 +9,10 @@ try {
 		outfile: "public/static/bundle.js",
 		define: {
 			"process.env.NODE_ENV": "'production'",
-			"process.env.ROOT_URL":
-				"'https://arias-server-4642dbc777af.herokuapp.com'",
+			//This is important! keyword: deploy
+			//Set this back to "https://arias-server-4642dbc777af.herokuapp.com" on delpoy
+			"process.env.ROOT_URL": "'http://localhost:3000'",
 		},
-		plugins: [
-			sassPlugin({
-				type: "style",
-				quietDeps: true,
-				logger: sass.Logger.silent,
-			}),
-		],
 	});
 
 	console.log("Client bundled successfully for production!");

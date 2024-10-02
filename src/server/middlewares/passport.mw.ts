@@ -1,13 +1,14 @@
-import passport from "passport";
-import PassportLocal from "passport-local";
-import PassportJWT from "passport-jwt";
-import bcrypt from "bcrypt";
-import db from "../db";
-import config from "../config";
-import type { Express } from "express";
+import bcrypt from 'bcrypt';
+import type { Express } from 'express';
+import passport from 'passport';
+import PassportJWT from 'passport-jwt';
+import PassportLocal from 'passport-local';
+
+import config from '../config';
+import db from '../db';
 
 export function configurePassport(app: Express) {
-	console.log("Configuring Passport strategies...");
+	console.log('Configuring Passport strategies...');
 
 	passport.use(
 		new PassportLocal.Strategy(
@@ -27,7 +28,7 @@ export function configurePassport(app: Express) {
 						return done(null, userFound);
 					}
 
-					done(null, false, { message: "Invalid credentials" });
+					done(null, false, { message: 'Invalid credentials' });
 				} catch (error) {
 					console.log(`Error in local strategy:`, error);
 					done(error);
@@ -44,12 +45,12 @@ export function configurePassport(app: Express) {
 			},
 			(payload, done) => {
 				console.log(`JWT PAYLOAD`, payload);
-				console.log("JWT strategy invoked");
+				console.log('JWT strategy invoked');
 				try {
 					console.log(`Done in JWT strategy`);
 					done(null, payload);
 				} catch (error) {
-					console.log("Error in JWT strategy:", error);
+					console.log('Error in JWT strategy:', error);
 					done(error);
 				}
 			}

@@ -1,12 +1,13 @@
-import { Router } from "express";
-import db from "../../db";
+import { Router } from 'express';
+
+import db from '../../db';
 
 const router = Router();
 
 export default router;
 
 //GET /api/comments/pattern_id
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
 	try {
 		const result = await db.comments.all();
 		res.json(result);
@@ -16,7 +17,7 @@ router.get("/", async (req, res, next) => {
 });
 
 //GET /api/comments/pattern_id
-router.get("/:id", async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
 	const id = req.params.id;
 	try {
 		const result = await db.comments.allByPattern(id);
@@ -27,7 +28,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //POST /api/comments/pattern_id
-router.post("/:id", async (req, res, next) => {
+router.post('/:id', async (req, res, next) => {
 	const commentDTO = { ...req.body };
 	try {
 		const result = await db.comments.addNewComment(commentDTO);

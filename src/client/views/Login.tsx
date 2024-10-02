@@ -1,20 +1,24 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, {
 	FormEvent,
 	useContext,
 	useEffect,
 	useRef,
 	useState,
-} from "react";
-import Container from "../components/Container";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import loginService from "../services/auth";
-import { AuthContext } from "../components/AuthComponents/AuthProvider";
-import { locationStrings } from "../utils/types";
+} from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import Container from '../components/Container';
+import { useFadeIn } from '../hooks/useFadeIn';
+import loginService from '../services/auth';
+import { locationStrings } from '../utils/types';
 
 const Login = () => {
-	const [password, setPassword] = useState<string>("");
-	const [username, setUsername] = useState<string>("");
+	const [password, setPassword] = useState<string>('');
+	const [username, setUsername] = useState<string>('');
 	const inputRef = useRef<HTMLInputElement>(null);
+	const isVisible = useFadeIn(10); // 100ms delay
 	const { loginToAuthState } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const { state } = useLocation();
@@ -31,7 +35,7 @@ const Login = () => {
 			loginToAuthState(token);
 			navigate(`/`);
 		} catch (error) {
-			console.error("Error logging in:", error);
+			console.error('Error logging in:', error);
 		}
 	};
 
@@ -43,11 +47,13 @@ const Login = () => {
 
 	return (
 		<Container>
-			<div className="d-flex align-items-center flex-column justify-content-center">
+			<div
+				className={`fade-in ${isVisible ? 'visible d-flex align-items-center flex-column justify-content-center' : 'd-flex align-items-center flex-column justify-content-center'}`}
+			>
 				{fromLocation && (
 					<div className="d-flex align-items-center">
 						<div>
-							You've been redirected from the {locationStrings[fromLocation]}{" "}
+							You've been redirected from the {locationStrings[fromLocation]}{' '}
 							page because you need to be logged in to access that page
 						</div>
 					</div>
@@ -58,7 +64,7 @@ const Login = () => {
 						src="/images/pancake-nanachi.png"
 						alt="teacup-nanachi"
 						style={{
-							width: "250px",
+							width: '250px',
 						}}
 					/>
 					<form onSubmit={handleLogin}>
@@ -66,7 +72,7 @@ const Login = () => {
 							<label htmlFor="emailInput">Email or username</label>
 							<input
 								ref={inputRef}
-								onChange={(e) => setUsername(e.target.value)}
+								onChange={e => setUsername(e.target.value)}
 								type="email"
 								className="form-control"
 								id="emailInput"
@@ -76,7 +82,7 @@ const Login = () => {
 						<div className="form-group mb-2">
 							<label htmlFor="passwordInput">Password</label>
 							<input
-								onChange={(e) => setPassword(e.target.value)}
+								onChange={e => setPassword(e.target.value)}
 								type="password"
 								className="form-control"
 								id="passwordInput"
@@ -86,8 +92,8 @@ const Login = () => {
 							Submit
 						</button>
 						<div>
-							Don't have an account? Register{" "}
-							<Link to="/register" style={{ color: "#cb8585" }}>
+							Don't have an account? Register{' '}
+							<Link to="/register" style={{ color: '#cb8585' }}>
 								here!
 							</Link>
 						</div>

@@ -1,7 +1,8 @@
-import React from "react";
-import { AdminState } from "../../utils/types";
+import React from 'react';
 
-const Tags: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
+import { AdminPageState } from '../../utils/types';
+
+const Tags: React.FC<{ state: AdminPageState }> = ({ state }) => {
 	return (
 		<>
 			<h2 className="accordion-header">
@@ -22,11 +23,11 @@ const Tags: React.FC<{ adminState: AdminState }> = ({ adminState }) => {
 			>
 				<div className="accordion-body">
 					<div className="d-flex flex-wrap justify-content-start">
-						{adminState.tags?.map((tag) => (
+						{state.tags?.map(tag => (
 							<div
 								key={tag.id}
 								className="tag-card p-2 m-2 border  tag-tile"
-								style={{ width: "150px", textAlign: "center" }}
+								style={{ width: '150px', textAlign: 'center' }}
 							>
 								<p>{tag.name}</p>
 								<small>ID: {tag.id}</small>

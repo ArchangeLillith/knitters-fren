@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { PatternObject, Tag } from "../../utils/types";
-import dayjs from "dayjs";
-import TagButton from "../TagButton";
+import dayjs from 'dayjs';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+import { PatternObject } from '../../utils/types';
+import AssociatedTagList from '../AssociatedTagList';
+import Container from '../Container';
 
 interface SearchResultsProps {
 	foundPatterns: PatternObject[];
@@ -10,8 +12,8 @@ interface SearchResultsProps {
 
 const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 	return (
-		<div>
-			{foundPatterns.map((object, index) => {
+		<Container bottomPadding={0}>
+			{foundPatterns.map((pattern, index) => {
 				return (
 					<div
 						className="border rounded w-100 bg-soft m-2 border-pink"
@@ -22,50 +24,29 @@ const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 								<div>
 									<Link
 										className="font-color-primary text-decoration-none"
-										style={{ fontSize: "25px" }}
-										to={`/patterns/${object.pattern.id}`}
+										style={{ fontSize: '25px' }}
+										to={`/patterns/${pattern.id}`}
 									>
-										{object.pattern.title}
+										{pattern.title}
 									</Link>
-									<p key={`pattern-card-para-${object.pattern.id}`}>
-										{object.pattern.content.slice(0, 300)}...
+									<p key={`pattern-card-para-${pattern.id}`}>
+										{pattern.content.slice(0, 300)}...
 									</p>
 								</div>
 								<div className="h-80">
 									<br />
-
-									<div className="d-flex align-items-end h-auto">
-										{object.tags.map((tag) => (
-											<TagButton tag={tag} />
-										))}
-										<small className="ms-auto">
-											{dayjs(object.pattern.created_at).format("MMMM D, YYYY")}
-										</small>
-									</div>
+									<AssociatedTagList tags={pattern.tags} />
+									<small className="ms-auto">
+										{dayjs(pattern.created_at).format('MMMM D, YYYY')}
+									</small>
 								</div>
 							</div>
 						</div>
 					</div>
-					// <div key={object.pattern.id} className="card">
-					// 	<h2>{object.pattern.title}</h2>
-					// 	<div className="tags">
-					// 		{object.tags.map((tag) => (
-					// 			<span key={tag.id} className="tag">
-					// 				{tag.name}
-					// 			</span>
-					// 		))}
-					// 	</div>
-					// </div>
 				);
 			})}
-		</div>
+		</Container>
 	);
 };
-
-// return foundPatterns.map((pattern, i) => {
-// 	const tags = tagsByPattern?[pattern.id] || []
-// 	return(
-//
-// )})};
 
 export default SearchResults;

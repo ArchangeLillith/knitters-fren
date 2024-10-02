@@ -1,5 +1,5 @@
-import passport from "passport";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from 'express';
+import passport from 'passport';
 
 export const verifyAdmin = (
 	req: Request,
@@ -7,7 +7,7 @@ export const verifyAdmin = (
 	next: NextFunction
 ) => {
 	passport.authenticate(
-		"jwt",
+		'jwt',
 		{ session: false },
 		(error: Error, user, info) => {
 			if (error) {
@@ -19,8 +19,8 @@ export const verifyAdmin = (
 			}
 
 			req.currentUser = user;
-			if (user.role !== "admin") {
-				return res.status(403).json({ message: "Insufficient permissions" });
+			if (user.role !== 'admin') {
+				return res.status(403).json({ message: 'Insufficient permissions' });
 			}
 			next();
 		}

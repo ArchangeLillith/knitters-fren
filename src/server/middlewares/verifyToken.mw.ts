@@ -1,5 +1,5 @@
-import passport from "passport";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from 'express';
+import passport from 'passport';
 
 export const verifyToken = (
 	req: Request,
@@ -7,19 +7,24 @@ export const verifyToken = (
 	next: NextFunction
 ) => {
 	passport.authenticate(
-		"jwt",
+		'jwt',
 		{ session: false },
 		(error: Error, user, info) => {
 			console.log(`Check token`);
+
 			if (error) {
 				return next(error);
 			}
 
-			if (info) {
+			if (info && info.message === 'No auth token') {
+				req.currentUser = null;
+			} else if (!user) {
+				console.log(`info and message`, info, info.message);
 				return res.status(401).json({ message: info.message });
+			} else {
+				req.currentUser = user;
 			}
 
-			req.currentUser = user;
 			next();
 		}
 	)(req, res, next);
