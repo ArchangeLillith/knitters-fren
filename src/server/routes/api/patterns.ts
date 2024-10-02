@@ -36,7 +36,7 @@ router.get('/', verifyToken, async (req, res, next) => {
 			console.log(`Return from DB after formatting`, patternsObject);
 		}
 
-		if (patternsObject.length > 0 && cachedRes.length === null) {
+		if (patternsObject.length > 0 && cachedRes === null) {
 			setCache('allPatterns', patternsObject);
 			buildCache();
 		}
