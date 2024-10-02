@@ -6,7 +6,7 @@ export async function logActivity(
 	details: string
 ) {
 	Query(
-		`INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)`,
+		`INSERT INTO kf_activity_logs (user_id, action, details) VALUES (?, ?, ?)`,
 		[userId, action, details]
 	);
 }
