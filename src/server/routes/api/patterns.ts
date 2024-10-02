@@ -29,9 +29,11 @@ router.get('/', verifyToken, async (req, res, next) => {
 		if (cachedRes !== null) {
 			patternsObject = removePaid(cachedRes, author_id);
 			patternsObject = removeNullTags(patternsObject);
+			console.log(`Return from cache after formatting`, patternsObject);
 		} else {
 			const result: PatternObjectQuery[] = await db.patterns.all();
 			patternsObject = formatAndRemovePaid(result, author_id);
+			console.log(`Return from DB after formatting`, patternsObject);
 		}
 
 		if (patternsObject.length > 0 && cachedRes.length === null) {
