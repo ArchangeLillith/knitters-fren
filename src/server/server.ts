@@ -13,9 +13,6 @@ import routes from './routes';
 
 const app = express();
 
-console.log(`Recompiled server.ts`);
-
-// Apply CORS middleware for all environments
 app.use(
 	cors({
 		origin:
@@ -44,13 +41,23 @@ if (process.env.NODE_ENV === 'production') {
 	app.use(express.static(staticPath));
 
 	// Routes and API endpoints
-	app.use('/api', routes);
-	app.use('/auth', routes);
+	app.use(routes);
 
-	// Handle client-side routing (serve index.html for any unmatched route)
-	app.get('/*', (req, res) => {
-		res.sendFile(path.join(staticPath, 'index.html'));
-	});
+	app.get(
+		[
+			'/',
+			'/login',
+			'/profile',
+			'/register',
+			'/patterns',
+			'/gallery',
+			'/search',
+			'/favorites',
+			'/patterns/new',
+			'/admin',
+		],
+		(req, res) => res.sendFile(path.join(__dirname, '../../public/index.html'))
+	);
 }
 
 // Handle 404 errors
@@ -63,5 +70,4 @@ app.use(globalErrorHandler);
 const PORT = process.env.PORT || config.app.port;
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}~`);
-	console.log(`Running Node.js version: ${process.version}`);
 });
