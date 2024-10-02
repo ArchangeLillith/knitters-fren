@@ -1,98 +1,143 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import { IPattern, Tags, Tag } from "../utils/types";
-import patternService from "../services/pattern";
-import patternTags from "../services/pattern-tags";
-import TagButton from "../components/TagButton";
-import Toast from "../components/Toast";
+import dayjs from 'dayjs';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
-interface PatternDetailsProps {}
+import AssociatedTagList from '../components/AssociatedTagList';
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import CommentTile from '../components/CommentTile';
+import Container from '../components/Container';
+import CommentForm from '../components/PatternComponents/CommentForm';
+import FavIcon from '../components/PatternComponents/FavIcon';
+import LockIcon from '../components/PatternComponents/LockIcon';
+import useFetchData from '../hooks/useFetchData';
+import patternService from '../services/pattern';
+import { PatternComment, PatternObject, loadingPattern } from '../utils/types';
 
-const PatternDetails = (props: PatternDetailsProps) => {
-	const navigate = useNavigate();
+const PatternDetails = () => {
+	const { authState } = useContext(AuthContext);
 	const { id } = useParams();
-	const [pattern, setPattern] = React.useState<IPattern>({
-		id: "0",
-		author_id: "Loading...",
-		title: "Loading...",
-		content: "Loading...",
-		created_at: "Loading...",
-	});
-	const [tags, setTags] = React.useState<Tags>([]);
+	const navigate = useNavigate();
+	const [author, setAuthor] = useState<string>('');
+	const [comments, setComments] = useState<PatternComment[]>([]);
+	const [pattern, setPattern] = useState<PatternObject>(loadingPattern);
 
-	//Refactor we should paginate this whole view
-	/**
-	 * Grabs the pattern that's indicated by the URL param from the database on load only to add them into a state to display all the patterns in the database
-	 */
+	type FetchDataResponse = {
+		patternObject: PatternObject;
+		comments: PatternComment[];
+	};
+
+	const fetchConfigs = useMemo(
+		() => [
+			{ key: 'patternObject', url: `/api/patterns/${id}` },
+			{ key: 'comments', url: `/api/comments/${id}` },
+		],
+		[id]
+	);
+
+	const { data, loading, error } =
+		useFetchData<FetchDataResponse>(fetchConfigs);
+
 	useEffect(() => {
-		//This error here is my linter throwing a fit, it shouldn't be undefined cause you can't get here without a param in your url
-		patternService.getOnePattern(id).then((data) => setPattern(data));
-		patternTags
-			.allByPatternId(parseInt(id))
-			.then((tagsReturned) => setTags(tagsReturned))
-			.catch((e) => Toast.failure(e.message));
-	}, []);
+		console.log('Fetched pattern:', data);
+		if (!data || !data.patternObject) return;
+		const fetchedPattern = data.patternObject;
+		setPattern(fetchedPattern);
+		setAuthor(fetchedPattern.username);
+		setComments(data.comments);
+	}, [data]);
 
 	/**
 	 * This is a one stop shop for deletion of a pattern. It calls the delete function for the joint table as well, because you can't delete the pattern without first cleaing the joint table anyways
 	 */
 	const handleDelete = () => {
+		if (!id) return;
 		patternService
 			.destroyPattern(id)
-			.then(() => navigate("/patterns"))
-			.catch((e) => Toast.failure(e.message));
+			.then(() => navigate('/patterns'))
+			.catch(e => alert(e));
 	};
 
-	return (
-		<div className="container container-fliud mx-auto w-80 my-3 px-5 py-3 rounded bg-soft">
-			{pattern && (
-				<div
-					className="my-2 mx-4"
-					key={`pattern-card-outer-wrapper-${pattern.id}`}
-				>
-					<div className="m-2" key={`pattern-card-inner-${pattern.id}`}>
-						<div
-							className="display-4 my-3"
-							key={`pattern-card-h3-${pattern.id}`}
-						>
-							{pattern.title}
-						</div>
-						<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>
-						<small key={`pattern-card-created-at-${pattern.id}`}>
-							{dayjs(pattern.created_at).format("MMMM D, YYYY")}
-						</small>
-						<br />
-						<div className="d-flex mb-3">
-							{tags && (
-								<div>
-									{tags.map((tag) => (
-										<TagButton tag={tag} />
-									))}
-								</div>
-							)}
+	if (loading) return;
+	if (error) return;
 
-							<div className="ms-auto">
-								<button
-									onClick={handleDelete}
-									className="btn btn-outline-primary btn-border mx-3 p-2"
+	return (
+		id && (
+			<Container>
+				<div className="container container-fliud mx-auto w-80 my-3 px-5 py-3 rounded bg-soft">
+					{pattern && (
+						<div className="my-2 mx-4">
+							<div className="m-2">
+								{/* Title and Icons */}
+								<div className="d-flex flex-row justify-content-between align-items-center">
+									<div className="d-flex flex-row align-items-center">
+										<div className="display-4 my-3">{pattern.title}</div>
+										{pattern.paid === 'true' && <LockIcon size={30} />}
+									</div>
+									{authState.authenticated && (
+										<FavIcon patternId={pattern.id} size={30} />
+									)}
+								</div>
+
+								{/* Pattern PDF Link */}
+								{pattern.link !== '' && (
+									<object
+										width="100%"
+										height="1000"
+										data={pattern.link}
+										type="application/pdf"
+										aria-label="pattern pdf"
+									></object>
+								)}
+
+								{/* Pattern Content */}
+								<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>
+								<small>Author: {author}</small>
+								<small
+									className="m-2"
+									key={`pattern-card-created-at-${pattern.id}`}
 								>
-									Delete
-								</button>
-								<Link
-									to={`/patterns/${id}/update`}
-									className="btn btn-outline-primary btn-border p-2"
-								>
-									Update~
-								</Link>
+									<i>
+										Submitted:{' '}
+										{dayjs(pattern.created_at).format('MMMM D, YYYY')}
+									</i>
+								</small>
+								<br />
+
+								{/* Associated Tags */}
+								{pattern.tags && <AssociatedTagList tags={pattern.tags} />}
+
+								{/* Author Actions (Delete / Update Buttons) */}
+								{pattern.author_id === authState.authorData?.id && (
+									<div className="ms-auto">
+										<button
+											onClick={handleDelete}
+											className="btn btn-outline-primary btn-border mx-3 p-2"
+										>
+											Delete
+										</button>
+										<Link
+											to={`/patterns/${id}/update`}
+											className="btn btn-outline-primary btn-border p-2"
+										>
+											Update~
+										</Link>
+									</div>
+								)}
 							</div>
 						</div>
-					</div>
+					)}
 				</div>
-			)}
-		</div>
+
+				{/* Comment Section */}
+				<CommentForm
+					authState={authState}
+					id={id}
+					setComments={setComments}
+					pattern={pattern}
+				/>
+				<CommentTile comments={comments} />
+			</Container>
+		)
 	);
 };
 

@@ -1,29 +1,19 @@
 //npm run dev to start the project in dev mode
-//server on 3000
 //frontend on 8000
+//server on 3000
 
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import AuthProvider from "../components/AuthProvider";
-import { ToastContainer } from "react-toastify";
-import AppRoutes from "./AppRoutes";
-import Footer from "../components/Footer";
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
-interface AppProps {}
+import AppRoutes from './AppRoutes';
+import AuthProvider from '../components/AuthComponents/AuthProvider';
 
-const App = (props: AppProps) => {
+const App = () => {
 	return (
 		<BrowserRouter>
 			<AuthProvider>
-				<ToastContainer
-					position="bottom-right"
-					autoClose={3000}
-					draggable={false}
-					pauseOnHover={true}
-				/>
 				<AppRoutes />
 			</AuthProvider>
-			<Footer />
 		</BrowserRouter>
 	);
 };

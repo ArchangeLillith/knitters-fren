@@ -1,89 +1,143 @@
-import { Router, query } from "express";
-import { checkToken } from "../../middlewares/auth.mw";
-import { v4 as uuidv4 } from "uuid";
-import db from "../../db";
-import { useParams } from "react-router-dom";
+import { Router } from 'express';
+import { ResultSetHeader } from 'mysql2';
+
+import { getCache, markCacheAsDirty, setCache } from '../../cache';
+import { buildCache } from '../../cache/buildCache';
+import db from '../../db';
+import patterns from '../../db/queries/patterns';
+import { verifyAdmin } from '../../middlewares/verifyAdmin.mw';
+import { verifyAuthor } from '../../middlewares/verifyAuthor.mw';
+import { verifyToken } from '../../middlewares/verifyToken.mw';
+import { PatternObject, PatternObjectQuery } from '../../types';
+import {
+	formatAndRemovePaid,
+	removePaid,
+	transformPatternObject,
+} from '../../utils/functions';
+import { logActivity } from '../../utils/logging';
 
 const router = Router();
-//Run all these routes prepended with the method through this middle ware
-// router.route("*").post(checkToken).put(checkToken).delete(checkToken);
-
-//GET api/patterns/:id
-router.get("/:id", async (req, res, next) => {
-	try {
-		const id = req.params.id;
-		//The one pattern comes back in an array and this destructures it to only the pattern
-		const [result] = await db.patterns.one(id);
-		res.json(result);
-	} catch (error) {
-		//Goes to our global error handler
-		next(error);
-	}
-});
 
 //GET /api/patterns
-router.get("/", async (req, res, next) => {
+router.get('/', verifyToken, async (req, res, next) => {
 	try {
-		const result = await db.patterns.all();
-		res.json(result);
+		const author_id = req.currentUser ? req.currentUser.id : null;
+		const cachedRes: PatternObject[] = getCache('allPatterns');
+
+		let patternsObject: PatternObject[];
+
+		if (cachedRes !== null) {
+			patternsObject = removePaid(cachedRes, author_id);
+		} else {
+			const result: PatternObjectQuery[] = await db.patterns.all();
+			patternsObject = formatAndRemovePaid(result, author_id);
+		}
+
+		if (patternsObject.length > 0) {
+			setCache('allPatterns', patternsObject);
+			buildCache();
+		}
+
+		res.json(patternsObject);
 	} catch (error) {
-		//Goes to our global error handler
 		next(error);
 	}
 });
 
-router.get("/private", checkToken, async (req, res, next) => {
-	try {
-		res.json("Private endpoint");
-	} catch (error) {
-		next(error);
+//GET api/patterns/:id
+router.get('/:id', async (req, res, next) => {
+	const id = req.params.id;
+	const cachedRes = getCache(`allPatterns.${id}`);
+
+	if (cachedRes !== null) {
+		res.json(cachedRes);
+	} else {
+		try {
+			const result: PatternObjectQuery = await db.patterns.oneById(id);
+			if (result) {
+				const patternObject: PatternObject = transformPatternObject(result);
+				setCache(`allPatterns.${id}`, patternObject);
+				res.json(patternObject);
+			} else {
+				res.status(404).json({ message: 'Pattern not found' });
+			}
+		} catch (error) {
+			//Goes to our global error handler
+			next(error);
+		}
 	}
 });
 
 //POST api/patterns
-router.post("/", async (req, res, next) => {
+router.post('/', async (req, res, next) => {
 	try {
 		const patternDTO = { ...req.body };
 		//The insert
-		await db.patterns.insert(patternDTO);
+		const returnedHeaders = await db.patterns.insert(patternDTO);
 		//The get request to get what was just put in, in the form the navigation and frontend expects it back
-		const [pattern] = await db.patterns.oneByTitle(patternDTO.title);
-		res.json({ pattern, message: "New pattern created" });
+		if (returnedHeaders.affectedRows > 0) {
+			const pattern = await db.patterns.oneById(patternDTO.id);
+			logActivity(
+				pattern.author_id,
+				'New pattern created!',
+				`Pattern title: ${pattern.title}, Author: ${pattern.username}`
+			);
+			markCacheAsDirty('allPatterns');
+			res.json({ pattern, message: 'New pattern created' });
+		} else {
+			const error = new Error('Pattern not addded');
+			next(error);
+		}
 	} catch (error) {
 		next(error);
 	}
 });
 
 //DELETE api/patterns/:id
-router.delete("/:id", async (req, res, next) => {
-	try {
-		const id = parseInt(req.params.id);
-		const author_id = req.body.author_id;
-		await db.pattern_tags.destroyAllBasedOnPatternId(id);
-		const result = await db.patterns.destroy(id);
-		console.log(`RESUKT`, result);
-		//Refactor if here there's an error it shouldn't continue
-		if (!result.affectedRows) {
-			throw new Error("No affected rows");
+router.delete(
+	'/:id',
+	verifyToken,
+	verifyAuthor,
+	verifyAdmin,
+	async (req, res, next) => {
+		try {
+			const id = req.params.id;
+			const { author_id, title, username } = await patterns.oneById(id);
+			await db.pattern_tags.destroyAllBasedOnPatternId(id);
+			const result: ResultSetHeader = await db.patterns.destroy(id);
+			if (!result.affectedRows) {
+				throw new Error('No affected rows');
+			}
+			logActivity(
+				req.currentUser.id,
+				'Pattern deleted',
+				`Pattern title: ${title}, Author: ${username}, Author ID: ${author_id}`
+			);
+			markCacheAsDirty('allPatterns');
+			res.json(result);
+		} catch (error) {
+			next(error);
 		}
-		res.json({ id, message: "Pattern deleted succesfully" });
-	} catch (error) {
-		next(error);
 	}
-});
+);
 
 //PUT /api/patterns/:id
-router.put("/:id", async (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
 	const id: string = req.params.id;
 	try {
-		const patternDTO: { id: string; author_id: string; content: string } = {
+		const patternDTO: {
+			id: string;
+			content: string;
+			title: string;
+		} = {
 			id: req.body.id,
-			author_id: req.body.author_id,
+			title: req.body.title,
 			content: req.body.content,
 		};
 		console.log(`patternDTO`, patternDTO);
 		await db.patterns.update(patternDTO);
-		res.json({ id, message: "Pattern updated~!" });
+		markCacheAsDirty('allPatterns');
+		res.json({ id, message: 'Pattern updated~!' });
 	} catch (error) {
 		next(error);
 	}

@@ -1,6 +1,4 @@
 import * as esbuild from "esbuild";
-import * as sass from "sass";
-import { sassPlugin } from "esbuild-sass-plugin";
 
 let ctx;
 
@@ -11,25 +9,21 @@ try {
 		minify: false,
 		sourcemap: true,
 		outfile: "public/static/bundle.js",
-		plugins: [
-			sassPlugin({
-				type: "style",
-				logger: sass.Logger.silent,
-				quietDeps: true,
-			}),
-		],
+		//Env variables injection
 		define: {
 			"process.env.NODE_ENV": "'development'",
+			//Setting the ROOT_URL for our backend, this declares the variable within .env that we can then access
 			"process.env.ROOT_URL": "'http://localhost:3000'",
 		},
 	});
 
 	await ctx.watch();
-	console.log("Watching client...");
+	console.log("ESBuild watching client on 8000...");
 
 	const { host, port } = await ctx.serve({
 		servedir: "public",
 		fallback: "public/index.html",
+		port: 8000, // Explicitly set the frontend to run on port 8000
 	});
 
 	console.info(`Hot refresh at http://${host}:${port}`);

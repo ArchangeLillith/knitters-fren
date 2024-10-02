@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 	children: React.ReactNode;
-	optional?: boolean;
+	bottomPadding?: number;
 }
 
-const Container = ({ children, ...rest }: ContainerProps) => {
+const Container = ({ children, bottomPadding = 150 }: ContainerProps) => {
+	const [isVisible, setIsVisible] = useState(false);
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setIsVisible(true);
+		}, 50); // Slight delay to ensure all content is mounted
+
+		return () => clearTimeout(timer);
+	}, []);
+
 	return (
-		<section
-			className="container"
-			style={{ fontFamily: "Garamond, serif", paddingBottom: "150px" }}
+		<div
+			className={`fade-in-wrapper container ${isVisible ? 'visible' : ''}`}
+			style={{ fontFamily: 'Garamond, serif', paddingBottom: bottomPadding }}
 		>
 			{children}
-		</section>
+		</div>
 	);
 };
 

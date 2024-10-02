@@ -1,61 +1,73 @@
-import { Router } from "express";
-import { createJWT } from "../../utils/tokens";
-import { v4 as uuidv4 } from "uuid";
-import db from "../../db";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
+import { Router } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+
+import db from '../../db';
+import { logActivity } from '../../utils/logging';
+import { createJWT } from '../../utils/tokens';
 
 const router = Router();
 
-router.post("/", async (req, res, next) => {
+//POST /auth/register
+router.post('/', async (req, res, next) => {
+	console.log(`HIT /AUTH/REGISTER with body:`, req.body);
 	try {
-		const { email, password } = req.body;
-		//Check if the email is valid
-		if (!email || isValidEmail(email)) {
-			//Create the specific error
-			const error = new Error("Invalid Email");
-			error["status"] = 400;
-			//Throw the specific error. This is caught by the catch at the end of the block, which is then passed up to the next middleware to be handled up higher
+		const { email, password, username } = req.body;
+		const banned = await db.banned.findBannedByEmailOrUser(email, username);
+		if (banned.length > 0) {
+			return res
+				.status(403)
+				.json({
+					message:
+						'This email or username is associated with a banned account. Please choose another or contact support.',
+				});
+		}
+		if (!email || !isValidEmail(email)) {
+			const error = new Error('invalid email');
+			error['status'] = 400;
+			console.log(`invalid email`);
+			throw error;
+		}
+		const [emailFound] = await db.authors.find(email);
+		if (emailFound) {
+			const error = new Error('email already registered');
+			error['status'] = 400;
+			console.log(`email registered already`);
 			throw error;
 		}
 
-		//Check if email is already registered
-		const [emailfound] = await db.authors.find("email", email);
-		//emailFound will return either the object that is found in the database or null if nothing is found
-		if (emailfound) {
-			//Create our specific error
-			const error = new Error("That email is already registered");
-			error["status"] = 400;
-			//Throw our sepcific error
-			throw error;
-		}
-
-		//Generate a uuid for the author
-		const userDTO = {
+		//Should look like {username, email, password, uuid and role created here too}
+		//This could be ...req.body but I felt it was nice to have the safety that only what we want is here regardless of what's in the req.body. there's little chance that anything would happen, but for me it's an extra layer of comfort, knwoing my code does exactly what I want it to
+		const authorDTO = {
 			id: uuidv4(),
-			...req.body,
+			password,
+			username,
+			email,
+			role: 'user',
 		};
 
-		//Salt and hash their password using bcrypt
 		const salt = await bcrypt.genSalt(12);
 		const hash = await bcrypt.hash(password, salt);
-		userDTO.password = hash;
 
-		//Insert the user into the database
-		const result = await db.authors.insert(userDTO);
-		delete userDTO.password;
-
-		//Create and send their token
-		const token = createJWT(userDTO.id);
+		authorDTO.password = hash;
+		await db.authors.insert(authorDTO);
+		delete authorDTO.password;
+		const token = createJWT(authorDTO.id, authorDTO.role);
+		logActivity(
+			authorDTO.id,
+			'New user registered to site~',
+			`Username: ${authorDTO.username}, Role: ${authorDTO.role}`
+		);
 		res.json({ token });
 	} catch (error) {
 		next(error);
 	}
 });
 
-export default router;
-
 function isValidEmail(email: string) {
 	return email.match(
-		/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		/^(([^<>()[\]\\.,;:\s@\']+(\.[^<>()[\]\\.,;:\s@\']+)*)|(\'.+\'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 	);
 }
+
+export default router;

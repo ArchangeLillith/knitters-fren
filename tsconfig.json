@@ -1,4 +1,7 @@
 //This is the top level tsconfig that the server and the frontend both extend off of
 {
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules"],
+	"compilerOptions": {
+		"jsx": "react", "sourceMap": true 
+},
 }

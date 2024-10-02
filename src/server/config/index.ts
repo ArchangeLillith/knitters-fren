@@ -1,6 +1,5 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
-//Looks for the .env at the root
 dotenv.config();
 
 export default {
@@ -17,12 +16,8 @@ export default {
 		secret: process.env.JWT_SECRET,
 		expires: process.env.JWT_EXPIRES,
 	},
-	mailgun: {
-		apiKey: process.env.MAILGUN_KEY as string,
-		domain: process.env.MAILGUN_DOMAIN as string,
-		toEmail: process.env.MAILGUN_TO_EMAIL,
-	},
-	stripe: {
-		apiKey: process.env.STRIPE_API_KEY,
+	roles: {
+		admin: process.env.ROLE_ADMIN,
+		user: process.env.ROLE_USER,
 	},
 };

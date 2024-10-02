@@ -1,0 +1,12 @@
+# This is your robots.txt file for knitters-fren
+
+# Allow all crawlers access to everything
+User-agent: *
+Disallow: /admin/
+
+# Prevent a specific bot from crawling
+User-agent: BadBot
+Disallow: /
+
+# Sitemap location
+Sitemap: https://www.knitters-fren.com/sitemap.xml

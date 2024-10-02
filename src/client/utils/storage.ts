@@ -1,4 +1,4 @@
-const TOKEN_KEY = "token";
+const TOKEN_KEY = 'token';
 
 //Gets the token from the users local storage
 const getToken = () => {

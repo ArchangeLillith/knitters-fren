@@ -1,52 +1,109 @@
-import React, { useEffect } from "react";
-import { IPattern } from "../utils/types";
-import patternService from "../services/pattern";
-import PatternCard from "../components/PatternCard";
-import { Link, useNavigate } from "react-router-dom";
-import Toast from "../components/Toast";
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
-interface AdminPanelProps {}
+import {
+	Authors,
+	Logs,
+	DbStats,
+	Patterns,
+	Tags,
+	Comments,
+} from '../components/AdminPanelComponents';
+import { AuthContext } from '../components/AuthComponents/AuthProvider';
+import Container from '../components/Container';
+import useFetchData from '../hooks/useFetchData';
+import { sortByDate } from '../utils/patterns.utils';
+import {
+	Log,
+	PatternComment,
+	AdminPageState as PageState,
+	FetchDataResponse,
+} from '../utils/types';
 
-const AdminPanel = (props: AdminPanelProps) => {
-	const navigate = useNavigate();
-	const [patterns, setPatterns] = React.useState<IPattern[]>([]);
+const AdminPanel = () => {
+	const { authState } = useContext(AuthContext);
 
-	const handleDelete = (id: string) => {
-		patternService
-			.destroyPattern(id)
-			.then(() => navigate("/patterns/admin"))
-			.catch((e) => Toast.failure(e.message));
-	};
+	const [state, setState] = useState<PageState>({
+		patterns: [],
+		tags: [],
+		logs: [],
+		filteredLogs: [],
+		authors: [],
+		comments: [],
+		filteredComments: [],
+		showModal: false,
+	});
+
+	const fetchConfigs = useMemo(
+		() => [
+			{ key: 'patterns', url: '/api/patterns' },
+			{ key: 'tags', url: '/api/tags' },
+			{ key: 'logs', url: '/api/logs' },
+			{ key: 'authors', url: '/api/authors' },
+			{ key: 'comments', url: '/api/comments' },
+		],
+		[]
+	);
+
+	const { data, loading, error } =
+		useFetchData<FetchDataResponse>(fetchConfigs);
 
 	useEffect(() => {
-		patternService.getAllPatterns().then((data) => setPatterns(data))
-		.catch((e) => Toast.failure(e.message));
-	}, []);
+		if (!data || !data.patterns) return;
+
+		const { tags, patterns, logs, authors, comments } = data;
+
+		const filteredLogs: Log[] = sortByDate(logs) as Log[];
+		const filteredComments: PatternComment[] = sortByDate(
+			comments
+		) as PatternComment[];
+
+		// Update state based on fetched data
+		setState(prev => ({
+			...prev,
+			logs,
+			filteredLogs: filteredLogs.slice(0, 15),
+			patterns,
+			tags,
+			authors,
+			comments,
+			filteredComments: filteredComments.slice(0, 15),
+		}));
+	}, [data]); // Run effect when data changes
+	if (!authState.authorData) {
+		return <div>Not logged in</div>;
+	}
+
+	if (loading) <p>Loadig....</p>;
+	if (error) <p>error....</p>;
+
+	if (authState.authorData.role !== 'admin') {
+		return <Navigate to="/" />;
+	}
+
 	return (
-		<div className="w-75 d-flex flex-column mx-auto mt-5">
-			{patterns.map((pattern) => (
-				<div>
-					<div className="border rounded w-100 bg-soft m-2 border-primary">
-						<PatternCard pattern={pattern} />
-						<button
-							id={pattern.id}
-							onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-								handleDelete(e.target.id)
-							}
-							className="btn btn-primary m-3"
-						>
-							Delete
-						</button>
-						<Link
-							className="btn btn-primary m-3"
-							to={`/patterns/${pattern.id}/update`}
-						>
-							Edit
-						</Link>
-					</div>
+		<Container>
+			<div className="accordion my-5">
+				<div className="accordion-item">
+					<Logs state={state} />
 				</div>
-			))}
-		</div>
+				<div className="accordion-item">
+					<Patterns state={state} setState={setState} />
+				</div>
+				<div className="accordion-item">
+					<Tags state={state} />
+				</div>
+				<div className="accordion-item">
+					<Authors state={state} setState={setState} />
+				</div>
+				<div className="accordion-item">
+					<DbStats state={state} />
+				</div>
+				<div className="accordion-item">
+					<Comments state={state} />
+				</div>
+			</div>
+		</Container>
 	);
 };
 

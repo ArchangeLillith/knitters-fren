@@ -32,3 +32,7 @@ pids
 # XCF files for editing the images, kept in directory locally for ease of access
 XCF
 .xcf
+
+# Notes that are local only because they're for me to remember more complicated logic that I've spent time on already
+login-stream.txt
+project-scripts-guide.txt
