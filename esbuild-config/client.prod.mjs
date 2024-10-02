@@ -4,7 +4,7 @@ try {
 	await esbuild.build({
 		entryPoints: ['src/client/index.tsx'],
 		bundle: true,
-		sourcemap: false,
+		sourcemap: true,
 		minify: true,
 		outfile: 'public/static/bundle.js',
 		define: {

@@ -27,33 +27,40 @@ app.use(
 	})
 );
 
-console.log(`Running Node.js version: ${process.version}`);
+// Configure Passport middleware
 configurePassport(app);
 
+// Enable JSON request parsing
 app.use(express.json());
 
-if (process.env.NODE_ENV === 'production') {
-	// Serve static files only in production
-	app.use(express.static(path.join(__dirname, '../../public')));
-}
-
-// Logging based on environment
+// Apply logging in development mode only
 if (process.env.NODE_ENV === 'development') {
 	app.use(morgan('dev'));
 }
 
-// Routes and APIs
+// Serve static files only in production
+if (process.env.NODE_ENV === 'production') {
+	const staticPath = path.join(__dirname, '../../public');
+	app.use(express.static(staticPath));
+
+	// Handle client-side routing (serve index.html for any unmatched route)
+	app.get('/*', (req, res) => {
+		res.sendFile(path.join(staticPath, 'index.html'));
+	});
+}
+
+// Routes and API endpoints
 app.use(routes);
 
-// Handle client-side routing by sending index.html for non-API routes
-app.get('/*', (req, res) =>
-	res.sendFile(path.join(__dirname, '../../public/index.html'))
-);
-
-// Error Handlers
+// Handle 404 errors
 app.use(notFoundHandler);
+
+// Global error handling
 app.use(globalErrorHandler);
 
-// Dynamic port binding
+// Start the server and bind to the correct port
 const PORT = process.env.PORT || config.app.port;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}~`));
+app.listen(PORT, () => {
+	console.log(`Server running on port ${PORT}~`);
+	console.log(`Running Node.js version: ${process.version}`);
+});
