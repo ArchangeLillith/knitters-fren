@@ -14,7 +14,7 @@ const findByAuthor = (author: string): Promise<PatternObjectQuery[]> =>
         LEFT JOIN pattern_tags pt ON pt.pattern_id = p.id
         LEFT JOIN tags t ON t.id = pt.tag_id
       WHERE
-        a.username = ?
+        	a.username LIKE concat ('%', ?, '%')
       GROUP BY
         p.id;
 		`,

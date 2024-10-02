@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { PatternObject } from '../../utils/types';
 import AssociatedTagList from '../AssociatedTagList';
+import Container from '../Container';
 
 interface SearchResultsProps {
 	foundPatterns: PatternObject[];
@@ -11,7 +12,7 @@ interface SearchResultsProps {
 
 const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 	return (
-		<div>
+		<Container bottomPadding={0}>
 			{foundPatterns.map((pattern, index) => {
 				return (
 					<div
@@ -44,7 +45,7 @@ const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 					</div>
 				);
 			})}
-		</div>
+		</Container>
 	);
 };
 

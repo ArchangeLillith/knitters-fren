@@ -8,6 +8,7 @@ const LockIcon = ({ size }: { size: number }) => {
 				display: 'inline-block',
 				position: 'relative',
 				marginLeft: '10px',
+				paddingBottom: '4px',
 			}}
 		>
 			<span className="tooltip-icon-lock">

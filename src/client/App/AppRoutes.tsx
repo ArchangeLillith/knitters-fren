@@ -33,7 +33,7 @@ const App = () => {
 				<Route path="/patterns/admin" element={<AdminPanel />}></Route>
 				<Route path="/register" element={<Register />}></Route>
 				<Route path="/login" element={<Login />}></Route>
-				<Route path="/patterns/:id/update" element={<UpdatePattern />}></Route>
+				<Route path="/patterns/:id/update" element={<UpdatePattern />}></Route>s
 				<Route path="/*" element={<NotFound />}></Route>
 			</Routes>
 			<Footer />

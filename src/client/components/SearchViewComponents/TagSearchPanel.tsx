@@ -27,7 +27,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 			? tagSearchService.findByTagsStrict
 			: tagSearchService.findByTags;
 
-		searchFunction(pageState.selectedTags)
+		searchFunction(pageState.selectedTags.selectedTags)
 			.then((data: PatternObject[]) =>
 				// console.log(`DATA`, data)
 				setPageState(prev => ({ ...prev, foundPatterns: data }))
@@ -53,7 +53,10 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 	 * Handles the reset button, clears out the chosen tags array and sets the tags to inactive as that state handles the buttons that should only be avaliable if there are tags chosen
 	 */
 	const clearSelection = () => {
-		setPageState(prev => ({ ...prev, selectedTags: [], tagsActive: false }));
+		setPageState(prev => ({
+			...prev,
+			selectedTags: { selectedTags: [], tagsActive: false },
+		}));
 	};
 
 	return (
@@ -61,7 +64,6 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 			<h2 className="text-center mt-2 font-color-primary">
 				Select tags to search by!
 			</h2>
-			{/* <div>{JSON.stringify(pageState.selectedTags)}</div> */}
 			<AllTagsContainer
 				selectedTags={pageState.selectedTags}
 				setSelectedTags={setPageState}
@@ -76,7 +78,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 				/>
 				<label
 					className={`${
-						pageState.tagsActive ? 'visible' : 'invisible'
+						pageState.selectedTags.tagsActive ? 'visible' : 'invisible'
 					}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-outline-primary mx-auto`}
 					htmlFor="strictModeBtn"
 				>
@@ -85,7 +87,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 
 				<button
 					className={`${
-						pageState.tagsActive ? 'visible' : 'invisible'
+						pageState.selectedTags.tagsActive ? 'visible' : 'invisible'
 					}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 					onClick={searchTrigger}
 				>
@@ -94,7 +96,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 				<button
 					onClick={clearSelection}
 					className={`${
-						pageState.tagsActive ? 'visible' : 'invisible'
+						pageState.selectedTags.tagsActive ? 'visible' : 'invisible'
 					}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 				>
 					Clear Tags

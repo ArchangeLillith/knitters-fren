@@ -30,6 +30,7 @@ router.get('/title/:queryString', async (req, res, next) => {
 	const title = req.params.queryString;
 	try {
 		const result = await db.search.findByTitle(title);
+		console.log(`Result`, result);
 		const patternsObject: PatternObject[] = queryToPatternObject(result);
 		res.json(patternsObject);
 	} catch (error) {
@@ -42,10 +43,8 @@ router.get('/content/:queryString', async (req, res, next) => {
 	const contentString = req.params.queryString;
 	try {
 		const result = await db.search.findByContent(contentString);
-		if (result.length === 0) {
-			return res.status(404).json({ message: 'No patterns found' });
-		}
-		res.json({ patterns: result });
+		const patternsObject: PatternObject[] = queryToPatternObject(result);
+		res.json(patternsObject);
 	} catch (error) {
 		next(error);
 	}
@@ -69,7 +68,7 @@ router.post('/tag', async (req, res, next) => {
 				tagIds.map(async (id: number) => {
 					const [pattern] = await db.search.findByTags(id);
 					console.log(`Pattern`, pattern);
-					result.push(pattern);
+					if (pattern !== undefined) result.push(pattern);
 				})
 			);
 			console.log(`result`, result);
@@ -86,8 +85,8 @@ router.post('/tag', async (req, res, next) => {
 		const uniquePatternIds = new Set<string>();
 
 		formattedPatterns.forEach(pattern => {
-			if (!uniquePatternIds.has(pattern.pattern.id)) {
-				uniquePatternIds.add(pattern.pattern.id);
+			if (!uniquePatternIds.has(pattern.id)) {
+				uniquePatternIds.add(pattern.id);
 				finalPatterns.push(pattern);
 			}
 		});
@@ -124,7 +123,6 @@ router.post('/tag/strict', async (req, res, next) => {
 			return res.json(404).json({ message: 'No patterns found' });
 		}
 
-		//!here
 		res.json({ patterns: finalPatterns });
 	} catch (err) {
 		console.log(`ERROR`, err);

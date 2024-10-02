@@ -17,10 +17,10 @@ const AllTagsContainer: React.FC<AllTagsContainer> = ({
 	const { data, loading, error } = useFetchData<{ tags: Tag[] }>(fetchConfigs);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return;
 	}
 	if (error) {
-		return <div>Error</div>;
+		return;
 	}
 
 	const tagToggle = (tagButton: React.MouseEvent<HTMLButtonElement>) => {
@@ -38,8 +38,10 @@ const AllTagsContainer: React.FC<AllTagsContainer> = ({
 		//Yeah i could type this but it's a HUGE pain and prob not worth it
 		setSelectedTags(prev => ({
 			...prev,
-			selectedTags: updatedSelectedTags,
-			tagsActive: updatedSelectedTags.length > 0,
+			selectedTags: {
+				selectedTags: updatedSelectedTags,
+				tagsActive: updatedSelectedTags.length > 0,
+			},
 		}));
 	};
 

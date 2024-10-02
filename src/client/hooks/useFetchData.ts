@@ -8,7 +8,7 @@ type FetchConfig = {
 };
 
 const useFetchData = <T extends Record<string, unknown>>(
-	configs: FetchConfig[],
+	configs: FetchConfig[] | null,
 	authLoading?: boolean
 ) => {
 	console.log(`useFetch enterede`);
@@ -18,7 +18,7 @@ const useFetchData = <T extends Record<string, unknown>>(
 
 	useEffect(() => {
 		// Only fetch if authLoading is false
-		if (authLoading) {
+		if (authLoading || configs === null) {
 			setLoading(true); // Optional: you can set the loading state explicitly here
 			return; // Do not proceed with fetch if auth is still loading
 		}

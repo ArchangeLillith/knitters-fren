@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 	children: React.ReactNode;
-	optional?: boolean;
+	bottomPadding?: number;
 }
 
-const Container = ({ children }: ContainerProps) => {
+const Container = ({ children, bottomPadding = 150 }: ContainerProps) => {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
@@ -19,7 +19,7 @@ const Container = ({ children }: ContainerProps) => {
 	return (
 		<div
 			className={`fade-in-wrapper container ${isVisible ? 'visible' : ''}`}
-			style={{ fontFamily: 'Garamond, serif', paddingBottom: '150px' }}
+			style={{ fontFamily: 'Garamond, serif', paddingBottom: bottomPadding }}
 		>
 			{children}
 		</div>

@@ -55,14 +55,13 @@
 }
 
 .fade-in-wrapper {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out; /* Adjust duration for smooth fade-in */
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out; /* Adjust duration for smooth fade-in */
 }
 
 .fade-in-wrapper.visible {
-  opacity: 1;
+	opacity: 1;
 }
-
 
 /* -------------------------------------
    Global Styles
@@ -71,7 +70,11 @@ html,
 body,
 #root {
 	background-color: var(--background);
+	margin: 0;
+	padding: 0;
+	height: 100%;
 }
+
 
 /* -------------------------------------
    Typography

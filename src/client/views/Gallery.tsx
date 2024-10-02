@@ -7,7 +7,7 @@ const Gallery = () => {
 	return (
 		<Container>
 			<div
-				className="w-60 bg-white rounded my-5 m-auto d-flex align-items-center"
+				className="w-60 bg-white rounded my-5 p-4 m-auto d-flex align-items-center"
 				id="404-container"
 			>
 				<div className="display-6 p-2">
