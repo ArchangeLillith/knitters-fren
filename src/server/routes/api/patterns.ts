@@ -56,8 +56,8 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 		//Formatting like this to we can use the removePaid and Null
 		let patternObject: PatternObject[] = [cachedRes];
 
-		console.log(`Pattern objectttt,`, patternObject);
-		if (patternObject !== null) {
+		console.log(`Pattern objectttt,`, patternObject[0]);
+		if (patternObject[0] !== null) {
 			console.log(`Pattern onject !== null`);
 			patternObject = removePaid(patternObject, author_id);
 			patternObject = removeNullTags(patternObject);
