@@ -62,12 +62,13 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 			patternObject = removePaid(patternObject, author_id);
 			patternObject = removeNullTags(patternObject);
 		} else {
-			const result: PatternObjectQuery = await db.patterns.oneById(id);
+			const result: PatternObjectQuery[] = [await db.patterns.oneById(id)];
 			console.log(`Resultt`, result);
-			if (result.paid === 'true' && author_id !== result.author_id) {
+			patternObject = removeNullTags(result);
+			if (result[0].paid === 'true' && author_id !== result[0].author_id) {
 				res.status(401).json({ message: 'Pattern inaccessible' });
 			}
-
+			console.log(`returnin pattern:`, patternObject);
 			setCache(`allPatterns.${id}`, patternObject);
 			res.json(patternObject);
 		}
