@@ -60,7 +60,7 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 		if (patternObject[0] !== null) {
 			console.log(`Pattern onject !== null`);
 			patternObject = removePaid(patternObject, author_id);
-			patternObject = removeNullTags(patternObject);
+			console.log(`patternobj`, patternObject);
 		} else {
 			const result: PatternObjectQuery[] = [await db.patterns.oneById(id)];
 			console.log(`Resultt`, result);

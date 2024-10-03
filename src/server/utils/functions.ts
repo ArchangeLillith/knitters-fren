@@ -56,7 +56,7 @@ export const removePaid = (
 	patterns: PatternObject[],
 	author_id: string | null
 ): PatternObject[] => {
-	console.log(`patterns`);
+	console.log(`patterns`, patterns);
 	return patterns.filter(pattern => {
 		return (
 			pattern.paid === 'false' ||
