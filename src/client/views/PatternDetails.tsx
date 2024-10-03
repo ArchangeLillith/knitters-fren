@@ -22,7 +22,7 @@ const PatternDetails = () => {
 	const [pattern, setPattern] = useState<PatternObject>(loadingPattern);
 
 	type FetchDataResponse = {
-		patternObject: PatternObject;
+		patternObject: PatternObject[];
 		comments: PatternComment[];
 	};
 
@@ -41,8 +41,8 @@ const PatternDetails = () => {
 		console.log('Fetched pattern:', data);
 		if (!data || !data.patternObject) return;
 		const fetchedPattern = data.patternObject;
-		setPattern(fetchedPattern);
-		setAuthor(fetchedPattern.username);
+		setPattern(fetchedPattern[0]);
+		setAuthor(fetchedPattern[0].username);
 		setComments(data.comments);
 	}, [data]);
 
