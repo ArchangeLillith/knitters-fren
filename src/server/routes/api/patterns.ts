@@ -68,10 +68,10 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 			if (result[0].paid === 'true' && author_id !== result[0].author_id) {
 				res.status(401).json({ message: 'Pattern inaccessible' });
 			}
-			console.log(`returnin pattern:`, patternObject);
 			setCache(`allPatterns.${id}`, patternObject);
-			res.json(patternObject);
 		}
+		console.log(`returnin pattern:`, patternObject);
+		res.json(patternObject);
 	} catch (error) {
 		next(error);
 	}
