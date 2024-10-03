@@ -57,7 +57,6 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 		console.log(`return from cache,`, cachedRes);
 		let patternObject: PatternObject[] = cachedRes;
 
-		console.log(`Pattern objectttt,`, patternObject[0]);
 		if (patternObject !== null) {
 			console.log(`Pattern onject !== null`);
 			patternObject = removePaid(patternObject, author_id);
