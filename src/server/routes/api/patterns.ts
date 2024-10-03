@@ -58,6 +58,7 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 
 		console.log(`Pattern objectttt,`, patternObject);
 		if (patternObject !== null) {
+			console.log(`Pattern onject !== null`);
 			patternObject = removePaid(patternObject, author_id);
 			patternObject = removeNullTags(patternObject);
 		} else {
