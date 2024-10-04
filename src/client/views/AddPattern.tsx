@@ -94,10 +94,7 @@ const AddPattern = () => {
 						<label htmlFor="tags">Choose your tags:</label>
 
 						<AllTagsContainer
-							selectedTags={{
-								tagsActive: state.tagsActive,
-								selectedTags: state.selectedTags,
-							}}
+							selectedTags={state.selectedTags}
 							setSelectedTags={setState}
 						/>
 					</div>

@@ -25,16 +25,14 @@ const UpdatePattern = () => {
 	);
 
 	const { data, loading, error } = useFetchData<{
-		patternObject: PatternObject;
-		tags: Tag[];
+		patternObject: PatternObject[];
 	}>(fetchConfigs, false);
 
 	useEffect(() => {
-		console.log(`DATA`, data);
 		if (!data || !data.patternObject) return;
-		const fetchedPattern: PatternObject = data.patternObject;
-		const fetchedAssociatedTags: Tag[] = data.patternObject.tags;
-		console.log(`Fetched ass`, data.patternObject.tags);
+		console.log(`DATA`, data);
+		const fetchedPattern: PatternObject = data.patternObject[0];
+		const fetchedAssociatedTags: Tag[] = data.patternObject[0].tags;
 
 		setPattern(fetchedPattern);
 		setTitle(fetchedPattern.title);
@@ -73,8 +71,6 @@ const UpdatePattern = () => {
 				.catch(() => console.log(`ERROR`));
 		}
 	};
-
-	console.log(`SelectedTags Updates`, selectedTags);
 
 	return (
 		<div className="container bg-soft rounded p-4 my-5">

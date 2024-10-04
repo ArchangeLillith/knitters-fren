@@ -7,6 +7,7 @@ interface TagListProps {
 	tags: Tag[];
 }
 const TagList: React.FC<TagListProps> = ({ tags }) => {
+	console.log(`Associated tag list:`, tags);
 	return (
 		<div className="d-flex align-items-end h-auto">
 			{tags.length > 0 &&

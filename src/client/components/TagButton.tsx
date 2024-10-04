@@ -25,7 +25,7 @@ const TagButton: React.FC<TagButtonProps> = ({
 			state: { id, name: value },
 		});
 	};
-
+	console.log(`Selected tags`, selectedTags);
 	const isSelected = selectedTags?.some(
 		(selectedTag: Tag) => selectedTag.name === tag.name
 	);
@@ -35,14 +35,16 @@ const TagButton: React.FC<TagButtonProps> = ({
 		: 'btn btn-primary';
 
 	return (
-		<button
-			className={buttonClass}
-			value={tag.name}
-			id={tag.id.toString()}
-			onClick={e => (tagToggle ? tagToggle(e) : tagReroute(e))}
-		>
-			{tag.name}
-		</button>
+		<>
+			<button
+				className={buttonClass}
+				value={tag.name}
+				id={tag.id.toString()}
+				onClick={e => (tagToggle ? tagToggle(e) : tagReroute(e))}
+			>
+				{tag.name}
+			</button>
+		</>
 	);
 };
 

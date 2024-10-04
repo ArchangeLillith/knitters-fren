@@ -14,10 +14,10 @@ function SearchView() {
 	const externallySelectedTag: { id: string; name: string } = state;
 
 	const [pageState, setPageState] = useState<PageState>({
-		selectedTags: { selectedTags: [], tagsActive: false },
+		selectedTags: [],
+		tagsActive: false,
 		searchType: 'tag',
 		queryString: '',
-		suggestions: [],
 		strictComparison: false,
 		searchTriggered: false,
 		foundPatterns: [],
@@ -38,15 +38,14 @@ function SearchView() {
 	const handleExternalTags = () => {
 		setPageState(prev => ({
 			...prev,
-			selectedTags: {
-				selectedTags: [
-					{
-						id: parseInt(externallySelectedTag.id, 10),
-						name: externallySelectedTag.name,
-					},
-				],
-				tagsActive: true,
-			},
+
+			selectedTags: [
+				{
+					id: parseInt(externallySelectedTag.id, 10),
+					name: externallySelectedTag.name,
+				},
+			],
+			tagsActive: true,
 		}));
 	};
 

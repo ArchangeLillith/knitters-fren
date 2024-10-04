@@ -13,6 +13,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 	pageState,
 	setPageState,
 }) => {
+	console.log(`Tag search panel:`, pageState);
 	/**
 	 * Handles the search by tags when the submit button is clicked
 	 */
@@ -27,7 +28,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 			? tagSearchService.findByTagsStrict
 			: tagSearchService.findByTags;
 
-		searchFunction(pageState.selectedTags.selectedTags)
+		searchFunction(pageState.selectedTags)
 			.then((data: PatternObject[]) =>
 				// console.log(`DATA`, data)
 				setPageState(prev => ({ ...prev, foundPatterns: data }))
@@ -55,7 +56,8 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 	const clearSelection = () => {
 		setPageState(prev => ({
 			...prev,
-			selectedTags: { selectedTags: [], tagsActive: false },
+			selectedTags: [],
+			tagsActive: false,
 		}));
 	};
 
@@ -78,7 +80,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 				/>
 				<label
 					className={`${
-						pageState.selectedTags.tagsActive ? 'visible' : 'invisible'
+						pageState.tagsActive ? 'visible' : 'invisible'
 					}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-outline-primary mx-auto`}
 					htmlFor="strictModeBtn"
 				>
@@ -87,7 +89,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 
 				<button
 					className={`${
-						pageState.selectedTags.tagsActive ? 'visible' : 'invisible'
+						pageState.tagsActive ? 'visible' : 'invisible'
 					}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 					onClick={searchTrigger}
 				>
@@ -96,7 +98,7 @@ const TagSearchPanel: React.FC<TagSearchPanelProps> = ({
 				<button
 					onClick={clearSelection}
 					className={`${
-						pageState.selectedTags.tagsActive ? 'visible' : 'invisible'
+						pageState.tagsActive ? 'visible' : 'invisible'
 					}  btn btn-soft small p-2 m-2 text-muted border border-pink btn btn-primary mx-auto`}
 				>
 					Clear Tags

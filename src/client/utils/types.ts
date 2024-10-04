@@ -132,10 +132,10 @@ export type PatternComment = {
 
 //Type for Search page
 export type SearchPageState = {
-	selectedTags: { tagsActive: boolean; selectedTags: Tag[] };
+	selectedTags: Tag[];
+	tagsActive: boolean;
 	searchType: string;
 	queryString: string;
-	suggestions: string[];
 	strictComparison: boolean;
 	searchTriggered: boolean;
 	foundPatterns: PatternObject[];

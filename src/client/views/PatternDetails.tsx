@@ -79,15 +79,17 @@ const PatternDetails = () => {
 								</div>
 
 								{/* Pattern PDF Link */}
-								{pattern.link !== '' && (
-									<object
-										width="100%"
-										height="1000"
-										data={pattern.link}
-										type="application/pdf"
-										aria-label="pattern pdf"
-									></object>
-								)}
+								{pattern.link !== '' &&
+									pattern.link !== null &&
+									pattern.link !== undefined && (
+										<object
+											width="100%"
+											height="1000"
+											data={pattern.link}
+											type="application/pdf"
+											aria-label="pattern pdf"
+										></object>
+									)}
 
 								{/* Pattern Content */}
 								<p key={`pattern-card-para-${pattern.id}`}>{pattern.content}</p>

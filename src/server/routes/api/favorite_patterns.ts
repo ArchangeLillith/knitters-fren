@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
 import db from '../../db';
-import { PatternObjectQuery } from '../../types';
-import { queryToPatternObject } from '../../utils/functions';
+import { PatternObject, PatternObjectQuery } from '../../types';
+import { queryToPatternObject, removeNullTags } from '../../utils/functions';
 
 const router = Router();
 
@@ -12,10 +12,10 @@ export default router;
 router.get('/:id', async (req, res, next) => {
 	const id = req.params.id;
 	try {
-		const jointTableData: PatternObjectQuery[] =
+		const result: PatternObjectQuery[] =
 			await db.favorite_patterns.allByAuthorId(id);
-		const patterns = queryToPatternObject(jointTableData);
-		// console.log(`patterns;le`, patterns);
+		let patterns: PatternObject[] = queryToPatternObject(result);
+		patterns = removeNullTags(patterns);
 		res.json(patterns);
 	} catch (error) {
 		next(error);
