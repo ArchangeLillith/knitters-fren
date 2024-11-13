@@ -34,6 +34,7 @@
 		"prettier" // Add Prettier plugin
 	],
 	"rules": {
+		"react/prop-types": "off",
 		"linebreak-style": ["error", "unix"],
 		"no-console": "warn",
 		"prettier/prettier": "error", // Enforce Prettier rules as errors
