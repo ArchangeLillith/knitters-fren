@@ -19,6 +19,9 @@ const StringSearchPanel: React.FC<StringSearchPanelProps> = ({
 	 */
 	useSearchDebouncer({ pageState, setPageState });
 
+	/**
+	 * Focusing on the box on render of box
+	 */
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();

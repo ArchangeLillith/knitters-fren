@@ -1,11 +1,14 @@
 import type { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
-
 export const verifyAdmin = (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
+	if (req.skipAdminMiddleware) {
+		console.log(`Skipping admin middlewre`);
+		return next();
+	}
 	passport.authenticate(
 		'jwt',
 		{ session: false },

@@ -31,7 +31,7 @@ export type Pattern = {
 	content: string;
 	created_at: string;
 	tags?: Tag[];
-	paid?: 'true' | 'false';
+	paid: 'true' | 'false';
 };
 
 export type Tag = {
@@ -55,23 +55,24 @@ export type AdminPageProps = {
 	setState: Dispatch<SetStateAction<AdminPageState>>;
 };
 
-export type AddPatternPageState = {
+export type PatternModificationState = {
 	title: string;
 	paid: 'true' | 'false';
 	content: string;
-	link: string;
+	link: string | undefined;
 	selectedTags: Tag[];
 	tagsActive: boolean;
 };
+
 export type SetSelectedTags =
 	| React.Dispatch<React.SetStateAction<SearchPageState>>
-	| React.Dispatch<React.SetStateAction<AddPatternPageState>>
+	| React.Dispatch<React.SetStateAction<PatternModificationState>>
 	| React.Dispatch<
 			React.SetStateAction<{ tagsActive: boolean; selectedTags: Tag[] }>
 	  >;
 export type AddPatternPageProps = {
-	state: AddPatternPageState;
-	setState: React.Dispatch<React.SetStateAction<AddPatternPageState>>;
+	state: PatternModificationState;
+	setState: React.Dispatch<React.SetStateAction<PatternModificationState>>;
 };
 
 /**
@@ -149,7 +150,7 @@ export type PatternObject = {
 	title: string;
 	content: string;
 	created_at: string;
-	paid?: 'true' | 'false';
+	paid: 'true' | 'false';
 	tags: Tag[];
 };
 
@@ -175,7 +176,7 @@ export interface PatternProps {
 }
 export type SearchFunction = (searchString: string) => Promise<PatternObject[]>;
 
-export const loadingPattern = {
+export const loadingPattern: PatternObject = {
 	id: '0',
 	author_id: 'Loading...',
 	username: '',

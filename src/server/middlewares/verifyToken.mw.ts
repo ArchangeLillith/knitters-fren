@@ -24,7 +24,7 @@ export const verifyToken = (
 			} else {
 				req.currentUser = user;
 			}
-
+			console.log(`Current user`, req.currentUser);
 			next();
 		}
 	)(req, res, next);

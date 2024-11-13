@@ -41,7 +41,13 @@ const destroyPattern = async (id: string) => {
  */
 const updatePattern = async (
 	id: string,
-	payload: { id: string; title: string; content: string }
+	payload: {
+		id: string;
+		title: string;
+		link?: string;
+		paid: 'true' | 'false';
+		content: string;
+	}
 ) => {
 	await baseService.put(`/api/patterns/${id}`, payload);
 };

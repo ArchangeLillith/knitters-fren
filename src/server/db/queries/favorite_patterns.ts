@@ -64,4 +64,16 @@ const removeFavorite = async (
 		[author_id, pattern_id]
 	);
 };
-export default { allByAuthorId, addFavorite, removeFavorite };
+const destroyFavorite = async (
+	pattern_id: string
+): Promise<ResultSetHeader> => {
+	return QueryMetadata(
+		`
+		DELETE FROM
+			kf_favorite_patterns
+		WHERE pattern_id = ?;
+	`,
+		[pattern_id]
+	);
+};
+export default { allByAuthorId, addFavorite, removeFavorite, destroyFavorite };

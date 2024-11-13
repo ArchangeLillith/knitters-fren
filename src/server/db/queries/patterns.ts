@@ -107,11 +107,19 @@ const destroy = (id: string): Promise<ResultSetHeader> =>
 const update = (patternDTO: {
 	id: string;
 	title: string;
+	link: string | undefined;
+	paid: 'true' | 'false';
 	content: string;
 }): Promise<ResultSetHeader> =>
 	QueryMetadata(
-		/* sql */ 'UPDATE kf_patterns SET content = ?, title = ? WHERE id = ?',
-		[patternDTO.content, patternDTO.title, patternDTO.id]
+		/* sql */ 'UPDATE kf_patterns SET content = ?, title = ?, paid = ?, link = ? WHERE id = ?',
+		[
+			patternDTO.content,
+			patternDTO.title,
+			patternDTO.paid,
+			patternDTO.link,
+			patternDTO.id,
+		]
 	);
 
 const updateAuthorToBanned = (id: string): Promise<ResultSetHeader> =>

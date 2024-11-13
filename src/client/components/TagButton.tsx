@@ -5,16 +5,17 @@ import { Tag } from '../utils/types';
 
 type TagButtonProps = {
 	tag: Tag;
-	selectedTags?: Tag[];
+	SelectedDTO?: { selectedTags: Tag[]; tagsActive: boolean };
 	tagToggle?: (tagButton: React.MouseEvent<HTMLButtonElement>) => void; // Optional function prop
 };
 
 const TagButton: React.FC<TagButtonProps> = ({
 	tag,
-	selectedTags,
+	SelectedDTO,
 	tagToggle = undefined,
 }) => {
 	const navigate = useNavigate();
+	const selectedTags = SelectedDTO?.selectedTags;
 
 	/**
 	 * The baked in function to allow the user to click on the tag and be taken to the search page with that tag already selected
@@ -25,26 +26,26 @@ const TagButton: React.FC<TagButtonProps> = ({
 			state: { id, name: value },
 		});
 	};
-	console.log(`Selected tags`, selectedTags);
+
+	console.log('Selected tags (type):', typeof selectedTags);
+	console.log('Selected tags (value):', selectedTags);
 	const isSelected = selectedTags?.some(
 		(selectedTag: Tag) => selectedTag.name === tag.name
 	);
 
 	const buttonClass = isSelected
-		? 'selected-tag btn btn-secondary'
-		: 'btn btn-primary';
+		? 'selected-tag btn btn-secondary tag-button'
+		: 'btn btn-primary tag-button';
 
 	return (
-		<>
-			<button
-				className={buttonClass}
-				value={tag.name}
-				id={tag.id.toString()}
-				onClick={e => (tagToggle ? tagToggle(e) : tagReroute(e))}
-			>
-				{tag.name}
-			</button>
-		</>
+		<button
+			className={buttonClass}
+			value={tag.name}
+			id={tag.id.toString()}
+			onClick={e => (tagToggle ? tagToggle(e) : tagReroute(e))}
+		>
+			{tag.name}
+		</button>
 	);
 };
 

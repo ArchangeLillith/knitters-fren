@@ -113,6 +113,7 @@ router.delete(
 			const id = req.params.id;
 			const { author_id, title, username } = await patterns.oneById(id);
 			await db.pattern_tags.destroyAllBasedOnPatternId(id);
+			await db.favorite_patterns.destroyFavorite(id);
 			const result: ResultSetHeader = await db.patterns.destroy(id);
 			if (!result.affectedRows) {
 				throw new Error('No affected rows');
@@ -136,12 +137,16 @@ router.put('/:id', async (req, res, next) => {
 	try {
 		const patternDTO: {
 			id: string;
-			content: string;
 			title: string;
+			link: string | undefined;
+			paid: 'true' | 'false';
+			content: string;
 		} = {
 			id: req.body.id,
 			title: req.body.title,
 			content: req.body.content,
+			link: req.body.link,
+			paid: req.body.paid,
 		};
 		console.log(`patternDTO`, patternDTO);
 		await db.patterns.update(patternDTO);

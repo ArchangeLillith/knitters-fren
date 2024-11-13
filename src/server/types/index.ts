@@ -3,6 +3,7 @@ declare global {
 	namespace Express {
 		export interface Request {
 			currentUser?: AuthorsTable;
+			skipAdminMiddleware?: boolean;
 			payload?: { id: string };
 		}
 	}

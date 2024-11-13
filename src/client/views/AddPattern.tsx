@@ -14,8 +14,9 @@ import patternService from '../services/pattern';
 import patternTags from '../services/pattern-tags';
 import {
 	Pattern,
-	AddPatternPageState as PageState,
+	PatternModificationState,
 	NewPattern,
+	Tag,
 } from '../utils/types';
 
 //Refactor we could add a loading state! Thisis nice in prod, we won't see it in dev prob, but it's good UX
@@ -24,7 +25,7 @@ const AddPattern = () => {
 	const { authState } = useContext(AuthContext);
 
 	//Initialize state
-	const [state, setState] = useState<PageState>({
+	const [state, setState] = useState<PatternModificationState>({
 		title: '',
 		paid: 'false',
 		content: '',
@@ -34,14 +35,6 @@ const AddPattern = () => {
 	});
 
 	//Create the DTO
-	const newPatternDTO: NewPattern = {
-		id: uuidv4(),
-		title: state.title,
-		content: state.content,
-		author_id: authState.authorData?.id || '',
-		link: state.link,
-		paid: state.paid,
-	};
 
 	/**
 	 * @param submitButton - The submit button clicked to fire the submission of the pattern
@@ -53,6 +46,15 @@ const AddPattern = () => {
 		submitButton.preventDefault();
 		const newArr = state.selectedTags.map(tag => tag.id);
 		let patternId: string;
+		if (state.link === undefined || state.paid === undefined) return;
+		const newPatternDTO: NewPattern = {
+			id: uuidv4(),
+			title: state.title,
+			content: state.content,
+			author_id: authState.authorData?.id || '',
+			link: state.link,
+			paid: state.paid,
+		};
 		try {
 			const pattern: Pattern =
 				await patternService.addNewPattern(newPatternDTO);
@@ -66,6 +68,11 @@ const AddPattern = () => {
 		} catch (error) {
 			alert(error);
 		}
+	};
+
+	const selectedTagsDTO: { selectedTags: Tag[]; tagsActive: boolean } = {
+		selectedTags: state.selectedTags,
+		tagsActive: state.selectedTags.length > 0,
 	};
 
 	return (
@@ -94,7 +101,7 @@ const AddPattern = () => {
 						<label htmlFor="tags">Choose your tags:</label>
 
 						<AllTagsContainer
-							selectedTags={state.selectedTags}
+							SelectedDTO={selectedTagsDTO}
 							setSelectedTags={setState}
 						/>
 					</div>

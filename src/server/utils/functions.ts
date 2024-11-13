@@ -27,10 +27,12 @@ export const queryToPatternObject = (queryReturn: PatternObjectQuery[]) => {
 };
 
 export const removeNullTags = (pattern: PatternObject[]) => {
+	console.log(`Pattern before null tgas removed`, pattern);
 	for (let i = 0; i < pattern.length; i++) {
 		const newTags = pattern[i].tags.filter(tag => tag.id !== null);
 		pattern[i].tags = newTags;
 	}
+	console.log(`Pattern after tags removed`, pattern);
 	return pattern;
 };
 

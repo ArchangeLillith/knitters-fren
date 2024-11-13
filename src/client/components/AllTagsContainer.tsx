@@ -5,14 +5,18 @@ import useFetchData from '../hooks/useFetchData';
 import { Tag, SetSelectedTags } from '../utils/types';
 
 type AllTagsContainer = {
-	selectedTags: Tag[];
+	SelectedDTO?: {
+		tagsActive: boolean;
+		selectedTags: Tag[];
+	};
 	setSelectedTags: SetSelectedTags;
 };
 
 const AllTagsContainer: React.FC<AllTagsContainer> = ({
-	selectedTags,
+	SelectedDTO,
 	setSelectedTags,
 }) => {
+	const selectedTags = SelectedDTO ? SelectedDTO.selectedTags : [];
 	console.log(`All Tags:`, selectedTags);
 	const fetchConfigs = useMemo(() => [{ key: 'tags', url: '/api/tags' }], []);
 	const { data, loading, error } = useFetchData<{ tags: Tag[] }>(fetchConfigs);
@@ -56,7 +60,7 @@ const AllTagsContainer: React.FC<AllTagsContainer> = ({
 				>
 					<TagButton
 						tag={tag}
-						selectedTags={selectedTags}
+						SelectedDTO={SelectedDTO}
 						tagToggle={tagToggle}
 					/>
 				</div>
