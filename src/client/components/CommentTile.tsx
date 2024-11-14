@@ -1,6 +1,6 @@
-import dayjs from 'dayjs';
 import React from 'react';
 
+import DateSnippet from './DateSnippet';
 import { PatternComment } from '../utils/types';
 
 const CommentTile = ({ comments }: { comments: PatternComment[] }) => {
@@ -14,9 +14,7 @@ const CommentTile = ({ comments }: { comments: PatternComment[] }) => {
 					<div className="h5">{comment.username}</div>
 					<div className="my-2">{comment.content}</div>
 					<div className="align-self-end">
-						<small>
-							{dayjs(comment.created_at).format('MMMM D, YYYY h:mm A')}
-						</small>
+						<DateSnippet createdAt={comment.created_at} />
 					</div>
 				</div>
 			))}

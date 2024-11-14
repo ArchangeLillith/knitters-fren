@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -7,6 +6,7 @@ import { PatternObject } from '../../utils/types';
 import AssociatedTagList from '../AssociatedTagList';
 import FavIcon from './FavIcon';
 import { AuthContext } from '../AuthComponents/AuthProvider';
+import DateSnippet from '../DateSnippet';
 
 interface PatternCardProps {
 	pattern: PatternObject;
@@ -16,15 +16,21 @@ interface PatternCardProps {
 const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 	const { authState } = useContext(AuthContext);
 
+	const patternContentCleaned =
+		pattern.content.length < 200 ? (
+			pattern.content
+		) : (
+			<>{pattern.content.slice(0, 200)}...</>
+		);
+
 	return (
-		<div className="my-2 mx-4">
+		<div className={`${featured ? 'my-lg-2 mx-lg-4 mx-2' : 'my-lg-2 mx-lg-4'}`}>
 			<div className="m-2">
 				<div className="d-flex flex-row justify-content-between align-items-center">
 					<div className="d-flex align-items-center justify-content-start">
 						<Link
 							className={`${featured ? 'link-white' : 'link-pink'}`}
 							to={`/patterns/${pattern.id}`}
-							style={{ fontSize: featured ? '30px' : '25px' }}
 						>
 							{pattern.title}
 						</Link>
@@ -34,13 +40,14 @@ const PatternCard = ({ pattern, featured = false }: PatternCardProps) => {
 						<FavIcon patternId={pattern.id} size={20} />
 					)}
 				</div>
-				<p key={`pattern-card-para-${pattern.id}`}>
-					{pattern.content.slice(0, 200)}...
-				</p>
-				<small>{dayjs(pattern.created_at).format('MMMM D, YYYY')}</small>
-				<small>{pattern.username}</small>
-
-				<br />
+				<p key={`pattern-card-para-${pattern.id}`}>{patternContentCleaned}</p>
+				<div className="d-flex flex-row justify-space-around">
+					<small className="pattern-date">
+						<DateSnippet createdAt={pattern.created_at} />
+					</small>
+					<small className="pattern-author">{pattern.username}</small>
+				</div>
+				<br className="d-none d-lg-block" />
 				{!featured && pattern.tags?.length > 0 && (
 					<AssociatedTagList tags={pattern.tags} />
 				)}

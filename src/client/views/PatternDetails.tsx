@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 
@@ -6,6 +5,7 @@ import AssociatedTagList from '../components/AssociatedTagList';
 import { AuthContext } from '../components/AuthComponents/AuthProvider';
 import CommentTile from '../components/CommentTile';
 import Container from '../components/Container';
+import DateSnippet from '../components/DateSnippet';
 import CommentForm from '../components/PatternComponents/CommentForm';
 import FavIcon from '../components/PatternComponents/FavIcon';
 import LockIcon from '../components/PatternComponents/LockIcon';
@@ -68,13 +68,17 @@ const PatternDetails = () => {
 						<div className="my-2 mx-4">
 							<div className="m-2">
 								{/* Title and Icons */}
-								<div className="d-flex flex-row justify-content-between align-items-center">
+								<div className="d-flex flex-column flex-lg-row justify-content-between align-items-center">
 									<div className="d-flex flex-row align-items-center">
-										<div className="display-4 my-3">{pattern.title}</div>
+										<div className="display-4 my-3 sm-text-small">
+											{pattern.title}
+										</div>
 										{pattern.paid === 'true' && <LockIcon size={30} />}
 									</div>
 									{authState.authenticated && (
-										<FavIcon patternId={pattern.id} size={30} />
+										<div className="d-flex justify-content-center">
+											<FavIcon patternId={pattern.id} size={30} />
+										</div>
 									)}
 								</div>
 
@@ -99,8 +103,7 @@ const PatternDetails = () => {
 									key={`pattern-card-created-at-${pattern.id}`}
 								>
 									<i>
-										Submitted:{' '}
-										{dayjs(pattern.created_at).format('MMMM D, YYYY')}
+										Submitted: <DateSnippet createdAt={pattern.created_at} />
 									</i>
 								</small>
 								<br />

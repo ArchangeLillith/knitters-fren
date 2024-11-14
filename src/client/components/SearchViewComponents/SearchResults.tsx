@@ -1,10 +1,10 @@
-import dayjs from 'dayjs';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { PatternObject } from '../../utils/types';
 import AssociatedTagList from '../AssociatedTagList';
 import Container from '../Container';
+import DateSnippet from '../DateSnippet';
 
 interface SearchResultsProps {
 	foundPatterns: PatternObject[];
@@ -37,7 +37,7 @@ const SearchResults = ({ foundPatterns }: SearchResultsProps) => {
 									<br />
 									<AssociatedTagList tags={pattern.tags} />
 									<small className="ms-auto">
-										{dayjs(pattern.created_at).format('MMMM D, YYYY')}
+										<DateSnippet createdAt={pattern.created_at} />
 									</small>
 								</div>
 							</div>

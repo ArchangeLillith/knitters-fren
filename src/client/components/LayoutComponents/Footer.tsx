@@ -1,25 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaHeart } from 'react-icons/fa';
 import { PiYarnLight } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
-	return (
-		<footer className="footer fixed-bottom justify-content-center align-items-center bg-muted d-flex">
-			<a
-				href="https://x.com/vbnmat"
-				target="_blank"
-				data-bs-toggle="tooltip"
-				data-bs-placement="top"
-				title="Meet the artist!"
-				rel="noreferrer"
-			>
+	const [simpleFooter, setSimpleFooter] = useState(false);
+
+	useEffect(() => {
+		const isLargeScreen = window.innerWidth <= 992; // Bootstrap 'lg' breakpoint
+		setSimpleFooter(isLargeScreen);
+	}, []);
+
+	if (simpleFooter) {
+		return (
+			<footer className="footer fixed-bottom justify-content-center align-items-center bg-muted d-flex">
 				<img
 					src="https://knitters-fren.s3.ca-central-1.amazonaws.com/website-images/nanachi-footer-hang.png"
-					style={{ height: '100px' }}
+					style={{ height: '50px' }}
 					alt="Footer nanchi"
 				/>
-			</a>
+			</footer>
+		);
+	}
+
+	return (
+		<footer className="footer fixed-bottom justify-content-center align-items-center bg-muted d-flex">
+			<img
+				src="https://knitters-fren.s3.ca-central-1.amazonaws.com/website-images/nanachi-footer-hang.png"
+				style={{ height: '100px' }}
+				alt="Footer nanchi"
+			/>
 			<div className="text-center mx-5 w-100">
 				<div>
 					<ul

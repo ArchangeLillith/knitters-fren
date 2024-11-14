@@ -100,7 +100,7 @@ const UpdatePattern = () => {
 	};
 
 	return (
-		<div className="container bg-soft rounded p-4 my-5">
+		<div className="container bg-soft rounded p-4 my-lg-5 my-0">
 			<form className="d-flex flex-column pt-4">
 				<div className="form-group d-flex flex-column">
 					<div className="display-6">Edit your Pattern:</div>
@@ -119,7 +119,7 @@ const UpdatePattern = () => {
 						setSelectedTags={setSelectedDTO}
 					/>
 				</div>
-				<div className="d-flex justify-content-center align-items-center">
+				<div className="d-flex justify-content-center align-items-center m-4 pb-3">
 					<button className="btn btn-primary" onClick={handleUpdate}>
 						Update the pattern~
 					</button>
@@ -127,12 +127,7 @@ const UpdatePattern = () => {
 			</form>
 			<img
 				src="https://knitters-fren.s3.ca-central-1.amazonaws.com/website-images/drawing-nanachi.png"
-				style={{
-					position: 'absolute',
-					top: '70%',
-					right: '4%',
-					width: '250px',
-				}}
+				className="writing-nanachi d-none-sm"
 				alt="Nanachi"
 			/>
 		</div>

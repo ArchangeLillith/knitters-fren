@@ -19,7 +19,7 @@ import UpdatePattern from '../views/UpdatePattern';
 
 const App = () => {
 	return (
-		<div>
+		<>
 			<NavBar />
 			<Routes>
 				<Route path="/" element={<Home />}></Route>
@@ -37,7 +37,7 @@ const App = () => {
 				<Route path="/*" element={<NotFound />}></Route>
 			</Routes>
 			<Footer />
-		</div>
+		</>
 	);
 };
 

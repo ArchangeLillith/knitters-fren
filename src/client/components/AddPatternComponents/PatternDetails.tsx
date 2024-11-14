@@ -13,9 +13,9 @@ const PatternDetails: React.FC<AddPatternPageProps> = ({ state, setState }) => {
 				value={state.content}
 				className="form-control-lg form-control flex-grow-1 bg-soft"
 				id="pattern-details"
-				placeholder="Start writing..."
+				placeholder="You can either past a plain text pattern here, or write some notes about the pattern you've linked you'd like to share"
 				name="body"
-				rows={10}
+				rows={15}
 			></textarea>
 		</div>
 	);

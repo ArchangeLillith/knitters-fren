@@ -81,12 +81,7 @@ const AddPattern = () => {
 				<img
 					src="https://knitters-fren.s3.ca-central-1.amazonaws.com/website-images/teacup-nanachi.png"
 					alt="teacup-nanachi"
-					style={{
-						width: '250px',
-						position: 'absolute',
-						right: '1%',
-						top: '12%',
-					}}
+					className="teacup-nanachi d-none-sm "
 				/>
 				<form className="d-flex flex-column mt-4 pt-4">
 					<div className="form-group d-flex flex-column">

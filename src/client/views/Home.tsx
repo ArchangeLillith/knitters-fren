@@ -50,33 +50,29 @@ const Home = () => {
 
 	return (
 		<Container>
-			<div className="d-flex flex-row justify-content-around my-4">
+			<div className="d-flex flex-column flex-lg-row justify-content-around my-4">
+				<div className="d-flex align-self-center order-1 order-lg-2">
+					<img
+						rel="preload"
+						alt="site-logo-sleeping-nanachi"
+						src="https://knitters-fren.s3.ca-central-1.amazonaws.com/website-images/Nanachi-logo.png"
+						className="site-logo-nanachi"
+					/>
+				</div>
 				<div
 					id="featured-patterns"
-					className="mt-5 bg-bright rounded justify-content-center d-flex flex-column align-items-center "
-					style={{ maxWidth: '50%', paddingRight: '3%', paddingLeft: '3%' }}
+					className="mt-5 bg-bright rounded justify-content-center d-flex flex-column align-items-center order-2 order-lg-1 featured-patterns"
 				>
 					<div
-						style={{
-							fontFamily: "'Brush Script MT', cursive",
-							fontSize: '35px',
-							paddingTop: '3%',
-						}}
+						className="featured-heading"
+						// This can't be moved, it doesn't work in CSS for some reason :(
+						style={{ fontFamily: "'Brush Script MT', cursive" }}
 					>
 						Featured Pattern:
 					</div>
 					{patterns.featured && (
 						<PatternCard pattern={patterns.featured} featured={true} />
 					)}
-				</div>
-				<div className="mb-5">
-					<img
-						rel="preload"
-						alt="site-logo-sleeping-nanachi"
-						src="https://knitters-fren.s3.ca-central-1.amazonaws.com/website-images/Nanachi-logo.png"
-						className="py-4"
-						style={{ height: '130%' }}
-					/>
 				</div>
 			</div>
 			<div className="container-fluid container">
