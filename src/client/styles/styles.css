@@ -1,5 +1,5 @@
 /* -------------------------------------
-   CSS Variables 
+  CSS Variables 
 ------------------------------------- */
 :root {
 	/* Primary Colors */
@@ -42,12 +42,12 @@
 }
 
 /* -------------------------------------
-   Utility Classes
+  Utility Classes
 ------------------------------------- */
 .select-none {
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
 }
 
 .w-60 {
@@ -56,7 +56,7 @@
 
 .fade-in-wrapper {
 	opacity: 0;
-	transition: opacity 0.5s ease-in-out;
+	transition: opacity 0.5s ease-in-out; /* Adjust duration for smooth fade-in */
 }
 
 .fade-in-wrapper.visible {
@@ -64,7 +64,7 @@
 }
 
 /* -------------------------------------
-   Global Styles
+  Global Styles
 ------------------------------------- */
 html,
 body,
@@ -76,7 +76,7 @@ body,
 }
 
 /* -------------------------------------
-   Typography
+  Typography
 ------------------------------------- */
 .font-color-primary {
 	color: var(--text-primary);
@@ -92,22 +92,33 @@ body,
 a.nav-link:hover {
 	color: var(--text-soft);
 }
-
 .text-muted {
 	color: var(--text-muted);
 }
-
-.h4.align-self-end,
-h3.search-header {
+.h4.align-self-end {
 	margin-bottom: 0;
 }
 
 h3.search-header {
+	margin-bottom: 0;
 	margin-right: 10px;
 }
 
+.featured-heading {
+	font-size: 1.75rem;
+}
+
+p.pattern-date {
+	font-size: 0.75rem;
+	margin-bottom: 0;
+}
+
+div > small {
+	font-size: 0.75rem;
+}
+
 /* -------------------------------------
-   Background Styles
+  Background Styles
 ------------------------------------- */
 .bg-bright {
 	background-color: var(--background-bright);
@@ -132,8 +143,82 @@ h3.search-header {
 	padding: 10px;
 }
 
+.show-tags-link.btn-link,
+.show-tags-link.btn-link:hover,
+.show-tags-link.btn-link:active,
+.show-tags-link.btn-link:focus {
+	color: var(--text-primary) !important;
+	text-decoration: none;
+}
+
+.heart-btn {
+	color: var(--primary);
+	border: none;
+	background: none;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 /* -------------------------------------
-   Buttons
+  Links
+------------------------------------- */
+.link-white {
+	font-size: 1.5rem;
+	position: relative;
+	text-decoration: none;
+	color: var(--link-white);
+	text-shadow: 1px 1px 2px var(--link-dark);
+	transition: all 0.25s ease-out;
+}
+.link-white:hover {
+	color: var(--link-dark);
+	text-shadow: 1px 1px 4px white;
+}
+
+.link-pink {
+	font-size: 1.25rem;
+	position: relative;
+	text-decoration: none;
+	color: var(--link-primary);
+	text-shadow: 1px 1px 2px rgb(255, 255, 255);
+	transition: all 0.15s ease-out;
+}
+
+a.primary-link {
+	position: relative;
+	text-decoration: none;
+	color: var(--link-dark);
+	text-shadow: 1px 1px 4px rgb(255, 255, 255);
+	transition: all 0.15s ease-out;
+}
+
+.image-credit {
+	color: var(--soft);
+}
+.link-pink:hover {
+	color: var(--link-dark);
+	text-shadow: 1px 1px 2px pink;
+}
+
+.link-pink::before {
+	content: '';
+	position: absolute;
+	background: var(--link-primary);
+	height: 3px;
+	top: 90%;
+	left: 0;
+	width: 0%;
+	transition: width 0.5s ease;
+}
+.link-pink:hover::before {
+	width: 100%;
+	background: var(--link-dark);
+}
+
+/* -------------------------------------
+  Buttons
 ------------------------------------- */
 .btn.btn-outline-primary {
 	color: white;
@@ -145,32 +230,81 @@ h3.search-header {
 	background-color: var(--btn-soft);
 }
 
-/* Reuse button styles to avoid repetition */
-.btn.btn-primary,
-.btn.btn-secondary {
+.btn.btn-primary {
 	background-color: var(--btn-primary);
 	border: 1px solid var(--btn-prim-bord);
+}
+
+.btn.btn-primary:hover {
+	background-color: var(--btn-prim-bord);
+	border: 1px solid var(--btn-primary);
 	color: var(--text-primary);
 }
 
-.btn.btn-primary:hover,
-.btn.btn-primary:focus-visible,
-button.btn.btn-primary:active {
+.btn.btn-primary:focus-visible {
 	background-color: var(--btn-prim-bord);
-	border-color: var(--btn-primary);
+	border: 1px solid var(--btn-primary);
 	color: var(--text-primary);
+	border-color: var(--background-light);
+	outline: 0;
 	box-shadow: 0 0 0 0.25rem rgba(255, 106, 133, 0.554);
 }
 
-.btn.btn-secondary:hover,
+button.btn.btn-primary:active {
+	background-color: var(--btn-prim-bord);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+.btn.btn-secondary {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+.btn.btn-secondary:hover {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
+.btn.btn-secondary:focus {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+}
+
 .btn.btn-secondary:focus-visible {
 	background-color: var(--btn-soft);
-	border-color: var(--btn-primary);
+	border: 1px solid var(--btn-primary);
+	color: var(--text-primary);
+	border-color: var(--background-light);
+	outline: 0;
+	box-shadow: 0 0 0 0.25rem rgba(255, 106, 133, 0.554);
+}
+
+.btn.btn-secondary:active {
+	background-color: var(--btn-soft);
+	border: 1px solid var(--btn-primary);
 	color: var(--text-primary);
 }
 
 /* -------------------------------------
-   Tooltip
+  Borders
+------------------------------------- */
+.border-pink {
+	border: 1px solid var(--primary);
+}
+input.form-control:focus {
+	color: black;
+	background-color: white;
+	border-color: var(--background-light);
+	outline: 0;
+	box-shadow: 0 0 0 0.25rem rgba(255, 149, 169, 0.25);
+}
+
+/* -------------------------------------
+  Tooltip
 ------------------------------------- */
 .tooltip-icon,
 .tooltip-icon-lock {
@@ -204,7 +338,7 @@ button.btn.btn-primary:active {
 	padding: 10px;
 	position: absolute;
 	z-index: 1;
-	top: 125%;
+	top: 125%; /* Adjust position */
 	left: 50%;
 	transform: translateX(-50%);
 	opacity: 0;
@@ -218,7 +352,7 @@ button.btn.btn-primary:active {
 }
 
 /* -------------------------------------
-   Modal
+  Modal
 ------------------------------------- */
 .modal-overlay {
 	position: fixed;
@@ -226,12 +360,12 @@ button.btn.btn-primary:active {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	z-index: 1000;
-	backdrop-filter: blur(5px);
+	backdrop-filter: blur(5px); /* Blur effect */
 }
 
 .modal-content-custom {
@@ -247,8 +381,24 @@ button.btn.btn-primary:active {
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.modal-link {
+	text-decoration: none;
+	color: #f89090;
+}
+
+.modal-button {
+	color: white;
+	width: 80%;
+	background-color: #ec9e9e;
+	align-self: center;
+	height: 40px;
+	border-radius: 5px;
+	border: white;
+	box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
 /* -------------------------------------
-   Tags
+  Tags
 ------------------------------------- */
 .tag-tile {
 	background: var(--tag-tile);
@@ -260,11 +410,35 @@ button.btn.btn-primary:active {
 	background: white;
 	color: pink;
 }
+.tag-buttons {
+	transition:
+		max-height 0.5s ease,
+		opacity 0.5s ease;
+	max-height: 1000px; /* Large enough to accommodate the content */
+	opacity: 1;
+	overflow: hidden;
+}
+.tag-buttons.hidden {
+	max-height: 0; /* Collapse the height */
+	opacity: 0;
+}
+/* -------------------------------------
+  Images
+------------------------------------- */
+.teacup-nanachi,
+.writing-nanachi {
+	position: absolute;
+	top: 12%;
+	right: 1%;
+	width: 250px;
+}
 
-p.pattern-date,
-div > small {
-	font-size: 0.75rem;
-	margin-bottom: 0;
+.sleeping-nanachi {
+	width: 500px;
+}
+
+.site-logo-nanachi {
+	height: 130%;
 }
 
 .caret-toggle {
@@ -277,24 +451,41 @@ div > small {
 .caret-toggle:focus {
 	outline: none;
 }
-
 /* -------------------------------------
-   Media Queries
+  Navbar
 ------------------------------------- */
-@media (min-width: 992px) {
-	.tag-buttons {
-		display: block !important;
-	}
-	.featured-patterns {
-		width: 40%;
-	}
+.navbar-collapse {
+	transition:
+		max-height 0.4s ease,
+		opacity 0.4s ease;
+	overflow: hidden;
+	max-height: 1000px; /* A large enough value to fit all content when expanded */
+	opacity: 1;
 }
 
+.navbar-collapse.collapsing {
+	max-height: 0;
+	opacity: 0;
+}
+/* -------------------------------------
+  Media Queries
+------------------------------------- */
+/* Small screen media query */
 @media (max-width: 576px) {
 	.display-4.sm-text-small {
 		font-size: 1.5rem;
 	}
 	.d-none-sm {
 		display: none !important;
+	}
+}
+
+/* Large screen media query */
+@media (min-width: 992px) {
+	.tag-buttons {
+		display: block !important; /* Always show tags on large screens */
+	}
+	.featured-patterns {
+		width: 40%;
 	}
 }
