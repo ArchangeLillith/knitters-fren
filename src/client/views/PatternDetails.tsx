@@ -92,7 +92,15 @@ const PatternDetails = () => {
 											data={pattern.link}
 											type="application/pdf"
 											aria-label="pattern pdf"
-										></object>
+										>
+											<p>
+												Your browser does not support embedded PDFs.{' '}
+												<a href="https://knitters-fren.s3.ca-central-1.amazonaws.com/Five-by-Five-Cowl.pdf">
+													Click here to view the PDF
+												</a>
+												.
+											</p>
+										</object>
 									)}
 
 								{/* Pattern Content */}
