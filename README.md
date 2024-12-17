@@ -45,7 +45,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<img src="/public/images/screenshots/home-page.png" alt="home page screenshot" width="1000" height="500">
+<img src="/public/images/screenshots/home-view.png" alt="home page screenshot" width="1000" height="500">
 
 This project was originally a blog post, but I felt that was less fun than making a functional website to host all my favorite knitting patterns! Under the hood it's very similar to a blog website having users, posts, tags but also incorporates those in more advanced ways - like the search function. The search function allows users to click a tag tile and be transported to the search with that tag already selected. The user can also select more tags and also search with plain text! 
 
@@ -106,13 +106,10 @@ To explore Knitters Fren, go see it in action:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-<img src="/public/images/screenshots/detail-view.png" alt="details page screenshot" width="1000" height="500">
-
 I've found it challenging to know which of my patterns I'm looking for based on file name alone, and sometimes I forget I have a really pretty pattern I haven't used in a while. I'm hoping with the addition of pictures that I can more easily find what I'm looking for, and with the featured section rotating on every load I'll be exposed to more patterns!
-
-As this website gets deployed and there are more users, I'm also hoping I can make a positive enviornment that people can share wonderful patterns they've used and it becomes a place that knitters can find wonderful new patterns to try.
-
-
+<br/>
+<br/>
+As this website gains more users, I'm also hoping I can make a positive enviornment that people can share wonderful patterns they've used and it becomes a place that knitters can find wonderful new patterns to try.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -153,17 +150,54 @@ Project Link: [https://github.com/ArchangeLillith/knitters-fren](https://github.
 
 <!-- GALLERY -->
 ## Gallery
+Explore the pages of KnittersFren below through images!
 
-<img src="/public/images/screenshots/detail-view.png" alt="details page screenshot" width="1000" height="500">
-<img src="/public/images/screenshots/home-page.png" alt="details page screenshot" width="1000" height="500">
-<img src="/public/images/screenshots/404-page.png" alt="details page screenshot" width="1000" height="500">
-<img src="/public/images/screenshots/create-pattern.png" alt="details page screenshot" width="1000" height="500">
+<details open>
+  <summary>🏠 Home View</summary>
+ <img src="/public/images/screenshots/home-view.png" alt="home view of knitter fren" width="1000" height="500">
+</details>
+
+<details>
+  <summary>📜 All Patterns List</summary>
+ <img src="/public/images/screenshots/all-patterns-list.png" alt="all patterns in a list view" width="1000" height="500">
+</details>
+
+<details>
+  <summary>🧵 Create a New Pattern</summary>
+  <img src="/public/images/screenshots/create-a-pattern.png" alt="create a pattern form view" width="1000" height="500">
+</details>
+
+<details>
+  <summary>🖼️ Detail View</summary>
+  <img src="/public/images/screenshots/updated-detail-view.png" alt="details page screenshot" width="1000" height="500">
+</details>
+
+<details>
+  <summary>🔑 Login</summary>
+ <img src="/public/images/screenshots/login-page.png" alt="login page form view" width="1000" height="500">
+</details>
+
+<details open>
+  <summary>✏️ Register</summary>
+ <img src="/public/images/screenshots/register-page.png" alt="register page form view" width="1000" height="500">
+</details>
+
+<details>
+  <summary>🔍 Search View</summary>
+  <img src="/public/images/screenshots/search-view.png" alt="saerch view with search active to show return pattern card" width="1000" height="500">
+</details>
+
+<details>
+  <summary>❌ Not Found Page</summary>
+ <img src="/public/images/screenshots/404-page.png" alt="404 page with gif of nanachi" width="1000" height="500">
+</details>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!--DEV -->
 ### For Developers
 
+If you'd like to run a local copy of this project, please follow the steps below to do so!
 
 1. Clone the repo
    ```sh
