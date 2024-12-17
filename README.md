@@ -4,13 +4,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/ArchangeLillith/knitters-fren">
-    <img src="/public/images/Nanachi-logo.png" alt="Logo" width="160" height="160">
+    <img src="/public/images/Nanachi-logo.png" alt="Logo" width="250" height="250">
   </a>
 
   <h3 align="center">Knitters Fren</h3>
 
   <p align="center">
-    A place for knitters to share their creations and patterns~!
+    A place for knitters to share their creations and patterns!
     <br />
     <a href="https://github.com/ArchangeLillith/knitters-fren"><strong>Explore the docs »</strong></a>
     <br />
@@ -32,7 +32,6 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -52,7 +51,7 @@
 
 <img src="/public/images/screenshots/home-page.png" alt="home page screenshot" width="1000" height="500">
 
-This project was originally a blog post, but I felt that was less fun than making a functional website to host all my favorite knitting patterns! Under the hood it's very similar to a blog website having users, posts, tags but also incorporates those in other, more advanced ways - like the search function. The search function allows users to click a tag tile and be transported to the search with that tag already selected. The user can also select more tags and also search with plain text! 
+This project was originally a blog post, but I felt that was less fun than making a functional website to host all my favorite knitting patterns! Under the hood it's very similar to a blog website having users, posts, tags but also incorporates those in more advanced ways - like the search function. The search function allows users to click a tag tile and be transported to the search with that tag already selected. The user can also select more tags and also search with plain text! 
 
 
 I'm hoping that the more organized my patterns are, the more I and other knitters want to knit fun things.
@@ -62,24 +61,29 @@ I'm hoping that the more organized my patterns are, the more I and other knitter
 
 
 ### Built With
+<div align="center">
 
-* [![React][React.js]][React-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![nodejs][nodejs]][nodejs-url]
-* [![express][express]][express-url]
-* [![Passport][Passport]][Passport-url]
-* [![JWT][JSON-web-tokens]][JSON-web-tokens-url]
-* [![MySQL][MySQL]][MySQL-url]
-* [![S3][S3]][S3-url]
-* Bcrypt
-* js cookie
-* cors?
-* esbuild / eslint?
-* dayjs?
-* Vite
-* uuid?
+[![React][React.js]][React-url]
+[![Bootstrap][Bootstrap.com]][Bootstrap-url]
+[![nodejs][nodejs]][nodejs-url]
+[![express][express]][express-url]
+[![Passport][Passport]][Passport-url]
+[![JWT][JSON-web-tokens]][JSON-web-tokens-url]
+[![MySQL][MySQL]][MySQL-url]
+[![S3][S3]][S3-url]
+[![bcrypt][bcrypt]][bcrypt-url]
+[![js-cookie][js-cookie]][js-cookie-url]
+[![cors][cors]][cors-url]
+[![esbuild][esbuild]][esbuild-url]
+[![eslint][eslint]][eslint-url]
+[![dayjs][dayjs]][dayjs-url]
+[![vite][vite]][vite-url]
 
-I challenged myself to only use Bootstrap for styling in this project as I want to understand more what Bootstrap has to offer. I deviated a bit for minor things such as font styling or small color changes that aren't super friendly in Bootstrap without the addition of SASS.  
+</div>
+
+While much of this tech stack is my bread and butter, this project challenged me to step out of my comfort zone and grow as a developer. I focused on writing clean SQL queries that return exactly what I need, adding bcrypt and JWT to ensure the safety of my application and leaning on a custom, beefy eslint setup that kept me to a high standard of clean code. I approached React differently, using components much more thoughtfully. The scale of the project demanded I adopt compartmentalized logic, which led to cleaner, more maintainable code and significantly reduced time spent tracking down issues.
+
+Bootstrap was the one tech I wasn't very familier with. I've used it a touch, but had always fallen back to writng all my CSS by hand. However, I challenged myself to style the entire site using only Bootstrap, knowing it's a widely used industry tool. I also saw it's value, knowing it would save me a lot of time. Other than some miniscule overrides - color, some small styling tweaks - this website uses only Bootstrap. Through that decision, I have a much deeper understanding of Bootstrap's system. I'm incredibly glad I learned CSS 'the hard way' first so I better understand how the classes affect and change the elements they're applied to. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -88,7 +92,7 @@ I challenged myself to only use Bootstrap for styling in this project as I want 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-While this project isn't deployed, you can download the files into a folder called "Knitters Fren" and run ``npm install`` on the root to get your node modules good to go. 
+Go visit the live site <a href="https://arias-server-4642dbc777af.herokuapp.com/">here!</a>
 
 ### Installation
 
@@ -118,7 +122,7 @@ While this project isn't deployed, you can download the files into a folder call
 
 I've found it challenging to know which of my patterns I'm looking for based on file name alone, and sometimes I forget I have a really pretty pattern I haven't used in a while. I'm hoping with the addition of pictures that I can more easily find what I'm looking for, and with the featured section rotating on every load I'll be exposed to more patterns!
 
-As this website gets deployed and there are more users, I'm also hoping we can make a positive enviornment that people can share wonderful patterns they've used and it becomes a place that knitters can find wonderful new patterns to try.
+As this website gets deployed and there are more users, I'm also hoping I can make a positive enviornment that people can share wonderful patterns they've used and it becomes a place that knitters can find wonderful new patterns to try.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -129,7 +133,7 @@ As this website gets deployed and there are more users, I'm also hoping we can m
 ## Roadmap
 - [x] Create the base of the site with CRUD functionality
 - [x] Add styling
-- [ ] Add search functionality
+- [x] Add search functionality
 - [ ] Allow the addition of images
     - [ ] Add the gallery and allow submissions of finished works
 
@@ -182,6 +186,20 @@ Thank you to Elivaras who's been helping me learn version control and keeping my
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
+[vite]: https://img.shields.io/badge/vite-8A89FF?style=for-the-badge&logo=vite&logoColor=DAA520
+[vite-url]: https://vite.dev/
+[dayjs]: https://img.shields.io/badge/dayjs-FF6347?style=for-the-badge&logo=c&logoColor=fff
+[dayjs-url]: https://day.js.org/
+[esbuild]: https://img.shields.io/badge/esbuild-F4C430?style=for-the-badge&logo=esbuild&logoColor=000000
+[esbuild-url]: https://esbuild.github.io/
+[eslint]: https://img.shields.io/badge/eslint-A78BFA?style=for-the-badge&logo=eslint&logoColor=000000
+[eslint-url]: https://eslint.org/
+[cors]: https://img.shields.io/badge/CORS-E8A87C?style=for-the-badge&logo=express&logoColor=8B4000
+[cors-url]: https://github.com/expressjs/cors
+[js-cookie]: https://img.shields.io/badge/JS_Cookie-D2B48C?style=for-the-badge&logo=javascript&logoColor=8B4513
+[js-cookie-url]: https://www.npmjs.com/package/js-cookie
+[bcrypt]: https://img.shields.io/badge/bcrypt-90EE90?style=for-the-badge&logo=bloglovin&logoColor=2A9D8F
+[bcrypt-url]: https://github.com/kelektiv/node.bcrypt.js
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [nodejs]: https://img.shields.io/badge/node.js-d8e3db?style=for-the-badge&logo=nodedotjs&logoColor=#fffffff
