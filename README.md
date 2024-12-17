@@ -22,26 +22,22 @@
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
-  <ol>
+  <ul>
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
+    <li><a href="#deployment">Deployment</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
+    <li><a href="#for-developers">For Developers</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
+  </ul>
 </details>
 
 
@@ -90,25 +86,17 @@ Bootstrap was the one tech I wasn't very familier with. I've used it a touch, bu
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Deployment
+<div align="center">
+To explore Knitters Fren, go see it in action: 
+  <br/>
+  <br/>
+  
+  [![knitters-fren][knitters-fren]][knitters-fren-url]
+  
+</div>
 
-Go visit the live site <a href="https://arias-server-4642dbc777af.herokuapp.com/">here!</a>
 
-### Installation
-
-
-1. Clone the repo
-   ```sh
-   git clone https://github.com/ArchangeLillith/knitters-fren
-   ```
-2. Install NPM packages
-   ```sh
-   npm install
-   ```
-3. Boot the project (backend lives on localhost:3000, frontend lives on localhost:8000)
-    ```sh
-   npm run dev
-   ```
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -173,7 +161,22 @@ Project Link: [https://github.com/ArchangeLillith/knitters-fren](https://github.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!--DEV -->
+### For Developers
 
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/ArchangeLillith/knitters-fren
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Boot the project (backend lives on localhost:3000, frontend lives on localhost:8000)
+    ```sh
+   npm run dev
+   ```
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
@@ -186,6 +189,8 @@ Thank you to Elivaras who's been helping me learn version control and keeping my
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
+[knitters-fren]: https://img.shields.io/badge/live_site!-f89090?style=for-the-badge
+[knitters-fren-url]: https://arias-server-4642dbc777af.herokuapp.com/
 [vite]: https://img.shields.io/badge/vite-8A89FF?style=for-the-badge&logo=vite&logoColor=DAA520
 [vite-url]: https://vite.dev/
 [dayjs]: https://img.shields.io/badge/dayjs-FF6347?style=for-the-badge&logo=c&logoColor=fff
