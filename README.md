@@ -32,11 +32,10 @@
     <li><a href="#deployment">Deployment</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#for-developers">For Developers</a></li>
-    <li><a href="#contact">Contact</a></li>
     <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#for-developers">For Developers</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#license">License</a></li>
   </ul>
 </details>
 
@@ -97,8 +96,6 @@ To explore Knitters Fren, go see it in action:
 </div>
 
 
-
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -124,26 +121,6 @@ As this website gains more users, I'm also hoping I can make a positive enviornm
 
 
 See the [project board](https://github.com/users/ArchangeLillith/projects/1) for a full list of intended features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Project Link: [https://github.com/ArchangeLillith/knitters-fren](https://github.com/ArchangeLillith/knitters-fren)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -217,6 +194,14 @@ If you'd like to run a local copy of this project, please follow the steps below
 
 Thank you to Elivaras who's been helping me learn version control and keeping my code clean by reviewing most of my commits! And thank you to [Covalence](https://covalence.io/) for their incredible support and amazing lectures (looking at you Luke and Andrew!)
 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
