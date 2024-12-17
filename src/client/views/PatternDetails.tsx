@@ -95,10 +95,7 @@ const PatternDetails = () => {
 										>
 											<p>
 												Your browser does not support embedded PDFs.{' '}
-												<a href="https://knitters-fren.s3.ca-central-1.amazonaws.com/Five-by-Five-Cowl.pdf">
-													Click here to view the PDF
-												</a>
-												.
+												<a href={pattern.link}>Click here to view the PDF</a>.
 											</p>
 										</object>
 									)}
