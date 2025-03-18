@@ -212,13 +212,13 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [knitters-fren-url]: https://arias-server-4642dbc777af.herokuapp.com/
 [vite]: https://img.shields.io/badge/vite-8A89FF?style=for-the-badge&logo=vite&logoColor=DAA520
 [vite-url]: https://vite.dev/
-[dayjs]: https://img.shields.io/badge/dayjs-FF6347?style=for-the-badge&logo=c&logoColor=fff
+[dayjs]: https://img.shields.io/badge/dayjs-FF6347?style=for-the-badge
 [dayjs-url]: https://day.js.org/
 [esbuild]: https://img.shields.io/badge/esbuild-F4C430?style=for-the-badge&logo=esbuild&logoColor=000000
 [esbuild-url]: https://esbuild.github.io/
 [eslint]: https://img.shields.io/badge/eslint-A78BFA?style=for-the-badge&logo=eslint&logoColor=000000
 [eslint-url]: https://eslint.org/
-[cors]: https://img.shields.io/badge/CORS-E8A87C?style=for-the-badge&logo=express&logoColor=8B4000
+[cors]: https://img.shields.io/badge/CORS-E8A87C?style=for-the-badge&logo=c&logoColor=8B4000
 [cors-url]: https://github.com/expressjs/cors
 [js-cookie]: https://img.shields.io/badge/JS_Cookie-D2B48C?style=for-the-badge&logo=javascript&logoColor=8B4513
 [js-cookie-url]: https://www.npmjs.com/package/js-cookie
