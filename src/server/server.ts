@@ -17,7 +17,7 @@ app.use(
 	cors({
 		origin:
 			process.env.NODE_ENV === 'production'
-				? ['https://your-production-domain.com']
+				? ['https://http://www.knittersfren.ca/']
 				: ['http://localhost:8000'],
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
